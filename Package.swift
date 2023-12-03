@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "feather-sql-database",
+    name: "feather-relational-database",
     platforms: [
         .macOS(.v13),
         .iOS(.v16),
@@ -17,7 +17,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/feather-framework/feather-service", .upToNextMinor(from: "0.3.0")),
         .package(url: "https://github.com/apple/swift-log", from: "1.5.0"),
-        .package(url: "https://github.com/vapor/sql-kit", from: "3.0.0"),
+        .package(url: "https://github.com/vapor/sql-kit", from: "3.28.0"),
     ],
     targets: [
         .target(
