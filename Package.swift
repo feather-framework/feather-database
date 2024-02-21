@@ -15,15 +15,15 @@ let package = Package(
         .library(name: "XCTFeatherRelationalDatabase", targets: ["XCTFeatherRelationalDatabase"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/feather-framework/feather-service", .upToNextMinor(from: "0.3.0")),
-        .package(url: "https://github.com/apple/swift-log", from: "1.5.0"),
-        .package(url: "https://github.com/vapor/sql-kit", from: "3.28.0"),
+        .package(url: "https://github.com/feather-framework/feather-component", .upToNextMinor(from: "0.4.0")),
+        .package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
+        .package(url: "https://github.com/vapor/sql-kit", from: "3.0.0"),
     ],
     targets: [
         .target(
             name: "FeatherRelationalDatabase",
             dependencies: [
-                .product(name: "FeatherService", package: "feather-service"),
+                .product(name: "FeatherComponent", package: "feather-component"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "SQLKit", package: "sql-kit"),
             ]
