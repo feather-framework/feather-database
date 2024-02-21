@@ -1,6 +1,6 @@
 # Feather Relational Database
 
-An abstract relational-database service for Feather CMS.
+An abstract relational-database component for Feather CMS.
 
 ## Getting started
 
@@ -13,7 +13,7 @@ Use at your own risk.
 To add a dependency on the package, declare it in your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-relational-database.git", .upToNextMinor(from: "0.1.0")),
+.package(url: "https://github.com/feather-framework/feather-relational-database.git", .upToNextMinor(from: "0.2.0")),
 ```
 
 and to your application target, add `FeatherRelationalDatabase` to your dependencies:
@@ -31,7 +31,7 @@ import PackageDescription
 let package = Package(
     name: "my-application",
     dependencies: [
-        .package(url: "https://github.com/feather-framework/feather-relational-database.git", .upToNextMinor(from: "0.1.0")),
+        .package(url: "https://github.com/feather-framework/feather-relational-database.git", .upToNextMinor(from: "0.2.0")),
     ],
     targets: [
         .target(name: "MyApplication", dependencies: [

@@ -27,9 +27,9 @@ import Foundation
 //
 //public struct SQLDatabaseTestSuite {
 //
-//    let sql-database: SQLDatabaseService
+//    let sql-database: SQLDatabaseComponent
 //
-//    public init(_ sql-database: SQLDatabaseService) {
+//    public init(_ sql-database: SQLDatabaseComponent) {
 //        self.sql-database = sql-database
 //    }
 //

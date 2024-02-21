@@ -7,7 +7,7 @@
 
 import NIO
 import XCTest
-import FeatherService
+import FeatherComponent
 import FeatherRelationalDatabase
 import SQLKit
 

@@ -1,15 +1,15 @@
 //
 //  SQLDatabase.swift
-//  FeatherServiceTests
+//  FeatherComponentTests
 //
 //  Created by Tibor Bodecs on 18/11/2023.
 //
 
-import FeatherService
+import FeatherComponent
 import SQLKit
 
-/// the sql-database service protocol
-public protocol RelationalDatabaseService: Service {
+/// the sql-database component protocol
+public protocol RelationalDatabaseComponent: Component {
     
     func connection() async throws -> SQLKit.SQLDatabase
 }
