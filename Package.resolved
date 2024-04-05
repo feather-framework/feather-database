@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/feather-framework/feather-component",
       "state" : {
-        "revision" : "d8373cf9ab5db3e7b21fbcb8e6d1d5718b3bb73b",
-        "version" : "0.4.0"
+        "revision" : "c209d87352d27afc124422db11c9ca2bb0f7a376",
+        "version" : "0.5.0"
       }
     },
     {
@@ -16,15 +16,6 @@
       "state" : {
         "revision" : "b2f128cb62a3abfbb1e3b2893ff3ee69e70f4f0f",
         "version" : "3.28.0"
-      }
-    },
-    {
-      "identity" : "swift-async-algorithms",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-async-algorithms.git",
-      "state" : {
-        "revision" : "da4e36f86544cdf733a40d59b3a2267e3a7bbf36",
-        "version" : "1.0.0"
       }
     },
     {
@@ -59,17 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "635b2589494c97e48c62514bc8b37ced762e0a62",
-        "version" : "2.63.0"
-      }
-    },
-    {
-      "identity" : "swift-service-lifecycle",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-service-lifecycle",
-      "state" : {
-        "revision" : "55f45e39dd23c6cad82d4d529e22961cb5e493aa",
-        "version" : "2.4.0"
+        "revision" : "fc63f0cf4e55a4597407a9fc95b16a2bc44b4982",
+        "version" : "2.64.0"
       }
     },
     {
