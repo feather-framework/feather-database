@@ -12,10 +12,10 @@ let package = Package(
     ],
     products: [
         .library(name: "FeatherRelationalDatabase", targets: ["FeatherRelationalDatabase"]),
-        .library(name: "XCTFeatherRelationalDatabase", targets: ["XCTFeatherRelationalDatabase"]),
+        .library(name: "FeatherRelationalDatabaseTesting", targets: ["FeatherRelationalDatabaseTesting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/feather-framework/feather-component", .upToNextMinor(from: "0.4.0")),
+        .package(url: "https://github.com/feather-framework/feather-component", .upToNextMinor(from: "0.5.0")),
         .package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
         .package(url: "https://github.com/vapor/sql-kit", from: "3.0.0"),
     ],
@@ -29,7 +29,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "XCTFeatherRelationalDatabase",
+            name: "FeatherRelationalDatabaseTesting",
             dependencies: [
                 .target(name: "FeatherRelationalDatabase"),
             ]
@@ -41,9 +41,9 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "XCTFeatherRelationalDatabaseTests",
+            name: "FeatherRelationalDatabaseTestingTests",
             dependencies: [
-                .target(name: "XCTFeatherRelationalDatabase"),
+                .target(name: "FeatherRelationalDatabaseTesting"),
             ]
         ),
     ]
