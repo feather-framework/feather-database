@@ -6,12 +6,11 @@
 //
 
 import FeatherComponent
-import FeatherRelationalDatabase
 import NIO
 import SQLKit
 import XCTest
 
-final class FeatherRelationalDatabaseTests: XCTestCase {
+final class FeatherDatabaseTests: XCTestCase {
 
     func testExample() async throws {
 

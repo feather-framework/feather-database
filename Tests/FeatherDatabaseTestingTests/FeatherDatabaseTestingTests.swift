@@ -5,10 +5,10 @@
 //  Created by Tibor Bodecs on 2023. 01. 16..
 //
 
-import FeatherRelationalDatabaseTesting
+import FeatherDatabaseTesting
 import XCTest
 
-final class FeatherRelationalDatabaseTestingTests: XCTestCase {
+final class FeatherDatabaseTestingTests: XCTestCase {
 
     func testExample() async throws {
 
