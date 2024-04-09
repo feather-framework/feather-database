@@ -16,9 +16,9 @@ extension Test.Model {
 final class QueryTests: TestCase {
 
     func testInsert() async throws {
-
         let test = Test.Model.mock()
         let db = try await components.database().connection()
+        
         let testQueryBuilder = Test.QueryBuilder(db: db)
 
         try await testQueryBuilder.insert(test)

@@ -10,9 +10,12 @@ import NIO
 import SQLKit
 import XCTest
 
-final class FeatherDatabaseTests: XCTestCase {
+final class MigrationTests: TestCase {
 
     func testExample() async throws {
-
+//        let db = try await components.database().connection()
+//
+//        let builder = db.sqlDatabase.create(table: tableName).ifNotExists()
+//        builder.build(Test.Migration)
     }
 }

@@ -7,5 +7,5 @@
 
 public protocol DatabaseTableStructure: DatabaseTable {
 
-    var columns: [ColumnStructure] { get }
+    static var columns: [ColumnStructure] { get }
 }

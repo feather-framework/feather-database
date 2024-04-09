@@ -39,30 +39,14 @@ enum Test {
 
     // MARK: - migration
 
-    //    struct Migration: DatabaseTableMigration {
-    //
-    //        public let name: String
-    //
-    //        public init() {
-    //            self.name = "test"
-    //        }
-    //
-    //        public func statements(
-    //            _ builder: SQLCreateTableBuilder
-    //        ) -> SQLCreateTableBuilder {
-    //            builder
-    //                .primaryId()
-    //                .text("title")
-    //                .text("notes", isMandatory: false)
-    //        }
-    //    }
+    struct Migration: DatabaseTableStructure {
+        var db: FeatherDatabase.Database
 
-    //    struct MigrationGroup: MigrationKit.MigrationGroup {
-    //
-    //        func migrations() -> [MigrationKit.Migration] {
-    //            [
-    //                Migration()
-    //            ]
-    //        }
-    //    }
+        static let name: String = "test"
+        static let columns: [ColumnStructure] = [
+            KeyColumn(),
+            StringColumn(name: "title"),
+            StringColumn(name: "notes", isMandatory: false),
+        ]
+    }
 }

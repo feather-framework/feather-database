@@ -11,7 +11,7 @@ extension SQLCreateTableBuilder {
 
     public func build(_ schema: any DatabaseTableStructure) -> Self {
         var otherSelf = self
-        for column in schema.columns {
+        for column in type(of: schema).columns {
             otherSelf = otherSelf.column(
                 column.name,
                 type: column.type,

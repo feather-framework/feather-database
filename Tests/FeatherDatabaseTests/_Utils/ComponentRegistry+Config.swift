@@ -9,6 +9,9 @@ import FeatherComponent
 import FeatherDatabase
 import Logging
 import NIO
+import SQLKit
+import SQLiteNIO
+import SQLiteKit
 
 extension ComponentRegistry {
 
@@ -16,18 +19,23 @@ extension ComponentRegistry {
         _ threadPool: NIOThreadPool,
         _ eventLoopGroup: EventLoopGroup
     ) async throws {
+        let connectionSource = SQLiteConnectionSource(
+            configuration: .init(
+                storage: .memory
+            ),
+            threadPool: threadPool
+        )
 
-        //        try await addDatabase(
-        //            SQLiteDatabaseComponentContext(
-        //                eventLoopGroup: eventLoopGroup,
-        //                connectionSource: .init(
-        //                    configuration: .init(
-        //                        storage: .memory,
-        //                        enableForeignKeys: true
-        //                    ),
-        //                    threadPool: threadPool
-        //                )
-        //            )
-        //        )
+        let pool = EventLoopGroupConnectionPool(
+            source: connectionSource,
+            on: eventLoopGroup
+        )
+
+        try await addDatabase(
+            SQLiteDatabaseComponentContext(
+                pool: pool
+            )
+        )
+
     }
 }
