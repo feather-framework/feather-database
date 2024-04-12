@@ -7,7 +7,7 @@
 
 import SQLKit
 
-public protocol DatabaseQueryJointAll: DatabaseQueryInterface {
+public protocol DatabaseQueryJoinAll: DatabaseQueryInterface {
 
     associatedtype ReferenceModel: DatabaseModel
     associatedtype ConnectorModel: DatabaseModel
@@ -16,7 +16,7 @@ public protocol DatabaseQueryJointAll: DatabaseQueryInterface {
     static var connectorField: ConnectorModel.ColumnNames { get }
     static var valueField: Row.ColumnNames { get }
 
-    static func all(
+    static func joinAll(
         referenceId: Key<ReferenceModel>,
         orders: [DatabaseOrder<Row.ColumnNames>],
         filter: DatabaseFilter<Row.ColumnNames>?,
@@ -24,9 +24,9 @@ public protocol DatabaseQueryJointAll: DatabaseQueryInterface {
     ) async throws -> [Row]
 }
 
-extension DatabaseQueryJointAll {
+extension DatabaseQueryJoinAll {
 
-    public static func all(
+    public static func joinAll(
         referenceId: Key<ReferenceModel>,
         orders: [DatabaseOrder<Row.ColumnNames>] = [],
         filter: DatabaseFilter<Row.ColumnNames>? = nil,

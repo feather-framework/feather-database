@@ -12,14 +12,12 @@ enum Test {
 
     // @DatabaseQueryModel
     struct Model: DatabaseModel {
-        static let tableName = "test"
-
-        // TODO: macro
         enum CodingKeys: String, DatabaseColumnName {
             case id
             case title
             case notes
         }
+        static let tableName = "test"
         static let columnNames = CodingKeys.self
 
         // MARK: - fields
@@ -29,13 +27,12 @@ enum Test {
     }
 
     struct ModelSecond: DatabaseModel {
-        static let tableName = "test_second"
 
-        // TODO: macro
         enum CodingKeys: String, DatabaseColumnName {
             case id
             case secondValue = "second_value"
         }
+        static let tableName = "test_second"
         static let columnNames = CodingKeys.self
 
         // MARK: - fields
@@ -44,13 +41,12 @@ enum Test {
     }
 
     struct ModelConnector: DatabaseModel {
-        static let tableName = "test_connector"
 
-        // TODO: macro
         enum CodingKeys: String, DatabaseColumnName {
             case idModel = "id_model"
             case idModelSecond = "id_model_second"
         }
+        static let tableName = "test_connector"
         static let columnNames = CodingKeys.self
 
         // MARK: - fields
@@ -72,7 +68,7 @@ enum Test {
     }
 
     struct QuerySecondJointModel:
-        DatabaseQueryJointAll
+        DatabaseQueryJoinAll
     {
         typealias ReferenceModel = Model
         typealias ConnectorModel = ModelConnector
