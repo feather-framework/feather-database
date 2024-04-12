@@ -8,7 +8,7 @@
 import SQLKit
 
 public protocol QueryOrderInterface {
-    associatedtype Field: QueryFieldKey
+    associatedtype Field: DatabaseColumnName
 
     var field: Field { get }
     var direction: QueryDirection { get }

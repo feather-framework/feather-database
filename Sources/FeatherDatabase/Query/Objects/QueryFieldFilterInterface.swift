@@ -8,7 +8,7 @@
 import SQLKit
 
 public protocol QueryFieldFilterInterface {
-    associatedtype Field: QueryFieldKey
+    associatedtype Field: DatabaseColumnName
 
     var field: Field { get }
     var `operator`: SQLBinaryOperator { get }

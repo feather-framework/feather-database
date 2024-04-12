@@ -5,9 +5,9 @@
 //  Created by Tibor Bodecs on 14/02/2024.
 //
 
-public protocol KeyedDatabaseTableQuery: DatabaseTableQuery {
+public protocol KeyedDatabaseQuery: DatabaseQuery {
 
-    associatedtype PrimaryField: QueryFieldKey
+    associatedtype PrimaryField: DatabaseColumnName
 
     static var primaryKey: PrimaryField { get }
 }

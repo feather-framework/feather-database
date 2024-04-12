@@ -7,21 +7,23 @@
 
 import SQLKit
 
-public protocol DatabaseTableQueryDelete: DatabaseTableQuery {
+public protocol DatabaseQueryDelete: DatabaseQuery {
 
-    func delete(
-        filter: QueryFieldFilter<Row.FieldKeys>
+    static func delete(
+        filter: QueryFieldFilter<Row.ColumnNames>,
+        on db: Database
     ) async throws
 }
 
-extension DatabaseTableQueryDelete {
+extension DatabaseQueryDelete {
 
-    public func delete(
-        filter: QueryFieldFilter<Row.FieldKeys>
+    public static func delete(
+        filter: QueryFieldFilter<Row.ColumnNames>,
+        on db: Database
     ) async throws {
         try await db.run { sql in
             try await sql
-                .delete(from: Self.name)
+                .delete(from: Row.tableName)
                 .applyFilter(filter)
                 .run()
         }

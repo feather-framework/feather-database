@@ -7,24 +7,26 @@
 
 import SQLKit
 
-public protocol DatabaseTableQueryAll: DatabaseTableQuery {
+public protocol DatabaseQueryAll: DatabaseQuery {
 
-    func all(
-        orders: [QueryOrder<Row.FieldKeys>],
-        filter: QueryFieldFilter<Row.FieldKeys>?
+    static func all(
+        orders: [QueryOrder<Row.ColumnNames>],
+        filter: QueryFieldFilter<Row.ColumnNames>?,
+        on db: Database
     ) async throws -> [Row]
 }
 
-extension DatabaseTableQueryAll {
+extension DatabaseQueryAll {
 
-    public func all(
-        orders: [QueryOrder<Row.FieldKeys>] = [],
-        filter: QueryFieldFilter<Row.FieldKeys>? = nil
+    public static func all(
+        orders: [QueryOrder<Row.ColumnNames>] = [],
+        filter: QueryFieldFilter<Row.ColumnNames>? = nil,
+        on db: Database
     ) async throws -> [Row] {
         try await db.run { sql in
             try await sql
                 .select()
-                .from(Self.name)
+                .from(Row.tableName)
                 .column("*")
                 .applyFilter(filter)
                 .applyOrders(orders)

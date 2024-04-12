@@ -7,18 +7,20 @@
 
 import SQLKit
 
-public protocol KeyedDatabaseTableQueryGet: KeyedDatabaseTableQuery {
+public protocol KeyedDatabaseQueryGet: KeyedDatabaseQuery {
 
-    func get(_ value: Key<Row>) async throws -> Row?
+    static func get(_ value: Key<Row>, on db: Database) async throws -> Row?
 }
 
-extension KeyedDatabaseTableQueryGet {
+extension KeyedDatabaseQueryGet {
 
-    public func get(_ value: Key<Row>) async throws -> Row? {
+    public static func get(_ value: Key<Row>, on db: Database) async throws
+        -> Row?
+    {
         try await db.run { sql in
             try await sql
                 .select()
-                .from(Self.name)
+                .from(Row.tableName)
                 .column("*")
                 .where(Self.primaryKey.sqlValue, .equal, SQLBind(value))
                 .limit(1)

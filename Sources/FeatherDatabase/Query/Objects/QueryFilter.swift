@@ -6,7 +6,7 @@
 //
 
 // TODO: create a real predicate builder
-public struct QueryFilter<F: QueryFieldKey>: QueryFilterInterface {
+public struct QueryFilter<F: DatabaseColumnName>: QueryFilterInterface {
 
     public let relation: QueryFilterRelation
     public let groups: [any QueryFilterGroupInterface]

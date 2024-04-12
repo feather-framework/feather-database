@@ -10,8 +10,8 @@ import FeatherDatabase
 import Logging
 import NIO
 import SQLKit
-import SQLiteNIO
 import SQLiteKit
+import SQLiteNIO
 
 extension ComponentRegistry {
 

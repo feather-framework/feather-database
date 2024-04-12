@@ -7,8 +7,8 @@
 
 import SQLKit
 
-public protocol ColumnStructure {
-    var name: String { get }
+public protocol DatabaseColumn {
+    var name: any DatabaseColumnName { get }
     var type: SQLDataType { get }
     var constraints: [SQLColumnConstraintAlgorithm] { get }
 }

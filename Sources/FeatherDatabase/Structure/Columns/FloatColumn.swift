@@ -7,14 +7,14 @@
 
 import SQLKit
 
-public struct FloatColumn: ColumnStructure {
+public struct FloatColumn: DatabaseColumn {
 
     public let type: SQLDataType
-    public let name: String
+    public let name: any DatabaseColumnName
     public let constraints: [SQLColumnConstraintAlgorithm]
 
     public init(
-        name: String,
+        _ name: any DatabaseColumnName,
         isMandatory: Bool = true
     ) {
         self.type = .real
