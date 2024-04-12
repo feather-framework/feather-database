@@ -48,7 +48,7 @@ final class QueryTests: TestCase {
 
         let count2 = try await Test.Query.count(
             filter: .init(
-                field: .title,
+                column: .title,
                 operator: .like,
                 value: ["title-1%"]
             ),
@@ -85,12 +85,12 @@ final class QueryTests: TestCase {
 
         let res1 = try await Test.Query.first(
             filter: .init(
-                field: .id,
+                column: .id,
                 operator: .in,
                 value: ["id-1", "id-2"]
             ),
             order: .init(
-                field: .title,
+                column: .title,
                 direction: .desc
             ),
             on: db
@@ -100,7 +100,7 @@ final class QueryTests: TestCase {
 
         let res2 = try await Test.Query.first(
             filter: .init(
-                field: .id,
+                column: .id,
                 operator: .equal,
                 value: ["id-2"]
             ),
@@ -144,7 +144,7 @@ final class QueryTests: TestCase {
 
         try await Test.Query.delete(
             filter: .init(
-                field: .id,
+                column: .id,
                 operator: .in,
                 value: [
                     Key<Test>(rawValue: "id-2"),
@@ -156,7 +156,7 @@ final class QueryTests: TestCase {
 
         try await Test.Query.delete(
             filter: .init(
-                field: .title,
+                column: .title,
                 operator: .in,
                 value: [
                     "title-4",
@@ -186,7 +186,7 @@ final class QueryTests: TestCase {
 
         let res2 = try await Test.Query.all(
             filter: .init(
-                field: .title,
+                column: .title,
                 operator: .in,
                 value: ["title-1", "title-2"]
             ),
@@ -196,7 +196,7 @@ final class QueryTests: TestCase {
 
         let res3 = try await Test.Query.all(
             filter: .init(
-                field: .title,
+                column: .title,
                 operator: .equal,
                 value: "title-2"
             ),
@@ -221,7 +221,7 @@ final class QueryTests: TestCase {
         let res2 = try await Test.Query.all(
             orders: [
                 .init(
-                    field: .title,
+                    column: .title,
                     direction: .desc
                 )
             ],
@@ -248,7 +248,7 @@ final class QueryTests: TestCase {
                 ),
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .asc
                     )
                 ],
@@ -257,14 +257,14 @@ final class QueryTests: TestCase {
                     groups: [
                         .init(
                             relation: .or,
-                            fields: [
+                            columns: [
                                 .init(
-                                    field: .title,
+                                    column: .title,
                                     operator: .in,
                                     value: ["title-1", "title-2"]
                                 ),
                                 .init(
-                                    field: .notes,
+                                    column: .notes,
                                     operator: .equal,
                                     value: "notes-3"
                                 ),
@@ -301,7 +301,7 @@ final class QueryTests: TestCase {
                 ),
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .asc
                     )
                 ],
@@ -310,9 +310,9 @@ final class QueryTests: TestCase {
                     groups: [
                         .init(
                             relation: .and,
-                            fields: [
+                            columns: [
                                 .init(
-                                    field: .title,
+                                    column: .title,
                                     operator: .like,
                                     value: "title-1%"
                                 )
@@ -320,14 +320,14 @@ final class QueryTests: TestCase {
                         ),
                         .init(
                             relation: .or,
-                            fields: [
+                            columns: [
                                 .init(
-                                    field: .title,
+                                    column: .title,
                                     operator: .in,
                                     value: ["title-11", "title-12"]
                                 ),
                                 .init(
-                                    field: .notes,
+                                    column: .notes,
                                     operator: .equal,
                                     value: "notes-13"
                                 ),
@@ -392,11 +392,11 @@ final class QueryTests: TestCase {
                 ),
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .desc
                     ),
                     .init(
-                        field: .notes,
+                        column: .notes,
                         direction: .asc
                     ),
                 ]
@@ -439,7 +439,7 @@ final class QueryTests: TestCase {
                 ),
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .desc
                     )
                 ],
@@ -448,14 +448,14 @@ final class QueryTests: TestCase {
                     groups: [
                         .init(
                             relation: .and,
-                            fields: [
+                            columns: [
                                 .init(
-                                    field: .title,
+                                    column: .title,
                                     operator: .like,
                                     value: "%title-1%"
                                 ),
                                 .init(
-                                    field: .notes,
+                                    column: .notes,
                                     operator: .like,
                                     value: "%notes-1%"
                                 ),
@@ -483,7 +483,7 @@ final class QueryTests: TestCase {
                 ),
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .desc
                     )
                 ],
@@ -492,14 +492,14 @@ final class QueryTests: TestCase {
                     groups: [
                         .init(
                             relation: .and,
-                            fields: [
+                            columns: [
                                 .init(
-                                    field: .title,
+                                    column: .title,
                                     operator: .like,
                                     value: "%title-1%"
                                 ),
                                 .init(
-                                    field: .notes,
+                                    column: .notes,
                                     operator: .like,
                                     value: "%notes-1%"
                                 ),
@@ -527,7 +527,7 @@ final class QueryTests: TestCase {
                 ),
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .desc
                     )
                 ],
@@ -536,14 +536,14 @@ final class QueryTests: TestCase {
                     groups: [
                         .init(
                             relation: .and,
-                            fields: [
+                            columns: [
                                 .init(
-                                    field: .title,
+                                    column: .title,
                                     operator: .like,
                                     value: "%title-1%"
                                 ),
                                 .init(
-                                    field: .notes,
+                                    column: .notes,
                                     operator: .like,
                                     value: "%notes-1%"
                                 ),
@@ -574,7 +574,7 @@ final class QueryTests: TestCase {
             .init(
                 orders: [
                     .init(
-                        field: .title,
+                        column: .title,
                         direction: .desc
                     )
                 ]

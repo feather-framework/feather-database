@@ -59,19 +59,13 @@ enum Test {
     }
 
     // @DatabaseQueryBuilder("test", Model.self)
-    struct Query:
-        QueryBuilder,
-        KeyedQueryBuilder
-    {
+    struct Query: KeyedDatabaseQuery {
         typealias Row = Model
 
         static let primaryKey = Row.CodingKeys.id
     }
 
-    struct QuerySecond:
-        QueryBuilder,
-        KeyedQueryBuilder
-    {
+    struct QuerySecond: KeyedDatabaseQuery {
         typealias Row = ModelSecond
 
         static let primaryKey = Row.CodingKeys.id
@@ -89,9 +83,7 @@ enum Test {
         static let valueField = Row.columnNames.id
     }
 
-    struct QueryConnector:
-        QueryBuilder
-    {
+    struct QueryConnector: DatabaseQuery {
         typealias Row = ModelConnector
     }
 
@@ -99,7 +91,7 @@ enum Test {
 
     struct Table: DatabaseTable {
         static let tableName = Model.tableName
-        static let columns: [DatabaseColumn] = [
+        static let columns: [DatabaseColumnInterface] = [
             KeyColumn(Model.ColumnNames.id),
             StringColumn(Model.ColumnNames.title),
             StringColumn(Model.ColumnNames.notes, isMandatory: false),
@@ -108,7 +100,7 @@ enum Test {
 
     struct TableConnector: DatabaseTable {
         static let tableName = ModelConnector.tableName
-        static let columns: [DatabaseColumn] = [
+        static let columns: [DatabaseColumnInterface] = [
             StringColumn(ModelConnector.ColumnNames.idModel),
             StringColumn(ModelConnector.ColumnNames.idModelSecond),
         ]
@@ -116,7 +108,7 @@ enum Test {
 
     struct TableSecond: DatabaseTable {
         static let tableName = ModelSecond.tableName
-        static let columns: [DatabaseColumn] = [
+        static let columns: [DatabaseColumnInterface] = [
             KeyColumn(ModelSecond.ColumnNames.id),
             StringColumn(ModelSecond.ColumnNames.secondValue),
         ]

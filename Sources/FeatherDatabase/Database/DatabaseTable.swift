@@ -7,7 +7,7 @@
 
 public protocol DatabaseTable {
     static var tableName: String { get }
-    static var columns: [DatabaseColumn] { get }
+    static var columns: [DatabaseColumnInterface] { get }
     static func create(on db: Database) async throws
     static func drop(on db: Database) async throws
 }
