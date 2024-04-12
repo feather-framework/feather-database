@@ -611,7 +611,7 @@ final class QueryTests: TestCase {
         }
 
         for (index, element) in testModels.enumerated() {
-            let res = try await Test.QuerySecond.all(
+            let res = try await Test.QuerySecondJointModel.all(
                 referenceId: element.id,
                 on: db
             )

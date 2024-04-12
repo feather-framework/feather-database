@@ -70,7 +70,14 @@ enum Test {
 
     struct QuerySecond:
         QueryBuilder,
-        KeyedQueryBuilder,
+        KeyedQueryBuilder
+    {
+        typealias Row = ModelSecond
+
+        static let primaryKey = Row.CodingKeys.id
+    }
+
+    struct QuerySecondJointModel:
         DatabaseQueryJointAll
     {
         typealias ReferenceModel = Model
@@ -80,8 +87,6 @@ enum Test {
         static let referenceField = ReferenceModel.columnNames.id
         static let connectorField = ConnectorModel.columnNames.idModelSecond
         static let valueField = Row.columnNames.id
-
-        static let primaryKey = Row.CodingKeys.id
     }
 
     struct QueryConnector:
