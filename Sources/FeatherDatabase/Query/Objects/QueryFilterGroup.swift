@@ -7,7 +7,8 @@
 
 import SQLKit
 
-public struct QueryFilterGroup<F: QueryFieldKey>: QueryFilterGroupInterface {
+public struct QueryFilterGroup<F: DatabaseColumnName>: QueryFilterGroupInterface
+{
 
     public let relation: QueryFilterRelation
     public let fields: [any QueryFieldFilterInterface]

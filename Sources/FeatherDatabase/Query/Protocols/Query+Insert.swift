@@ -17,23 +17,28 @@ extension Array {
     }
 }
 
-public protocol DatabaseTableQueryInsert: DatabaseTableQuery {
+public protocol DatabaseQueryInsert: DatabaseQuery {
 
-    func insert(_ row: Row) async throws
-    func insert(_ rows: [Row], chunkSize: Int) async throws
+    static func insert(_ row: Row, on db: Database) async throws
+    static func insert(_ rows: [Row], chunkSize: Int, on db: Database)
+        async throws
 }
 
-extension DatabaseTableQueryInsert {
+extension DatabaseQueryInsert {
 
-    public func insert(_ row: Row) async throws {
-        try await insert([row])
+    public static func insert(_ row: Row, on db: Database) async throws {
+        try await insert([row], on: db)
     }
 
-    public func insert(_ rows: [Row], chunkSize: Int = 100) async throws {
+    public static func insert(
+        _ rows: [Row],
+        chunkSize: Int = 100,
+        on db: Database
+    ) async throws {
         try await db.run { sql in
             for items in rows.chunked(into: chunkSize) {
                 try await sql
-                    .insert(into: Self.name)
+                    .insert(into: Row.tableName)
                     .models(items, nilEncodingStrategy: .asNil)
                     .run()
             }

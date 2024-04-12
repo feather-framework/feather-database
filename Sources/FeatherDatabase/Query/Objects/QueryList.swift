@@ -7,7 +7,7 @@
 
 import SQLKit
 
-public struct QueryList<F: QueryFieldKey>: QueryListInterface {
+public struct QueryList<F: DatabaseColumnName>: QueryListInterface {
     //public let column: QueryColumn<F>
     public let page: QueryPage?
     public let orders: [QueryOrder<F>]

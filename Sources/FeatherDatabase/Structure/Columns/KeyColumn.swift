@@ -7,14 +7,14 @@
 
 import SQLKit
 
-public struct KeyColumn: ColumnStructure {
+public struct KeyColumn: DatabaseColumn {
 
     public let type: SQLDataType
-    public let name: String
+    public let name: any DatabaseColumnName
     public let constraints: [SQLColumnConstraintAlgorithm]
 
     public init(
-        name: String = "id"
+        _ name: any DatabaseColumnName
     ) {
         self.type = .text
         self.name = name

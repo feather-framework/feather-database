@@ -6,23 +6,23 @@
 //
 
 public protocol QueryBuilder:
-    DatabaseTableQuery,
-    DatabaseTableQueryAll,
-    DatabaseTableQueryCount,
-    DatabaseTableQueryDelete,
-    DatabaseTableQueryFirst,
-    DatabaseTableQueryInsert,
-    DatabaseTableQueryList
+    DatabaseQuery,
+    DatabaseQueryAll,
+    DatabaseQueryCount,
+    DatabaseQueryDelete,
+    DatabaseQueryFirst,
+    DatabaseQueryInsert,
+    DatabaseQueryList
 {
 
 }
 
 public protocol KeyedQueryBuilder:
     QueryBuilder,
-    KeyedDatabaseTableQuery,
-    KeyedDatabaseTableQueryDelete,
-    KeyedDatabaseTableQueryGet,
-    KeyedDatabaseTableQueryUpdate
+    KeyedDatabaseQuery,
+    KeyedDatabaseQueryDelete,
+    KeyedDatabaseQueryGet,
+    KeyedDatabaseQueryUpdate
 {
 
 }

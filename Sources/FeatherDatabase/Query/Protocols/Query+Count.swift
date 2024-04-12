@@ -7,22 +7,24 @@
 
 import SQLKit
 
-public protocol DatabaseTableQueryCount: DatabaseTableQuery {
+public protocol DatabaseQueryCount: DatabaseQuery {
 
-    func count(
-        filter: QueryFieldFilter<Row.FieldKeys>?
+    static func count(
+        filter: QueryFieldFilter<Row.ColumnNames>?,
+        on db: Database
     ) async throws -> UInt
 }
 
-extension DatabaseTableQueryCount {
+extension DatabaseQueryCount {
 
-    public func count(
-        filter: QueryFieldFilter<Row.FieldKeys>? = nil
+    public static func count(
+        filter: QueryFieldFilter<Row.ColumnNames>? = nil,
+        on db: Database
     ) async throws -> UInt {
         try await db.run { sql in
             try await sql
                 .select()
-                .from(Self.name)
+                .from(Row.tableName)
                 .column(SQLFunction("COUNT"), as: "count")
                 .applyFilter(filter)
                 .first(decoding: RowCount.self)?

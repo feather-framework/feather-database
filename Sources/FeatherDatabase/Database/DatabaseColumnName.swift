@@ -7,12 +7,12 @@
 
 import SQLKit
 
-public protocol QueryFieldKey: CodingKey, RawRepresentable
+public protocol DatabaseColumnName: CodingKey, RawRepresentable
 where RawValue == String {
 
 }
 
-extension QueryFieldKey {
+extension DatabaseColumnName {
 
     var sqlValue: SQLIdentifier {
         SQLIdentifier(rawValue)

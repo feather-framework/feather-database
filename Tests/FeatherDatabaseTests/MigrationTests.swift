@@ -13,9 +13,8 @@ import XCTest
 final class MigrationTests: TestCase {
 
     func testExample() async throws {
-//        let db = try await components.database().connection()
-//
-//        let builder = db.sqlDatabase.create(table: tableName).ifNotExists()
-//        builder.build(Test.Migration)
+        let db = try await components.database().connection()
+
+        try await Test.Table.create(on: db)
     }
 }

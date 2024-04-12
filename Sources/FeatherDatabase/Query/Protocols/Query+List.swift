@@ -7,23 +7,25 @@
 
 import SQLKit
 
-public protocol DatabaseTableQueryList: DatabaseTableQuery {
+public protocol DatabaseQueryList: DatabaseQuery {
 
-    func list(
-        _ query: QueryList<Row.FieldKeys>
-    ) async throws -> QueryList<Row.FieldKeys>.Result<Row>
+    static func list(
+        _ query: QueryList<Row.ColumnNames>,
+        on db: Database
+    ) async throws -> QueryList<Row.ColumnNames>.Result<Row>
 }
 
-extension DatabaseTableQueryList {
+extension DatabaseQueryList {
 
-    public func list(
-        _ query: QueryList<Row.FieldKeys>
-    ) async throws -> QueryList<Row.FieldKeys>.Result<Row> {
+    public static func list(
+        _ query: QueryList<Row.ColumnNames>,
+        on db: Database
+    ) async throws -> QueryList<Row.ColumnNames>.Result<Row> {
         try await db.run { sql in
             let total =
                 try await sql
                 .select()
-                .from(Self.name)
+                .from(Row.tableName)
                 .column(SQLFunction("COUNT"), as: "count")
                 .applyFilter(query.filter)
                 .applyOrders(query.orders)
@@ -33,7 +35,7 @@ extension DatabaseTableQueryList {
             let items =
                 try await sql
                 .select()
-                .from(Self.name)
+                .from(Row.tableName)
                 .column("*")
                 .applyFilter(query.filter)
                 .applyOrders(query.orders)

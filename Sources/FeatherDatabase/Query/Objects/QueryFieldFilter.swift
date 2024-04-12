@@ -7,7 +7,8 @@
 
 import SQLKit
 
-public struct QueryFieldFilter<F: QueryFieldKey>: QueryFieldFilterInterface {
+public struct QueryFieldFilter<F: DatabaseColumnName>: QueryFieldFilterInterface
+{
 
     public let field: F
     public let `operator`: SQLBinaryOperator

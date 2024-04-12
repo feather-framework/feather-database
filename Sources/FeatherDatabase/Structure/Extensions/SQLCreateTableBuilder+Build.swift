@@ -9,11 +9,12 @@ import SQLKit
 
 extension SQLCreateTableBuilder {
 
-    public func build(_ schema: any DatabaseTableStructure) -> Self {
+    public func build(_ columns: [any DatabaseColumn]) -> Self {
         var otherSelf = self
-        for column in type(of: schema).columns {
+        // TODO: use SQLColumnDefinition
+        for column in columns {
             otherSelf = otherSelf.column(
-                column.name,
+                column.name.rawValue,
                 type: column.type,
                 column.constraints
             )

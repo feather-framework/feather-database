@@ -2,17 +2,24 @@
 //  File.swift
 //
 //
-//  Created by Tibor Bodecs on 05/04/2024.
+//  Created by mzperx on 11/04/2024.
 //
 
-import SQLKit
-
-public protocol Table {
-    static var name: String { get }
+public protocol DatabaseTable {
+    static var tableName: String { get }
+    static var columns: [DatabaseColumn] { get }
+    static func create(on db: Database) async throws
+    static func drop(on db: Database) async throws
 }
 
-public protocol DatabaseTable: Table {
-    static var name: String { get }
+extension DatabaseTable {
 
-    var db: Database { get }
+    public static func create(on db: Database) async throws {
+        let sql = db.sqlDatabase.create(table: tableName)
+        try await sql.build(columns).run()
+    }
+
+    public static func drop(on db: Database) async throws {
+        try await db.sqlDatabase.drop(table: tableName).run()
+    }
 }

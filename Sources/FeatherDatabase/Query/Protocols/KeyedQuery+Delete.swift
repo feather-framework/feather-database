@@ -7,21 +7,23 @@
 
 import SQLKit
 
-public protocol KeyedDatabaseTableQueryDelete: KeyedDatabaseTableQuery {
+public protocol KeyedDatabaseQueryDelete: KeyedDatabaseQuery {
 
-    func delete(
-        _ value: Key<Row>
+    static func delete(
+        _ value: Key<Row>,
+        on db: Database
     ) async throws
 }
 
-extension KeyedDatabaseTableQueryDelete {
+extension KeyedDatabaseQueryDelete {
 
-    public func delete(
-        _ value: Key<Row>
+    public static func delete(
+        _ value: Key<Row>,
+        on db: Database
     ) async throws {
         try await db.run { sql in
             try await sql
-                .delete(from: Self.name)
+                .delete(from: Row.tableName)
                 .where(Self.primaryKey.sqlValue, .equal, value)
                 .run()
         }

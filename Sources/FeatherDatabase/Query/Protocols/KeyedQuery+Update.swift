@@ -4,20 +4,23 @@
 //
 //  Created by Tibor Bodecs on 14/02/2024.
 //
-
+//
 import SQLKit
 
-public protocol KeyedDatabaseTableQueryUpdate: KeyedDatabaseTableQuery {
+public protocol KeyedDatabaseQueryUpdate: KeyedDatabaseQuery {
 
-    func update(_ value: Key<Row>, _ row: Row) async throws
+    static func update(_ value: Key<Row>, _ row: Row, on db: Database)
+        async throws
 }
 
-extension KeyedDatabaseTableQueryUpdate {
+extension KeyedDatabaseQueryUpdate {
 
-    public func update(_ value: Key<Row>, _ row: Row) async throws {
+    public static func update(_ value: Key<Row>, _ row: Row, on db: Database)
+        async throws
+    {
         try await db.run { sql in
             try await sql
-                .update(Self.name)
+                .update(Row.tableName)
                 .set(model: row)
                 .where(Self.primaryKey.sqlValue, .equal, SQLBind(value))
                 .run()

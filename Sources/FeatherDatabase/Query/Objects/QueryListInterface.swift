@@ -6,7 +6,7 @@
 //
 
 public protocol QueryListInterface {
-    associatedtype Field: QueryFieldKey
+    associatedtype Field: DatabaseColumnName
 
     var page: QueryPage? { get }
     var orders: [QueryOrder<Field>] { get }

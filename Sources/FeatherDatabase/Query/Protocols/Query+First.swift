@@ -7,24 +7,26 @@
 
 import SQLKit
 
-public protocol DatabaseTableQueryFirst: DatabaseTableQuery {
+public protocol DatabaseQueryFirst: DatabaseQuery {
 
-    func first(
-        filter: QueryFieldFilter<Row.FieldKeys>,
-        order: QueryOrder<Row.FieldKeys>?
+    static func first(
+        filter: QueryFieldFilter<Row.ColumnNames>,
+        order: QueryOrder<Row.ColumnNames>?,
+        on db: Database
     ) async throws -> Row?
 }
 
-extension DatabaseTableQueryFirst {
+extension DatabaseQueryFirst {
 
-    public func first(
-        filter: QueryFieldFilter<Row.FieldKeys>,
-        order: QueryOrder<Row.FieldKeys>? = nil
+    public static func first(
+        filter: QueryFieldFilter<Row.ColumnNames>,
+        order: QueryOrder<Row.ColumnNames>? = nil,
+        on db: Database
     ) async throws -> Row? {
         try await db.run { sql in
             try await sql
                 .select()
-                .from(Self.name)
+                .from(Row.tableName)
                 .column("*")
                 .applyFilter(filter)
                 .applyOrder(order)

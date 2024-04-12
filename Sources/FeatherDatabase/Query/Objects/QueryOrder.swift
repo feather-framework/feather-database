@@ -5,7 +5,7 @@
 //  Created by Tibor Bodecs on 07/03/2024.
 //
 
-public struct QueryOrder<F: QueryFieldKey>: QueryOrderInterface {
+public struct QueryOrder<F: DatabaseColumnName>: QueryOrderInterface {
     public let field: F
     public let direction: QueryDirection
 
