@@ -88,7 +88,7 @@ enum Test {
     struct Table: DatabaseTable {
         static let tableName = Model.tableName
         static let columns: [DatabaseColumnInterface] = [
-            KeyColumn(Model.ColumnNames.id),
+            StringColumn(Model.ColumnNames.id),
             StringColumn(Model.ColumnNames.title),
             StringColumn(Model.ColumnNames.notes, isMandatory: false),
         ]
@@ -105,7 +105,7 @@ enum Test {
     struct TableSecond: DatabaseTable {
         static let tableName = ModelSecond.tableName
         static let columns: [DatabaseColumnInterface] = [
-            KeyColumn(ModelSecond.ColumnNames.id),
+            StringColumn(ModelSecond.ColumnNames.id),
             StringColumn(ModelSecond.ColumnNames.secondValue),
         ]
     }

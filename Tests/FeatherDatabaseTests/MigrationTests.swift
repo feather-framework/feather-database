@@ -18,5 +18,6 @@ final class MigrationTests: TestCase {
         try await Blog.Tag.Table.create(on: db)
         try await Blog.Category.Table.create(on: db)
         try await Blog.Post.Table.create(on: db)
+        try await Blog.PostTag.Table.create(on: db)
     }
 }

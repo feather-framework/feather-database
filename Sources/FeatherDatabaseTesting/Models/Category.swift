@@ -23,8 +23,8 @@ extension Blog {
             public static let columnNames = CodingKeys.self
 
             // MARK: - fields
-            let id: Key<Blog.Category>
-            let title: String
+            public let id: Key<Blog.Category>
+            public let title: String
 
             public init(
                 id: Key<Blog.Category>,
@@ -47,8 +47,11 @@ extension Blog {
         public enum Table: DatabaseTable {
             public static let tableName = Model.tableName
             public static let columns: [DatabaseColumnInterface] = [
-                KeyColumn(Model.ColumnNames.id),
+                StringColumn(Model.ColumnNames.id),
                 StringColumn(Model.ColumnNames.title),
+            ]
+            public static let constraints: [DatabaseConstraintInterface] = [
+                PrimaryKeyConstraint(Model.ColumnNames.id)
             ]
         }
     }

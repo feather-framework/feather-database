@@ -9,36 +9,33 @@ import FeatherDatabase
 
 extension Blog {
 
-    public enum Tag {
+    public enum PostTag {
 
         // MARK: - model
 
         public struct Model: DatabaseModel {
+
             public enum CodingKeys: String, DatabaseColumnName {
-                case id
-                case name
+                case postId = "post_id"
+                case tagId = "tag_id"
             }
-            public static let tableName = "tag"
+            public static let tableName = "post_tag"
             public static let columnNames = CodingKeys.self
 
             // MARK: - fields
-            public let id: Key<Blog.Tag>
-            public let name: String
+            public let postId: Key<Blog.Post>
+            public let tagId: Key<Blog.Tag>
 
-            public init(
-                id: Key<Blog.Tag>,
-                name: String
-            ) {
-                self.id = id
-                self.name = name
+            public init(postId: Key<Blog.Post>, tagId: Key<Blog.Tag>) {
+                self.postId = postId
+                self.tagId = tagId
             }
         }
 
         // MARK: - query
 
-        public enum Query: KeyedDatabaseQuery {
+        public enum Query: DatabaseQuery {
             public typealias Row = Model
-            public static let primaryKey = Row.CodingKeys.id
         }
 
         // MARK: - table
@@ -46,12 +43,17 @@ extension Blog {
         public enum Table: DatabaseTable {
             public static let tableName = Model.tableName
             public static let columns: [DatabaseColumnInterface] = [
-                StringColumn(Model.ColumnNames.id),
-                StringColumn(Model.ColumnNames.name),
+                StringColumn(Model.ColumnNames.postId),
+                StringColumn(Model.ColumnNames.tagId),
             ]
 
             public static let constraints: [DatabaseConstraintInterface] = [
-                PrimaryKeyConstraint(Model.ColumnNames.id)
+                PrimaryKeyConstraint(
+                    [
+                        Model.ColumnNames.postId,
+                        Model.ColumnNames.tagId,
+                    ]
+                )
             ]
         }
     }
