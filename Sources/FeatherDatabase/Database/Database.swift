@@ -5,7 +5,7 @@
 //  Created by Tibor Bodecs on 07/03/2024.
 //
 
-@preconcurrency import SQLKit
+import SQLKit
 
 public struct Database: Sendable {
 

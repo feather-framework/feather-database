@@ -21,10 +21,10 @@
     {
       "identity" : "sql-kit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vapor/sql-kit.git",
+      "location" : "https://github.com/vapor/sql-kit",
       "state" : {
-        "revision" : "b2f128cb62a3abfbb1e3b2893ff3ee69e70f4f0f",
-        "version" : "3.28.0"
+        "revision" : "cd0c5b7b4b61d6416f85964763f61c8967d093a5",
+        "version" : "3.29.1"
       }
     },
     {
@@ -39,10 +39,10 @@
     {
       "identity" : "sqlite-nio",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vapor/sqlite-nio.git",
+      "location" : "https://github.com/vapor/sqlite-nio",
       "state" : {
-        "revision" : "2102da7e204fa3b6eeac09a2d01b7aaa1f66c39a",
-        "version" : "1.8.7"
+        "revision" : "e79d223ab3705de4c1e8903961829b5d0098c820",
+        "version" : "1.8.8"
       }
     },
     {
@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "635b2589494c97e48c62514bc8b37ced762e0a62",
-        "version" : "2.63.0"
+        "revision" : "fc63f0cf4e55a4597407a9fc95b16a2bc44b4982",
+        "version" : "2.64.0"
       }
     },
     {

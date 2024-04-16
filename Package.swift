@@ -46,11 +46,5 @@ let package = Package(
                 .product(name: "SQLiteNIO", package: "sqlite-nio"),
             ]
         ),
-        .testTarget(
-            name: "FeatherDatabaseTestingTests",
-            dependencies: [
-                .target(name: "FeatherDatabaseTesting"),
-            ]
-        ),
     ]
 )

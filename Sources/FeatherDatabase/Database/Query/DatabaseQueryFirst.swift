@@ -27,7 +27,7 @@ extension DatabaseQueryFirst {
             try await sql
                 .select()
                 .from(Row.tableName)
-                .column("*")
+                .column(SQLColumn(SQLLiteral.all))
                 .applyFilter(filter)
                 .applyOrder(order)
                 .limit(1)

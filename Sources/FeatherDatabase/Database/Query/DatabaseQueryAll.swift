@@ -27,7 +27,7 @@ extension DatabaseQueryAll {
             try await sql
                 .select()
                 .from(Row.tableName)
-                .column("*")
+                .column(SQLColumn(SQLLiteral.all))
                 .applyFilter(filter)
                 .applyOrders(orders)
                 .all(decoding: Row.self)

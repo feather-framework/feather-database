@@ -35,7 +35,12 @@ extension DatabaseQueryJoinAll {
         try await db.run { sql in
             try await sql
                 .select()
-                .column(table: Row.tableName, column: "*")
+                .column(
+                    SQLColumn(
+                        SQLLiteral.all,
+                        table: SQLIdentifier(Row.tableName)
+                    )
+                )
                 .from(ConnectorModel.tableName)
                 .join(
                     Row.tableName,

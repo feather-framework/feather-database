@@ -25,7 +25,7 @@ extension KeyedDatabaseQueryGet {
             try await sql
                 .select()
                 .from(Row.tableName)
-                .column("*")
+                .column(SQLColumn(SQLLiteral.all))
                 .where(Self.primaryKey.sqlValue, .equal, SQLBind(value))
                 .limit(1)
                 .offset(0)
