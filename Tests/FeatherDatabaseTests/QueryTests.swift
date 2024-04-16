@@ -1,5 +1,7 @@
 import FeatherComponent
 import FeatherDatabase
+import FeatherDatabaseTesting
+import NanoID
 import XCTest
 
 extension Test.Model {
@@ -19,6 +21,27 @@ extension Test.ModelSecond {
         Test.ModelSecond(
             id: .init(rawValue: "id-\(i)"),
             secondValue: "value-\(i)"
+        )
+    }
+}
+
+extension Blog.Post.Model {
+
+    static func mock(_ i: Int) -> Blog.Post.Model {
+        .init(
+            id: NanoID.generateKey(),
+            slug: "slug-\(i)",
+            title: "title-\(i)"
+        )
+    }
+}
+
+extension Blog.Tag.Model {
+
+    static func mock(_ i: Int) -> Blog.Tag.Model {
+        .init(
+            id: NanoID.generateKey(),
+            name: "name-\(i)"
         )
     }
 }
@@ -586,37 +609,39 @@ final class QueryTests: TestCase {
         XCTAssertEqual(list1.items.count, 50)
     }
 
-    func testJoinAll() async throws {
+    func testJoin() async throws {
         let db = try await components.database().connection()
 
-        let testModels: [Test.Model] = (1...20).map { .mock($0) }
-        let testModelSeconds: [Test.ModelSecond] = (1...testModels.count)
-            .map { .mock($0) }
+        let posts: [Blog.Post.Model] = (0...20).map { .mock($0) }
+        let tags: [Blog.Tag.Model] = (0...20).map { .mock($0) }
+        let postsTags: [Blog.PostTag.Model] = (0...20)
+            .map {
+                .init(postId: posts[$0].id, tagId: tags[$0].id)
+            }
 
-        try await Test.Table.create(on: db)
-        try await Test.TableSecond.create(on: db)
-        try await Test.TableConnector.create(on: db)
+        try await Blog.Post.Table.create(on: db)
+        try await Blog.Tag.Table.create(on: db)
+        try await Blog.PostTag.Table.create(on: db)
 
-        try await Test.Query.insert(testModels, on: db)
-        try await Test.QuerySecond.insert(testModelSeconds, on: db)
+        try await Blog.Post.Query.insert(posts, on: db)
+        try await Blog.Tag.Query.insert(tags, on: db)
+        try await Blog.PostTag.Query.insert(postsTags, on: db)
 
-        for (index, element) in testModels.enumerated() {
-            try await Test.QueryConnector.insert(
-                .init(
-                    idModel: element.id,
-                    idModelSecond: testModelSeconds[index].id
+        for (index, element) in posts.enumerated() {
+            let res = try await Blog.PostTag.Query.join(
+                Blog.Tag.Model.self,
+                Blog.Tag.Model.columnNames.id,
+                Blog.PostTag.Model.columnNames.tagId,
+                filter: .init(
+                    column: Blog.PostTag.Model.columnNames.postId,
+                    operator: .equal,
+                    value: element.id
                 ),
                 on: db
             )
-        }
 
-        for (index, element) in testModels.enumerated() {
-            let res = try await Test.QuerySecondJointModel.joinAll(
-                referenceId: element.id,
-                on: db
-            )
             XCTAssertEqual(res.count, 1)
-            XCTAssertEqual(res[0].secondValue, "value-\(index+1)")
+            XCTAssertEqual(res[0].name, "name-\(index)")
         }
     }
 

@@ -7,52 +7,47 @@
 
 import SQLKit
 
-public protocol DatabaseQueryJoinAll: DatabaseQueryInterface {
-
-    associatedtype ReferenceModel: DatabaseModel
-    associatedtype ConnectorModel: DatabaseModel
-
-    static var referenceField: ReferenceModel.ColumnNames { get }
-    static var connectorField: ConnectorModel.ColumnNames { get }
-    static var valueField: Row.ColumnNames { get }
-
-    static func joinAll(
-        referenceId: Key<ReferenceModel>,
+public protocol DatabaseQueryJoin: DatabaseQueryInterface {
+    static func join<T: DatabaseModel>(
+        _ of: T.Type,
+        _ valueField: T.ColumnNames,
+        _ connectorField: Row.ColumnNames,
         orders: [DatabaseOrder<Row.ColumnNames>],
         filter: DatabaseFilter<Row.ColumnNames>?,
         on db: Database
-    ) async throws -> [Row]
+    ) async throws -> [T]
 }
 
-extension DatabaseQueryJoinAll {
+extension DatabaseQueryJoin {
 
-    public static func joinAll(
-        referenceId: Key<ReferenceModel>,
+    public static func join<T: DatabaseModel>(
+        _ of: T.Type,
+        _ valueField: T.ColumnNames,
+        _ connectorField: Row.ColumnNames,
         orders: [DatabaseOrder<Row.ColumnNames>] = [],
         filter: DatabaseFilter<Row.ColumnNames>? = nil,
         on db: Database
-    ) async throws -> [Row] {
+    ) async throws -> [T] {
         try await db.run { sql in
             try await sql
                 .select()
                 .column(
                     SQLColumn(
                         SQLLiteral.all,
-                        table: SQLIdentifier(Row.tableName)
+                        table: SQLIdentifier(T.tableName)
                     )
                 )
-                .from(ConnectorModel.tableName)
+                .from(Row.tableName)
                 .join(
-                    Row.tableName,
+                    T.tableName,
                     method: SQLJoinMethod.inner,
                     on: SQLColumn(valueField.rawValue),
                     .equal,
                     SQLColumn(connectorField.rawValue)
                 )
-                .where(referenceField.rawValue, .equal, SQLBind(referenceId))
                 .applyFilter(filter)
                 .applyOrders(orders)
-                .all(decoding: Row.self)
+                .all(decoding: T.self)
         }
     }
 }

@@ -34,7 +34,7 @@ extension Blog {
 
         // MARK: - query
 
-        public enum Query: DatabaseQuery {
+        public enum Query: DatabaseQuery, DatabaseQueryJoin {
             public typealias Row = Model
         }
 
