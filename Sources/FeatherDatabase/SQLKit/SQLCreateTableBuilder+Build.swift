@@ -11,6 +11,7 @@ extension SQLCreateTableBuilder {
 
     public func build(_ columns: [any DatabaseColumnInterface]) -> Self {
         var otherSelf = self
+
         // TODO: use SQLColumnDefinition
         for column in columns {
             otherSelf = otherSelf.column(
