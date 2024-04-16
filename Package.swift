@@ -20,7 +20,6 @@ let package = Package(
         .package(url: "https://github.com/vapor/sql-kit", from: "3.0.0"),
         .package(url: "https://github.com/binarybirds/swift-nanoid", from: "1.0.0"),
         .package(url: "https://github.com/vapor/sqlite-kit", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/sqlite-nio", from: "1.0.0"),
     ],
     targets: [
         .target(
@@ -42,8 +41,8 @@ let package = Package(
             name: "FeatherDatabaseTests",
             dependencies: [
                 .target(name: "FeatherDatabase"),
+                .target(name: "FeatherDatabaseTesting"),
                 .product(name: "SQLiteKit", package: "sqlite-kit"),
-                .product(name: "SQLiteNIO", package: "sqlite-nio"),
             ]
         ),
     ]

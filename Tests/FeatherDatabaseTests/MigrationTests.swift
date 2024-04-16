@@ -5,10 +5,8 @@
 //  Created by Tibor Bodecs on 2023. 01. 16..
 //
 
-import FeatherComponent
-import NIO
-import SQLKit
 import XCTest
+import FeatherDatabaseTesting
 
 final class MigrationTests: TestCase {
 
@@ -16,5 +14,9 @@ final class MigrationTests: TestCase {
         let db = try await components.database().connection()
 
         try await Test.Table.create(on: db)
+        
+        try await Blog.Tag.Table.create(on: db)
+        try await Blog.Category.Table.create(on: db)
+        try await Blog.Post.Table.create(on: db)
     }
 }
