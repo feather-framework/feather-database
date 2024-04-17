@@ -13,7 +13,8 @@ public protocol DatabaseModel: Codable {
 }
 
 public protocol KeyedDatabaseModel: DatabaseModel {
-    associatedtype P: DatabaseColumnName
-    
-    static var key: P { get }
+    associatedtype KeyType: Codable
+    associatedtype KeyName: DatabaseColumnName
+
+    static var keyName: KeyName { get }
 }

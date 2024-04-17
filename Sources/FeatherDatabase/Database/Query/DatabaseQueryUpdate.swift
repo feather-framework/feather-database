@@ -9,17 +9,17 @@ import SQLKit
 
 public protocol DatabaseQueryUpdate: DatabaseQueryInterface {
 
-//    static func update(
-//        _ value: Key<Row>,
-//        _ row: Row,
-//        on db: Database
-//    ) async throws
+    //    static func update(
+    //        _ value: Key<Row>,
+    //        _ row: Row,
+    //        on db: Database
+    //    ) async throws
 }
 
 extension DatabaseQueryUpdate where Row: KeyedDatabaseModel {
 
     public static func update(
-        _ value: Key<Row>,
+        _ value: Row.KeyType,
         _ row: Row,
         on db: Database
     ) async throws {
@@ -27,7 +27,7 @@ extension DatabaseQueryUpdate where Row: KeyedDatabaseModel {
             try await sql
                 .update(Row.tableName)
                 .set(model: row)
-                .where(Row.key.sqlValue, .equal, SQLBind(value))
+                .where(Row.keyName.sqlValue, .equal, SQLBind(value))
                 .run()
         }
     }

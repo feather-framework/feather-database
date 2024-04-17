@@ -39,8 +39,8 @@ extension DatabaseQueryFirst {
 
 extension DatabaseQueryFirst where Row: KeyedDatabaseModel {
 
-    public static func get<T>(
-        _ value: Key<T>,
+    public static func get(
+        _ value: Row.KeyType,
         on db: Database
     ) async throws -> Row? {
         try await db.run { sql in
@@ -48,7 +48,7 @@ extension DatabaseQueryFirst where Row: KeyedDatabaseModel {
                 .select()
                 .from(Row.tableName)
                 .column(SQLColumn(SQLLiteral.all))
-                .where(Row.key.sqlValue, .equal, SQLBind(value))
+                .where(Row.keyName.sqlValue, .equal, SQLBind(value))
                 .limit(1)
                 .offset(0)
                 .first(decoding: Row.self)

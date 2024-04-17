@@ -14,6 +14,7 @@ extension Blog {
         // MARK: - model
 
         public struct Model: KeyedDatabaseModel {
+            public typealias KeyType = Key<Blog.Category>
 
             public enum CodingKeys: String, DatabaseColumnName {
                 case id
@@ -21,14 +22,14 @@ extension Blog {
             }
             public static let tableName = "category"
             public static let columnNames = CodingKeys.self
-            public static let key = CodingKeys.id
+            public static let keyName = CodingKeys.id
 
             // MARK: - fields
-            public let id: Key<Blog.Category>
+            public let id: KeyType
             public let title: String
 
             public init(
-                id: Key<Blog.Category>,
+                id: KeyType,
                 title: String
             ) {
                 self.id = id

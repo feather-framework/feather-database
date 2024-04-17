@@ -33,14 +33,14 @@ extension DatabaseQueryDelete {
 extension DatabaseQueryDelete where Row: KeyedDatabaseModel {
 
     public static func delete(
-        _ value: Key<Row>,
+        _ value: Row.KeyType,
         on db: Database
     ) async throws {
         // TODO: call other delete
         try await db.run { sql in
             try await sql
                 .delete(from: Row.tableName)
-                .where(Row.key.sqlValue, .equal, value)
+                .where(Row.keyName.sqlValue, .equal, value)
                 .run()
         }
     }
