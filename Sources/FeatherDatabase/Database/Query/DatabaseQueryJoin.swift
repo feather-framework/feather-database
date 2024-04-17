@@ -9,11 +9,11 @@ import SQLKit
 
 public protocol DatabaseQueryJoin: DatabaseQueryInterface {
     static func join<T: DatabaseModel>(
-        _ of: T.Type,
-        _ valueField: T.ColumnNames,
-        _ connectorField: Row.ColumnNames,
-        orders: [DatabaseOrder<Row.ColumnNames>],
-        filter: DatabaseFilter<Row.ColumnNames>?,
+        _ res: T.Type,
+        join: (lhs: T.ColumnNames, rhs: Row.ColumnNames),
+        orders: [DatabaseOrder<T.ColumnNames>],
+        filter: DatabaseFilter<T.ColumnNames>?,
+        filterJoin: DatabaseFilter<Row.ColumnNames>?,
         on db: Database
     ) async throws -> [T]
 }
@@ -21,11 +21,11 @@ public protocol DatabaseQueryJoin: DatabaseQueryInterface {
 extension DatabaseQueryJoin {
 
     public static func join<T: DatabaseModel>(
-        _ of: T.Type,
-        _ valueField: T.ColumnNames,
-        _ connectorField: Row.ColumnNames,
-        orders: [DatabaseOrder<Row.ColumnNames>] = [],
-        filter: DatabaseFilter<Row.ColumnNames>? = nil,
+        _ res: T.Type,
+        join: (lhs: T.ColumnNames, rhs: Row.ColumnNames),
+        orders: [DatabaseOrder<T.ColumnNames>] = [],
+        filter: DatabaseFilter<T.ColumnNames>? = nil,
+        filterJoin: DatabaseFilter<Row.ColumnNames>? = nil,
         on db: Database
     ) async throws -> [T] {
         try await db.run { sql in
@@ -41,10 +41,11 @@ extension DatabaseQueryJoin {
                 .join(
                     T.tableName,
                     method: SQLJoinMethod.inner,
-                    on: SQLColumn(valueField.rawValue),
+                    on: SQLColumn(join.lhs.rawValue),
                     .equal,
-                    SQLColumn(connectorField.rawValue)
+                    SQLColumn(join.rhs.rawValue)
                 )
+                .applyFilter(filterJoin)
                 .applyFilter(filter)
                 .applyOrders(orders)
                 .all(decoding: T.self)

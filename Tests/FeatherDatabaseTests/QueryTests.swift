@@ -630,10 +630,23 @@ final class QueryTests: TestCase {
         for (index, element) in posts.enumerated() {
             let res = try await Blog.PostTag.Query.join(
                 Blog.Tag.Model.self,
-                Blog.Tag.Model.columnNames.id,
-                Blog.PostTag.Model.columnNames.tagId,
+                join: (
+                    .id,
+                    .tagId
+                ),
+                orders: [
+                    .init(
+                        column: .name,
+                        direction: .asc
+                    )
+                ],
                 filter: .init(
-                    column: Blog.PostTag.Model.columnNames.postId,
+                    column: .name,
+                    operator: .equal,
+                    value: "name-\(index)"
+                ),
+                filterJoin: .init(
+                    column: .postId,
                     operator: .equal,
                     value: element.id
                 ),
