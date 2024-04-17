@@ -7,12 +7,12 @@
 
 public protocol DatabaseQuery:
     DatabaseQueryInterface,
-    DatabaseQueryAll,
     DatabaseQueryCount,
     DatabaseQueryDelete,
-    DatabaseQueryFirst,
+    DatabaseQueryGet,
     DatabaseQueryInsert,
     DatabaseQueryList,
+    DatabaseQueryListAll,
     DatabaseQueryUpdate,
     DatabaseQueryJoin
 {

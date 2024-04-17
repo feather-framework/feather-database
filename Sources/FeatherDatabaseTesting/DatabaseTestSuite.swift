@@ -143,7 +143,7 @@ extension DatabaseTestSuite {
         )
         try await Blog.Tag.Query.insert(test2, on: db)
 
-        let res1 = try await Blog.Tag.Query.first(
+        let res1 = try await Blog.Tag.Query.getFirst(
             filter: .init(
                 column: .name,
                 operator: .in,
@@ -158,7 +158,7 @@ extension DatabaseTestSuite {
 
         XCTAssertEqual(test2.id, res1?.id)
 
-        let res2 = try await Blog.Tag.Query.first(
+        let res2 = try await Blog.Tag.Query.getFirst(
             filter: .init(
                 column: .name,
                 operator: .equal,
@@ -230,7 +230,7 @@ extension DatabaseTestSuite {
             on: db
         )
 
-        let all = try await Blog.Tag.Query.all(on: db)
+        let all = try await Blog.Tag.Query.listAll(on: db)
         XCTAssertEqual(all.count, Int(count1) + 1)
         XCTAssertEqual(all[0].id, models[5].id)
     }
@@ -239,10 +239,10 @@ extension DatabaseTestSuite {
         let models: [Blog.Tag.Model] = (1...50).map { .mock($0) }
         try await Blog.Tag.Query.insert(models, on: db)
 
-        let res1 = try await Blog.Tag.Query.all(on: db)
+        let res1 = try await Blog.Tag.Query.listAll(on: db)
         XCTAssertEqual(res1.count, 50)
 
-        let res2 = try await Blog.Tag.Query.all(
+        let res2 = try await Blog.Tag.Query.listAll(
             filter: .init(
                 column: .name,
                 operator: .in,
@@ -252,7 +252,7 @@ extension DatabaseTestSuite {
         )
         XCTAssertEqual(res2.count, 2)
 
-        let res3 = try await Blog.Tag.Query.all(
+        let res3 = try await Blog.Tag.Query.listAll(
             filter: .init(
                 column: .name,
                 operator: .equal,
@@ -267,10 +267,10 @@ extension DatabaseTestSuite {
         let models: [Blog.Tag.Model] = (1...50).map { .mock($0) }
         try await Blog.Tag.Query.insert(models, on: db)
 
-        let res1 = try await Blog.Tag.Query.all(on: db)
+        let res1 = try await Blog.Tag.Query.listAll(on: db)
         XCTAssertEqual(res1.count, 50)
 
-        let res2 = try await Blog.Tag.Query.all(
+        let res2 = try await Blog.Tag.Query.listAll(
             orders: [
                 .init(
                     column: .name,

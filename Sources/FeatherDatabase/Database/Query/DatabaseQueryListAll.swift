@@ -7,18 +7,18 @@
 
 import SQLKit
 
-public protocol DatabaseQueryAll: DatabaseQueryInterface {
+public protocol DatabaseQueryListAll: DatabaseQueryInterface {
 
-    static func all(
+    static func listAll(
         orders: [DatabaseOrder<Row.ColumnNames>],
         filter: DatabaseFilter<Row.ColumnNames>?,
         on db: Database
     ) async throws -> [Row]
 }
 
-extension DatabaseQueryAll {
+extension DatabaseQueryListAll {
 
-    public static func all(
+    public static func listAll(
         orders: [DatabaseOrder<Row.ColumnNames>] = [],
         filter: DatabaseFilter<Row.ColumnNames>? = nil,
         on db: Database

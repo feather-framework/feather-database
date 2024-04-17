@@ -7,18 +7,18 @@
 
 import SQLKit
 
-public protocol DatabaseQueryFirst: DatabaseQueryInterface {
+public protocol DatabaseQueryGet: DatabaseQueryInterface {
 
-    static func first(
+    static func getFirst(
         filter: DatabaseFilter<Row.ColumnNames>,
         order: DatabaseOrder<Row.ColumnNames>?,
         on db: Database
     ) async throws -> Row?
 }
 
-extension DatabaseQueryFirst {
+extension DatabaseQueryGet {
 
-    public static func first(
+    public static func getFirst(
         filter: DatabaseFilter<Row.ColumnNames>,
         order: DatabaseOrder<Row.ColumnNames>? = nil,
         on db: Database
@@ -37,13 +37,13 @@ extension DatabaseQueryFirst {
     }
 }
 
-extension DatabaseQueryFirst where Row: KeyedDatabaseModel {
+extension DatabaseQueryGet where Row: KeyedDatabaseModel {
 
     public static func get(
         _ value: Row.KeyType,
         on db: Database
     ) async throws -> Row? {
-        try await first(
+        try await getFirst(
             filter: .init(
                 column: .init(rawValue: Row.keyName.rawValue)!,
                 operator: .equal,
