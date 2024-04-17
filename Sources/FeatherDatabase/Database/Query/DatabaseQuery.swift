@@ -12,7 +12,8 @@ public protocol DatabaseQuery:
     DatabaseQueryDelete,
     DatabaseQueryFirst,
     DatabaseQueryInsert,
-    DatabaseQueryList
+    DatabaseQueryList,
+    DatabaseQueryUpdate
 {
 
 }

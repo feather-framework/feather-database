@@ -11,3 +11,9 @@ public protocol DatabaseModel: Codable {
     static var tableName: String { get }
     static var columnNames: ColumnNames.Type { get }
 }
+
+public protocol KeyedDatabaseModel: DatabaseModel {
+    associatedtype P: DatabaseColumnName
+    
+    static var key: P { get }
+}

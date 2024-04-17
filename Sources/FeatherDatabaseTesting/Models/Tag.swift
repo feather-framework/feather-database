@@ -13,13 +13,15 @@ extension Blog {
 
         // MARK: - model
 
-        public struct Model: DatabaseModel {
+        public struct Model: KeyedDatabaseModel {
+
             public enum CodingKeys: String, DatabaseColumnName {
                 case id
                 case name
             }
             public static let tableName = "tag"
             public static let columnNames = CodingKeys.self
+            public static let key = CodingKeys.id
 
             // MARK: - fields
             public let id: Key<Blog.Tag>
@@ -36,9 +38,8 @@ extension Blog {
 
         // MARK: - query
 
-        public enum Query: KeyedDatabaseQuery {
+        public enum Query: DatabaseQuery {
             public typealias Row = Model
-            public static let primaryKey = Row.CodingKeys.id
         }
 
         // MARK: - table

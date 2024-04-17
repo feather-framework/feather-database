@@ -7,16 +7,16 @@
 //
 import SQLKit
 
-public protocol KeyedDatabaseQueryUpdate: KeyedDatabaseQueryInterface {
+public protocol DatabaseQueryUpdate: DatabaseQueryInterface {
 
-    static func update(
-        _ value: Key<Row>,
-        _ row: Row,
-        on db: Database
-    ) async throws
+//    static func update(
+//        _ value: Key<Row>,
+//        _ row: Row,
+//        on db: Database
+//    ) async throws
 }
 
-extension KeyedDatabaseQueryUpdate {
+extension DatabaseQueryUpdate where Row: KeyedDatabaseModel {
 
     public static func update(
         _ value: Key<Row>,
@@ -27,7 +27,7 @@ extension KeyedDatabaseQueryUpdate {
             try await sql
                 .update(Row.tableName)
                 .set(model: row)
-                .where(Self.primaryKey.sqlValue, .equal, SQLBind(value))
+                .where(Row.key.sqlValue, .equal, SQLBind(value))
                 .run()
         }
     }

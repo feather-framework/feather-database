@@ -29,3 +29,19 @@ extension DatabaseQueryDelete {
         }
     }
 }
+
+extension DatabaseQueryDelete where Row: KeyedDatabaseModel {
+
+    public static func delete(
+        _ value: Key<Row>,
+        on db: Database
+    ) async throws {
+        // TODO: call other delete
+        try await db.run { sql in
+            try await sql
+                .delete(from: Row.tableName)
+                .where(Row.key.sqlValue, .equal, value)
+                .run()
+        }
+    }
+}
