@@ -36,12 +36,13 @@ extension DatabaseQueryDelete where Row: KeyedDatabaseModel {
         _ value: Row.KeyType,
         on db: Database
     ) async throws {
-        // TODO: call other delete
-        try await db.run { sql in
-            try await sql
-                .delete(from: Row.tableName)
-                .where(Row.keyName.sqlValue, .equal, value)
-                .run()
-        }
+        try await delete(
+            filter: .init(
+                column: .init(rawValue: Row.keyName.rawValue)!,
+                operator: .equal,
+                value: value
+            ),
+            on: db
+        )
     }
 }

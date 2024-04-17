@@ -9,14 +9,14 @@ import FeatherDatabase
 import NanoID
 import XCTest
 
-/// database test suit error
+/// database test suit error.
 public struct DatabaseTestSuiteError: Error {
 
-    /// function
+    /// function.
     public let function: String
-    /// line
+    /// line.
     public let line: Int
-    /// error
+    /// error.
     public let error: Error?
 
     init(
@@ -30,17 +30,17 @@ public struct DatabaseTestSuiteError: Error {
     }
 }
 
-/// database test suite
+/// database test suite.
 public struct DatabaseTestSuite {
 
     let component: DatabaseComponent
 
-    /// mail test suite init
+    /// database test suite init.
     public init(_ component: DatabaseComponent) {
         self.component = component
     }
 
-    /// test all mail sending
+    /// test all database sending.
     public func testAll() async throws {
         do {
             let db = try await component.connection()
