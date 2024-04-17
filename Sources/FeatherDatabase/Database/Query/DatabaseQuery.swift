@@ -13,7 +13,8 @@ public protocol DatabaseQuery:
     DatabaseQueryFirst,
     DatabaseQueryInsert,
     DatabaseQueryList,
-    DatabaseQueryUpdate
+    DatabaseQueryUpdate,
+    DatabaseQueryJoin
 {
 
 }

@@ -10,23 +10,37 @@ import SQLKit
 extension Array {
 
     fileprivate func chunked(into size: Int) -> [[Element]] {
-        stride(from: 0, to: count, by: size)
-            .map {
-                Array(self[$0..<Swift.min($0 + size, count)])
-            }
+        stride(
+            from: 0,
+            to: count,
+            by: size
+        )
+        .map {
+            Array(self[$0..<Swift.min($0 + size, count)])
+        }
     }
 }
 
 public protocol DatabaseQueryInsert: DatabaseQueryInterface {
 
-    static func insert(_ row: Row, on db: Database) async throws
-    static func insert(_ rows: [Row], chunkSize: Int, on db: Database)
-        async throws
+    static func insert(
+        _ row: Row,
+        on db: Database
+    ) async throws
+
+    static func insert(
+        _ rows: [Row],
+        chunkSize: Int,
+        on db: Database
+    ) async throws
 }
 
 extension DatabaseQueryInsert {
 
-    public static func insert(_ row: Row, on db: Database) async throws {
+    public static func insert(
+        _ row: Row,
+        on db: Database
+    ) async throws {
         try await insert([row], on: db)
     }
 

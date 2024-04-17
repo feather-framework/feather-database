@@ -43,15 +43,13 @@ extension DatabaseQueryFirst where Row: KeyedDatabaseModel {
         _ value: Row.KeyType,
         on db: Database
     ) async throws -> Row? {
-        try await db.run { sql in
-            try await sql
-                .select()
-                .from(Row.tableName)
-                .column(SQLColumn(SQLLiteral.all))
-                .where(Row.keyName.sqlValue, .equal, SQLBind(value))
-                .limit(1)
-                .offset(0)
-                .first(decoding: Row.self)
-        }
+        try await first(
+            filter: .init(
+                column: .init(rawValue: Row.keyName.rawValue)!,
+                operator: .equal,
+                value: value
+            ),
+            on: db
+        )
     }
 }
