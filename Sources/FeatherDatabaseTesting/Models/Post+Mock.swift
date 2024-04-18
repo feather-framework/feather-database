@@ -13,7 +13,8 @@ extension Blog.Post.Model {
         .init(
             id: NanoID.generateKey(),
             slug: "slug-\(i)",
-            title: "title-\(i)"
+            title: "title-\(i)",
+            published: i % 2 == 0
         )
     }
 }
