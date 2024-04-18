@@ -633,10 +633,8 @@ extension DatabaseTestSuite {
             let res = try await Blog.PostTag.Query.join(
                 Blog.Tag.Model.self,
                 join: .init(
-                    lhs: .id,
-                    rhs: .tagId,
-                    method: .inner,
-                    op: .equal,
+                    column: .id,
+                    with: .tagId,
                     filter: .init(
                         column: .postId,
                         operator: .equal,
@@ -679,8 +677,8 @@ extension DatabaseTestSuite {
             let res = try await Blog.PostTag.Query.join(
                 Blog.Post.Model.self,
                 join: .init(
-                    lhs: .id,
-                    rhs: .postId,
+                    column: .id,
+                    with: .postId,
                     method: .inner,
                     op: .equal,
                     filter: .init(

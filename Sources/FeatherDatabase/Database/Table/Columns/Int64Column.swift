@@ -2,12 +2,12 @@
 //  File.swift
 //
 //
-//  Created by Tibor Bodecs on 05/04/2024.
+//  Created by Tibor Bodecs on 18/04/2024.
 //
 
 import SQLKit
 
-public struct DateColumn: DatabaseColumnInterface {
+public struct Int64Column: DatabaseColumnInterface {
 
     public let type: SQLDataType
     public let name: any DatabaseColumnName
@@ -17,7 +17,7 @@ public struct DateColumn: DatabaseColumnInterface {
         _ name: any DatabaseColumnName,
         isMandatory: Bool = true
     ) {
-        self.type = .real
+        self.type = .bigint
         self.name = name
         self.constraints = isMandatory ? [.notNull] : []
     }
