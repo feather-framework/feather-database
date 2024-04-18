@@ -29,7 +29,7 @@ extension DatabaseQueryList {
                 .column(SQLFunction("COUNT", args: SQLLiteral.all), as: "count")
                 .applyFilter(query.filter)
                 .applyOrders(query.orders)
-                .first(decodingColumn: "count", as: UInt.self) ?? 0
+                .first(decodingColumn: "count", as: Int.self) ?? 0
 
             let items =
                 try await sql
@@ -41,7 +41,7 @@ extension DatabaseQueryList {
                 .applyPage(query.page)
                 .all(decoding: Row.self)
 
-            return .init(items: items, total: total)
+            return .init(items: items, total: UInt(total))
         }
     }
 }
