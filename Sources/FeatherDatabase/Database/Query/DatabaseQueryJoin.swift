@@ -39,9 +39,9 @@ extension DatabaseQueryJoin {
                 .join(
                     T.tableName,
                     method: join.method,
-                    on: SQLColumn(join.column.rawValue),
+                    on: SQLColumn(join.column.rawValue, table: T.tableName),
                     join.op,
-                    SQLColumn(join.otherColumn.rawValue)
+                    SQLColumn(join.otherColumn.rawValue, table: Row.tableName)
                 )
                 .applyFilter(join.filter)
                 .applyFilter(filter)

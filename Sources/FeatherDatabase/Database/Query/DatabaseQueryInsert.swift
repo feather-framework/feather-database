@@ -5,21 +5,8 @@
 //  Created by Tibor Bodecs on 06/01/2024.
 //
 
+import Algorithms
 import SQLKit
-
-extension Array {
-
-    fileprivate func chunked(into size: Int) -> [[Element]] {
-        stride(
-            from: 0,
-            to: count,
-            by: size
-        )
-        .map {
-            Array(self[$0..<Swift.min($0 + size, count)])
-        }
-    }
-}
 
 public protocol DatabaseQueryInsert: DatabaseQueryInterface {
 
@@ -50,10 +37,10 @@ extension DatabaseQueryInsert {
         on db: Database
     ) async throws {
         try await db.run { sql in
-            for items in rows.chunked(into: chunkSize) {
+            for items in rows.chunks(ofCount: chunkSize) {
                 try await sql
                     .insert(into: Row.tableName)
-                    .models(items, nilEncodingStrategy: .asNil)
+                    .models(Array(items), nilEncodingStrategy: .asNil)
                     .run()
             }
         }

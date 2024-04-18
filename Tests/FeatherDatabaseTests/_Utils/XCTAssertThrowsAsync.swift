@@ -11,8 +11,8 @@ func XCTAssertThrowsAsync<E: Error>(
     _ expression: () async throws -> Void,
     _: E.Type,
     _ errorBlock: ((E) async throws -> Void)? = nil,
-    _ message: String,
-    file: StaticString = #file,
+    _ message: @autoclosure () -> String,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) async throws {
     do {
@@ -22,6 +22,6 @@ func XCTAssertThrowsAsync<E: Error>(
         try await errorBlock?(error)
     }
     catch {
-        XCTFail(message, file: file, line: line)
+        XCTFail(message(), file: file, line: line)
     }
 }

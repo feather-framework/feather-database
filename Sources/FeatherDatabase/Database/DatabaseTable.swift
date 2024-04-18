@@ -29,6 +29,6 @@ extension DatabaseTable {
     }
 
     public static func drop(on db: Database) async throws {
-        try await db.sqlDatabase.drop(table: tableName).run()
+        try await db.sqlDatabase.drop(table: tableName).ifExists().run()
     }
 }
