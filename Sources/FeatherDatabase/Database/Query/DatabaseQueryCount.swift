@@ -8,7 +8,7 @@
 import SQLKit
 
 public protocol DatabaseQueryCount: DatabaseQueryInterface {
-    
+
     static func count(
         filter: DatabaseFilter<Row.ColumnNames>?,
         on db: Database
@@ -16,13 +16,14 @@ public protocol DatabaseQueryCount: DatabaseQueryInterface {
 }
 
 extension DatabaseQueryCount {
-    
+
     public static func count(
         filter: DatabaseFilter<Row.ColumnNames>? = nil,
         on db: Database
     ) async throws -> UInt {
         try await db.run { sql in
-            let value = try await sql
+            let value =
+                try await sql
                 .select()
                 .from(Row.tableName)
                 .column(
