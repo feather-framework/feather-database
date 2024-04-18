@@ -29,8 +29,7 @@ extension DatabaseQueryList {
                 .column(SQLFunction("COUNT"), as: "count")
                 .applyFilter(query.filter)
                 .applyOrders(query.orders)
-                .first(decoding: RowCount.self)?
-                .count ?? 0
+                .first(decodingColumn: "count", as: UInt.self) ?? 0
 
             let items =
                 try await sql

@@ -27,8 +27,7 @@ extension DatabaseQueryCount {
                 .from(Row.tableName)
                 .column(SQLFunction("COUNT"), as: "count")
                 .applyFilter(filter)
-                .first(decoding: RowCount.self)?
-                .count ?? 0
+                .first(decodingColumn: "count", as: UInt.self) ?? 0
         }
     }
 }
