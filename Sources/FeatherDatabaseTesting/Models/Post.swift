@@ -20,6 +20,7 @@ extension Blog {
                 case id
                 case slug
                 case title
+                case published
             }
             public static let tableName = "post"
             public static let columnNames = CodingKeys.self
@@ -29,15 +30,18 @@ extension Blog {
             public let id: KeyType
             public let slug: String
             public let title: String
+            public let published: Bool
 
             public init(
                 id: KeyType,
                 slug: String,
-                title: String
+                title: String,
+                published: Bool
             ) {
                 self.id = id
                 self.slug = slug
                 self.title = title
+                self.published = published
             }
         }
 
@@ -55,6 +59,7 @@ extension Blog {
                 StringColumn(Model.ColumnNames.id),
                 StringColumn(Model.ColumnNames.slug),
                 StringColumn(Model.ColumnNames.title),
+                BoolColumn(Model.ColumnNames.published),
             ]
 
             public static let constraints: [DatabaseConstraintInterface] = [

@@ -59,7 +59,8 @@ public struct DatabaseTestSuite {
                 testListOrder,
                 testList,
                 testListWithoutPaging,
-                testJoin,
+                testJoinTag,
+                testJoinPost,
             ]
 
             for test in tests {
@@ -615,7 +616,7 @@ extension DatabaseTestSuite {
         XCTAssertEqual(list1.items.count, 50)
     }
 
-    public func testJoin(_ db: Database) async throws {
+    public func testJoinTag(_ db: Database) async throws {
 
         let posts: [Blog.Post.Model] = (0...20).map { .mock($0) }
         let tags: [Blog.Tag.Model] = (0...20).map { .mock($0) }
@@ -631,9 +632,16 @@ extension DatabaseTestSuite {
         for (index, element) in posts.enumerated() {
             let res = try await Blog.PostTag.Query.join(
                 Blog.Tag.Model.self,
-                join: (
-                    .id,
-                    .tagId
+                join: .init(
+                    lhs: .id,
+                    rhs: .tagId,
+                    method: .inner,
+                    op: .equal,
+                    filter: .init(
+                        column: .postId,
+                        operator: .equal,
+                        value: element.id
+                    )
                 ),
                 orders: [
                     .init(
@@ -646,16 +654,58 @@ extension DatabaseTestSuite {
                     operator: .equal,
                     value: "name-\(index)"
                 ),
-                filterJoin: .init(
-                    column: .postId,
-                    operator: .equal,
-                    value: element.id
-                ),
                 on: db
             )
 
             XCTAssertEqual(res.count, 1)
             XCTAssertEqual(res[0].name, "name-\(index)")
+        }
+    }
+
+    public func testJoinPost(_ db: Database) async throws {
+
+        let posts: [Blog.Post.Model] = (0...20).map { .mock($0) }
+        let tags: [Blog.Tag.Model] = (0...20).map { .mock($0) }
+        let postsTags: [Blog.PostTag.Model] = (0...20)
+            .map {
+                .init(postId: posts[$0].id, tagId: tags[$0].id)
+            }
+
+        try await Blog.Post.Query.insert(posts, on: db)
+        try await Blog.Tag.Query.insert(tags, on: db)
+        try await Blog.PostTag.Query.insert(postsTags, on: db)
+
+        for (index, element) in tags.enumerated() {
+            let res = try await Blog.PostTag.Query.join(
+                Blog.Post.Model.self,
+                join: .init(
+                    lhs: .id,
+                    rhs: .postId,
+                    method: .inner,
+                    op: .equal,
+                    filter: .init(
+                        column: .tagId,
+                        operator: .equal,
+                        value: element.id
+                    )
+                ),
+                orders: [
+                    .init(
+                        column: .title,
+                        direction: .asc
+                    )
+                ],
+                filter: .init(
+                    column: .title,
+                    operator: .equal,
+                    value: "title-\(index)"
+                ),
+                on: db
+            )
+
+            XCTAssertEqual(res.count, 1)
+            XCTAssertEqual(res[0].title, "title-\(index)")
+            XCTAssertEqual(res[0].published, index % 2 == 0)
         }
     }
 
