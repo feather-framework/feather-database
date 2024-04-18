@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "async-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/async-kit.git",
+      "state" : {
+        "revision" : "7ece208cd401687641c88367a00e3ea2b04311f1",
+        "version" : "1.19.0"
+      }
+    },
+    {
       "identity" : "feather-component",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/feather-framework/feather-component",
@@ -12,10 +21,37 @@
     {
       "identity" : "sql-kit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vapor/sql-kit.git",
+      "location" : "https://github.com/vapor/sql-kit",
       "state" : {
-        "revision" : "b2f128cb62a3abfbb1e3b2893ff3ee69e70f4f0f",
-        "version" : "3.28.0"
+        "revision" : "cd0c5b7b4b61d6416f85964763f61c8967d093a5",
+        "version" : "3.29.1"
+      }
+    },
+    {
+      "identity" : "sqlite-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/sqlite-kit",
+      "state" : {
+        "revision" : "e9fd69b54b04acf9ea94d3ba174195d20a07370f",
+        "version" : "4.4.2"
+      }
+    },
+    {
+      "identity" : "sqlite-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/sqlite-nio",
+      "state" : {
+        "revision" : "e79d223ab3705de4c1e8903961829b5d0098c820",
+        "version" : "1.8.8"
+      }
+    },
+    {
+      "identity" : "swift-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-algorithms.git",
+      "state" : {
+        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
+        "version" : "1.2.0"
       }
     },
     {
@@ -46,12 +82,30 @@
       }
     },
     {
+      "identity" : "swift-nanoid",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/binarybirds/swift-nanoid",
+      "state" : {
+        "revision" : "a7ec5dde163e607ea5fbd473eb5a58908d043eed",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "swift-nio",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
         "revision" : "fc63f0cf4e55a4597407a9fc95b16a2bc44b4982",
         "version" : "2.64.0"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics.git",
+      "state" : {
+        "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
+        "version" : "1.0.2"
       }
     },
     {

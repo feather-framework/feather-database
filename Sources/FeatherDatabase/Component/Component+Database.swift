@@ -8,8 +8,8 @@
 import FeatherComponent
 import Logging
 
-/// Relational database component identfier.
-public enum RelationalDatabaseComponentID: ComponentID {
+///  database component identfier.
+public enum DatabaseComponentID: ComponentID {
 
     /// Default storage component identifier.
     case `default`
@@ -21,9 +21,9 @@ public enum RelationalDatabaseComponentID: ComponentID {
     public var rawId: String {
         switch self {
         case .default:
-            return "relational-database-component-id"
+            return "database-component-id"
         case .custom(let value):
-            return "\(value)-relational-database-component-id"
+            return "\(value)-database-component-id"
         }
     }
 }
@@ -31,26 +31,25 @@ public enum RelationalDatabaseComponentID: ComponentID {
 extension ComponentRegistry {
 
     /// Add a new storage component using a context.
-    public func addRelationalDatabase(
+    public func addDatabase(
         _ context: ComponentContext,
-        id: RelationalDatabaseComponentID = .default
+        id: DatabaseComponentID = .default
     ) async throws {
         try await add(context, id: id)
     }
 
     /// Returns a storage component by a given id.
-    public func relationalDatabase(
-        _ id: RelationalDatabaseComponentID = .default,
+    public func database(
+        _ id: DatabaseComponentID = .default,
         logger: Logger? = nil
-    ) throws -> RelationalDatabaseComponent {
+    ) throws -> DatabaseComponent {
         guard
-            let storage = try get(id, logger: logger)
-                as? RelationalDatabaseComponent
+            let database = try get(id, logger: logger) as? DatabaseComponent
         else {
             fatalError(
-                "Relational database component not found, call `addRelationalDatabase()` to register."
+                "Database component not found, call `addDatabase()` to register."
             )
         }
-        return storage
+        return database
     }
 }

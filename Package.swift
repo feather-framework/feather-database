@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "feather-relational-database",
+    name: "feather-database",
     platforms: [
         .macOS(.v13),
         .iOS(.v16),
@@ -11,39 +11,40 @@ let package = Package(
         .visionOS(.v1),
     ],
     products: [
-        .library(name: "FeatherRelationalDatabase", targets: ["FeatherRelationalDatabase"]),
-        .library(name: "FeatherRelationalDatabaseTesting", targets: ["FeatherRelationalDatabaseTesting"]),
+        .library(name: "FeatherDatabase", targets: ["FeatherDatabase"]),
+        .library(name: "FeatherDatabaseTesting", targets: ["FeatherDatabaseTesting"]),
     ],
     dependencies: [
         .package(url: "https://github.com/feather-framework/feather-component", .upToNextMinor(from: "0.5.0")),
         .package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
         .package(url: "https://github.com/vapor/sql-kit", from: "3.0.0"),
+        .package(url: "https://github.com/binarybirds/swift-nanoid", from: "1.0.0"),
+        .package(url: "https://github.com/vapor/sqlite-kit", from: "4.0.0"),
     ],
     targets: [
         .target(
-            name: "FeatherRelationalDatabase",
+            name: "FeatherDatabase",
             dependencies: [
                 .product(name: "FeatherComponent", package: "feather-component"),
                 .product(name: "Logging", package: "swift-log"),
+                .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "SQLKit", package: "sql-kit"),
+                .product(name: "NanoID", package: "swift-nanoid"),
             ]
         ),
         .target(
-            name: "FeatherRelationalDatabaseTesting",
+            name: "FeatherDatabaseTesting",
             dependencies: [
-                .target(name: "FeatherRelationalDatabase"),
+                .target(name: "FeatherDatabase"),
             ]
         ),
         .testTarget(
-            name: "FeatherRelationalDatabaseTests",
+            name: "FeatherDatabaseTests",
             dependencies: [
-                .target(name: "FeatherRelationalDatabase"),
-            ]
-        ),
-        .testTarget(
-            name: "FeatherRelationalDatabaseTestingTests",
-            dependencies: [
-                .target(name: "FeatherRelationalDatabaseTesting"),
+                .target(name: "FeatherDatabase"),
+                .target(name: "FeatherDatabaseTesting"),
+                .product(name: "SQLiteKit", package: "sqlite-kit"),
             ]
         ),
     ]

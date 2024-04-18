@@ -9,7 +9,7 @@ import FeatherComponent
 import SQLKit
 
 /// The sql-database component protocol.
-public protocol RelationalDatabaseComponent: Component {
+public protocol DatabaseComponent: Component {
 
-    func connection() async throws -> SQLKit.SQLDatabase
+    func connection() async throws -> Database
 }
