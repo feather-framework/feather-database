@@ -25,7 +25,7 @@ extension DatabaseQueryCount {
             try await sql
                 .select()
                 .from(Row.tableName)
-                .column(SQLFunction("COUNT"), as: "count")
+                .column(SQLFunction("COUNT", args: SQLLiteral.all), as: "count")
                 .applyFilter(filter)
                 .first(decodingColumn: "count", as: UInt.self) ?? 0
         }
