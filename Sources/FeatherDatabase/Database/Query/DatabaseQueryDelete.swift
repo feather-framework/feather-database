@@ -38,7 +38,7 @@ extension DatabaseQueryDelete where Row: KeyedDatabaseModel {
     ) async throws {
         try await delete(
             filter: .init(
-                column: .init(rawValue: Row.keyName.rawValue)!,
+                column: Row.keyName,
                 operator: .equal,
                 value: value
             ),

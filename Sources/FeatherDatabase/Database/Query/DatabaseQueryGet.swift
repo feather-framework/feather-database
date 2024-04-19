@@ -45,7 +45,7 @@ extension DatabaseQueryGet where Row: KeyedDatabaseModel {
     ) async throws -> Row? {
         try await getFirst(
             filter: .init(
-                column: .init(rawValue: Row.keyName.rawValue)!,
+                column: Row.keyName,
                 operator: .equal,
                 value: value
             ),
