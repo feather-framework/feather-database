@@ -5,7 +5,12 @@
 //  Created by Tibor Bodecs on 05/02/2024.
 //
 
+public protocol KeyTypeAccessor<T>: Codable {
+    associatedtype T
+}
+
 public struct Key<T>:
+    KeyTypeAccessor,
     Sendable,
     Codable,
     Equatable,

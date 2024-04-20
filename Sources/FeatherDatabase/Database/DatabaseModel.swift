@@ -13,7 +13,7 @@ public protocol DatabaseModel: Codable {
 }
 
 public protocol KeyedDatabaseModel: DatabaseModel {
-    associatedtype KeyType: Codable
+    associatedtype KeyType: KeyTypeAccessor
 
     static var keyName: ColumnNames { get }
 }
