@@ -13,12 +13,27 @@ public protocol DatabaseQueryDelete: DatabaseQueryInterface {
         filter: DatabaseFilter<Row.ColumnNames>,
         on db: Database
     ) async throws
+
+    static func delete(
+        filter: DatabaseTableFilter<Row.ColumnNames>,
+        on db: Database
+    ) async throws
 }
 
 extension DatabaseQueryDelete {
 
     public static func delete(
         filter: DatabaseFilter<Row.ColumnNames>,
+        on db: Database
+    ) async throws {
+        try await delete(
+            filter: .init(groups: [.init(columns: [filter])]),
+            on: db
+        )
+    }
+
+    public static func delete(
+        filter: DatabaseTableFilter<Row.ColumnNames>,
         on db: Database
     ) async throws {
         try await db.run { sql in

@@ -46,3 +46,63 @@ extension SQLDeleteBuilder {
         )
     }
 }
+
+extension SQLDeleteBuilder {
+
+    func applyFilter(
+        _ filter: (any DatabaseTableFilterInterface)?
+    ) -> Self {
+        guard let filter else {
+            return self
+        }
+        var res = self
+        for group in filter.groups {
+            switch filter.relation {
+            case .and:
+                res = res.where { p in
+                    var p = p
+                    for filter in group.columns {
+                        switch group.relation {
+                        case .and:
+                            p = p.where(
+                                filter.column.sqlValue,
+                                filter.operator,
+                                filter.value
+                            )
+                        case .or:
+                            p = p.orWhere(
+                                filter.column.sqlValue,
+                                filter.operator,
+                                filter.value
+                            )
+                        }
+                    }
+                    return p
+                }
+            case .or:
+                res = res.orWhere { p in
+                    var p = p
+                    for filter in group.columns {
+                        switch group.relation {
+                        case .and:
+                            p = p.where(
+                                filter.column.sqlValue,
+                                filter.operator,
+                                filter.value
+                            )
+                        case .or:
+                            p = p.orWhere(
+                                filter.column.sqlValue,
+                                filter.operator,
+                                filter.value
+                            )
+                        }
+                    }
+                    return p
+                }
+            }
+
+        }
+        return res
+    }
+}

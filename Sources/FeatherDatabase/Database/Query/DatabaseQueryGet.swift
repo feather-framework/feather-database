@@ -14,12 +14,30 @@ public protocol DatabaseQueryGet: DatabaseQueryInterface {
         order: DatabaseOrder<Row.ColumnNames>?,
         on db: Database
     ) async throws -> Row?
+
+    static func getFirst(
+        filter: DatabaseTableFilter<Row.ColumnNames>,
+        order: DatabaseOrder<Row.ColumnNames>?,
+        on db: Database
+    ) async throws -> Row?
 }
 
 extension DatabaseQueryGet {
 
     public static func getFirst(
         filter: DatabaseFilter<Row.ColumnNames>,
+        order: DatabaseOrder<Row.ColumnNames>? = nil,
+        on db: Database
+    ) async throws -> Row? {
+        try await getFirst(
+            filter: .init(groups: [.init(columns: [filter])]),
+            order: order,
+            on: db
+        )
+    }
+
+    public static func getFirst(
+        filter: DatabaseTableFilter<Row.ColumnNames>,
         order: DatabaseOrder<Row.ColumnNames>? = nil,
         on db: Database
     ) async throws -> Row? {
