@@ -13,12 +13,31 @@ public protocol DatabaseQueryCount: DatabaseQueryInterface {
         filter: DatabaseFilter<Row.ColumnNames>?,
         on db: Database
     ) async throws -> UInt
+
+    static func count(
+        filter: DatabaseTableFilter<Row.ColumnNames>,
+        on db: Database
+    ) async throws -> UInt
 }
 
 extension DatabaseQueryCount {
 
     public static func count(
         filter: DatabaseFilter<Row.ColumnNames>? = nil,
+        on db: Database
+    ) async throws -> UInt {
+        if let filter {
+            return try await count(
+                filter: .init(groups: [.init(columns: [filter])]),
+                on: db
+            )
+        }
+
+        return try await count(filter: .init(groups: []), on: db)
+    }
+
+    public static func count(
+        filter: DatabaseTableFilter<Row.ColumnNames>,
         on db: Database
     ) async throws -> UInt {
         try await db.run { sql in

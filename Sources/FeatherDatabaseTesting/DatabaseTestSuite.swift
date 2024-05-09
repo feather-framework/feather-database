@@ -48,6 +48,7 @@ public struct DatabaseTestSuite {
             let tests: [(Database) async throws -> Void] = [
                 testInsert,
                 testCount,
+                testCountFilterGroup,
                 testGet,
                 testFirst,
                 testUpdateOne,
@@ -116,6 +117,26 @@ extension DatabaseTestSuite {
             on: db
         )
         XCTAssertEqual(count3, 11)
+    }
+
+    public func testCountFilterGroup(_ db: Database) async throws {
+        let models: [Blog.Tag.Model] = (1...50)
+            .map {
+                .mock($0)
+            }
+        try await Blog.Tag.Query.insert(models, on: db)
+
+        let count = try await Blog.Tag.Query.count(
+            filter: .init(groups: [
+                .init(columns: [
+                    .init(column: .name, operator: .like, value: ["name-1%"]),
+                    .init(column: .notes, operator: .like, value: ["notes-1%"]),
+                ])
+            ]),
+            on: db
+        )
+
+        XCTAssertEqual(count, 11)
     }
 
     public func testGet(_ db: Database) async throws {
