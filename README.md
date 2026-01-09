@@ -13,7 +13,7 @@ Use at your own risk.
 To add a dependency on the package, declare it in your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-database", .upToNextMinor(from: "0.4.0")),
+.package(url: "https://github.com/feather-framework/feather-database", .upToNextMinor(from: "0.5.0")),
 ```
 
 and to your application target, add `FeatherDatabase` to your dependencies:
@@ -25,13 +25,13 @@ and to your application target, add `FeatherDatabase` to your dependencies:
 Example `Package.swift` file with `FeatherDatabase` as a dependency:
 
 ```swift
-// swift-tools-version:5.9
+// swift-tools-version:6.2
 import PackageDescription
 
 let package = Package(
     name: "my-application",
     dependencies: [
-        .package(url: "https://github.com/feather-framework/feather-database", .upToNextMinor(from: "0.4.0")),
+        .package(url: "https://github.com/feather-framework/feather-database", .upToNextMinor(from: "0.5.0")),
     ],
     targets: [
         .target(name: "MyApplication", dependencies: [
@@ -43,4 +43,3 @@ let package = Package(
     ]
 )
 ```
-
