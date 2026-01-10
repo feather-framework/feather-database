@@ -7,6 +7,7 @@
 
 import Testing
 
+@testable import FeatherDatabase
 @testable import FeatherDatabaseTesting
 
 @Suite

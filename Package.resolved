@@ -1,6 +1,15 @@
 {
-  "originHash" : "10c24fe250cf0672162428a90919d39cd698a9f59b6ac7ab43e6e44809ad63ea",
+  "originHash" : "a006af2bc9df2e532514488de938cf612a97a7280cbb3a90d53da15ecfc5b64f",
   "pins" : [
+    {
+      "identity" : "async-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/async-kit",
+      "state" : {
+        "revision" : "6f3615ccf2ac3c2ae0c8087d527546e9544a43dd",
+        "version" : "1.21.0"
+      }
+    },
     {
       "identity" : "postgres-nio",
       "kind" : "remoteSourceControl",
@@ -17,6 +26,15 @@
       "state" : {
         "revision" : "2ab61385b70da8ed74958ce62fa9ebf0359cb08b",
         "version" : "1.12.2"
+      }
+    },
+    {
+      "identity" : "swift-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-algorithms.git",
+      "state" : {
+        "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
+        "version" : "1.2.1"
       }
     },
     {
@@ -107,6 +125,15 @@
       "state" : {
         "revision" : "60c3e187154421171721c1a38e800b390680fb5d",
         "version" : "1.26.0"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics.git",
+      "state" : {
+        "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
+        "version" : "1.1.1"
       }
     },
     {

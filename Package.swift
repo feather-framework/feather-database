@@ -32,6 +32,7 @@ let package = Package(
 //        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
         .package(url: "https://github.com/vapor/postgres-nio", from: "1.27.0"),
         .package(url: "https://github.com/vapor/sqlite-nio.git", from: "1.12.0"),
+        .package(url: "https://github.com/vapor/async-kit", from: "1.21.0"),
     ],
     targets: [
         .target(
@@ -41,6 +42,7 @@ let package = Package(
 //                .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "PostgresNIO", package: "postgres-nio"),
                 .product(name: "SQLiteNIO", package: "sqlite-nio"),
+                .product(name: "AsyncKit", package: "async-kit"),
             ],
             swiftSettings: defaultSwiftSettings
         ),
