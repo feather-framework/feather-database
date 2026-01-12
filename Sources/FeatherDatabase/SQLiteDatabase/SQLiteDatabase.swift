@@ -8,12 +8,122 @@
 import Logging
 import SQLiteNIO
 
+public struct SQLiteQuery: Sendable {
+
+    public var sql: String
+    public var bindings: [SQLiteData]
+
+    public init(
+        unsafeSQL sql: String,
+        bindings: [SQLiteData] = []
+    ) {
+        self.sql = sql
+        self.bindings = bindings
+    }
+}
+
+extension SQLiteQuery: DatabaseQuery {
+    public typealias Bindings = [SQLiteData]
+}
+
+extension SQLiteQuery: ExpressibleByStringInterpolation {
+
+    public init(stringInterpolation: StringInterpolation) {
+        self.sql = stringInterpolation.sql
+        self.bindings = stringInterpolation.binds
+    }
+
+    public init(stringLiteral value: String) {
+        self.sql = value
+        self.bindings = []
+    }
+}
+
+extension SQLiteQuery {
+
+    public struct StringInterpolation: StringInterpolationProtocol, Sendable {
+
+        public typealias StringLiteralType = String
+
+        @usableFromInline
+        var sql: String
+
+        @usableFromInline
+        var binds: [SQLiteData]
+
+        public init(
+            literalCapacity: Int,
+            interpolationCount: Int
+        ) {
+            self.sql = ""
+            self.sql.reserveCapacity(literalCapacity)
+            self.binds = []
+            self.binds.reserveCapacity(interpolationCount)
+        }
+
+        public mutating func appendLiteral(_ literal: String) {
+            self.sql.append(contentsOf: literal)
+        }
+
+        @inlinable
+        public mutating func appendInterpolation(_ value: Int) throws {
+            self.binds.append(.integer(value))
+            self.sql.append(contentsOf: "?")
+        }
+
+        @inlinable
+        public mutating func appendInterpolation(_ value: Double) throws {
+            self.binds.append(.float(value))
+            self.sql.append(contentsOf: "?")
+        }
+
+        @inlinable
+        public mutating func appendInterpolation(_ value: String) throws {
+            self.binds.append(.text(value))
+            self.sql.append(contentsOf: "?")
+        }
+
+        @inlinable
+        public mutating func appendInterpolation(_ value: SQLiteData) throws {
+            self.binds.append(value)
+            self.sql.append(contentsOf: "?")
+        }
+
+        @inlinable
+        public mutating func appendInterpolation(_ value: SQLiteData?) throws {
+            switch value {
+            case .none:
+                self.binds.append(.null)
+            case .some(let value):
+                self.binds.append(value)
+            }
+
+            self.sql.append(contentsOf: "?")
+        }
+
+        @inlinable
+        public mutating func appendInterpolation(unescaped interpolated: String)
+        {
+            self.sql.append(contentsOf: interpolated)
+        }
+    }
+
+}
+
+// MARK: -
+
 extension SQLiteConnection: DatabaseConnection {
 
-    public func run<T: DatabaseResult>(
-        query: any DatabaseQuery
+    public func run<T: DatabaseResult, Q: DatabaseQuery>(
+        query: Q
     ) async throws -> T {
-        let result = try await self.query(query.sql)
+        print(query.sql)
+        print(query.bindings)
+
+        let result = try await self.query(
+            query.sql,
+            query.bindings as! [SQLiteData]
+        )
 
         return SQLiteResultSequence(elements: result) as! T
     }
@@ -106,11 +216,12 @@ public struct SQLiteDatabase: Sendable {
 
 extension SQLiteDatabase: Database {
 
+    public typealias Query = SQLiteQuery
     public typealias Result = SQLiteResultSequence
 
     public func connection(
         _ closure:
-            nonisolated (nonsending)(any DatabaseConnection) async throws ->
+            nonisolated(nonsending)(any DatabaseConnection) async throws ->
             sending Result
     ) async throws -> sending Result {
         try await closure(connection)
@@ -118,7 +229,7 @@ extension SQLiteDatabase: Database {
 
     public func transaction(
         _ closure:
-            nonisolated (nonsending)(any DatabaseConnection) async throws ->
+            nonisolated(nonsending)(any DatabaseConnection) async throws ->
             sending Result
     ) async throws -> sending Result {
         // TODO: implement proper transaction

@@ -11,9 +11,8 @@ public protocol DatabaseConnection {
 
     var logger: Logger { get }
 
-    @discardableResult
-    func run<T: DatabaseResult>(
-        query: DatabaseQuery
+    func run<T: DatabaseResult, Q: DatabaseQuery>(
+        query: Q
     ) async throws -> T
 
     func close() async throws

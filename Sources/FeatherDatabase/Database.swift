@@ -7,46 +7,41 @@
 
 /// The Database protocol.
 public protocol Database: Sendable {
+
+    associatedtype Query: DatabaseQuery
     associatedtype Result: DatabaseResult
 
-    @discardableResult
+    //    var dialect: String { get }
+
     func connection(
-        _: nonisolated(nonsending) (DatabaseConnection) async throws -> sending Result,
+        _:
+            nonisolated(nonsending)(DatabaseConnection) async throws ->
+            sending Result,
     ) async throws -> sending Result
 
-    @discardableResult
     func transaction(
-        _: nonisolated(nonsending) (DatabaseConnection) async throws -> sending Result,
+        _:
+            nonisolated(nonsending)(DatabaseConnection) async throws ->
+            sending Result,
     ) async throws -> sending Result
-    
-    @discardableResult
+
     func run(
-        query: DatabaseQuery,
-        on connection: DatabaseConnection
+        query: Query,
     ) async throws -> Result
-    
+
     func shutdown() async throws
 }
 
 extension Database {
 
     public func run(
-        query: any DatabaseQuery,
-        on connection: any DatabaseConnection
-    ) async throws -> Result {
-        try await connection.run(query: query)
-    }
-    
-    public func run(
-        query: any DatabaseQuery
+        query: Query,
     ) async throws -> Result {
         try await connection { connection in
             try await connection.run(query: query)
         }
-        
     }
 }
-
 
 //import SQLKit
 //

@@ -1,5 +1,5 @@
 {
-  "originHash" : "a006af2bc9df2e532514488de938cf612a97a7280cbb3a90d53da15ecfc5b64f",
+  "originHash" : "8491150f1348e9f9fcf89285c37e5bd66aab86f2b06604491b1a166adf4e4333",
   "pins" : [
     {
       "identity" : "async-kit",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "6f3615ccf2ac3c2ae0c8087d527546e9544a43dd",
         "version" : "1.21.0"
+      }
+    },
+    {
+      "identity" : "mysql-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/mysql-nio",
+      "state" : {
+        "revision" : "e62e6aaec387bdf65f5255fdb5c4ad29298bc12a",
+        "version" : "1.9.0"
       }
     },
     {
@@ -78,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "6f70fa9eab24c1fd982af18c281c4525d05e3095",
-        "version" : "4.2.0"
+        "revision" : "95ba0316a9b733e92bb6b071255ff46263bbe7dc",
+        "version" : "3.15.1"
       }
     },
     {

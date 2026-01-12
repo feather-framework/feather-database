@@ -4,7 +4,7 @@ import PackageDescription
 var defaultSwiftSettings: [SwiftSetting] =
 [
     .swiftLanguageMode(.v6),
-//    .enableExperimentalFeature("AvailabilityMacro=featherDatabase 1.0:macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"),
+    .enableExperimentalFeature("AvailabilityMacro=featherDatabase 1.0:macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"),
     // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0444-member-import-visibility.md
     .enableUpcomingFeature("MemberImportVisibility"),
     // https://forums.swift.org/t/experimental-support-for-lifetime-dependencies-in-swift-6-2-and-beyond/78638
@@ -29,9 +29,12 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log", from: "1.5.0"),
+        .package(url: "https://github.com/swift-server/swift-service-lifecycle", from: "2.9.0"),
 //        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
-        .package(url: "https://github.com/vapor/postgres-nio", from: "1.27.0"),
-        .package(url: "https://github.com/vapor/sqlite-nio.git", from: "1.12.0"),
+        .package(url: "https://github.com/vapor/postgres-nio", from: "1.30.0"),
+        .package(url: "https://github.com/vapor/sqlite-nio", from: "1.12.0"),
+        .package(url: "https://github.com/vapor/mysql-nio", from: "1.9.0"),
+        
         .package(url: "https://github.com/vapor/async-kit", from: "1.21.0"),
     ],
     targets: [
@@ -40,8 +43,10 @@ let package = Package(
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
 //                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
                 .product(name: "PostgresNIO", package: "postgres-nio"),
                 .product(name: "SQLiteNIO", package: "sqlite-nio"),
+                .product(name: "MySQLNIO", package: "mysql-nio"),
                 .product(name: "AsyncKit", package: "async-kit"),
             ],
             swiftSettings: defaultSwiftSettings

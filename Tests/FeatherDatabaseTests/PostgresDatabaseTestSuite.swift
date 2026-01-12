@@ -5,10 +5,10 @@
 //  Created by Tibor Bodecs on 2023. 01. 16..
 //
 
-import Testing
 import Logging
-
 import PostgresNIO
+import Testing
+
 @testable import FeatherDatabase
 @testable import FeatherDatabaseTesting
 
@@ -19,7 +19,7 @@ struct PostgresDatabaseTestSuite {
     func connection() async throws {
         let logger = Logger(label: "test")
 
-        let database = PostgresDatabase(
+        let database: any Database = PostgresDatabase(
             client: .init(
                 configuration: .init(
                     host: "localhost",
@@ -28,7 +28,8 @@ struct PostgresDatabaseTestSuite {
                     database: "postgres",
                     tls: .disable
                 )
-            ), logger: logger
+            ),
+            logger: logger
         )
 
         #expect(true)

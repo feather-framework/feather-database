@@ -8,14 +8,21 @@
 import Logging
 import PostgresNIO
 
+extension PostgresQuery: DatabaseQuery {
+    public typealias Bindings = PostgresBindings
+
+    public var bindings: PostgresBindings { binds }
+}
+
 extension PostgresConnection: DatabaseConnection {
 
-    public func run<T: DatabaseResult>(
-        query: any DatabaseQuery
+    public func run<T: DatabaseResult, Q: DatabaseQuery>(
+        query: Q
     ) async throws -> T {
         let result = try await self.query(
             .init(
-                unsafeSQL: query.sql
+                unsafeSQL: query.sql,
+                binds: query.bindings as! PostgresBindings
             ),
             logger: logger
         )
@@ -126,20 +133,17 @@ public struct PostgresDatabase: Sendable {
 }
 
 extension PostgresDatabase: Database {
+    public typealias Query = PostgresQuery
     public typealias Result = RowSequence
 
     public func connection(
-        _ closure:
-            nonisolated (nonsending)(any DatabaseConnection) async throws ->
-            sending Result
+        _ closure: nonisolated(nonsending)(any DatabaseConnection) async throws -> sending Result
     ) async throws -> sending Result {
         try await client.withConnection(closure)
     }
 
     public func transaction(
-        _ closure:
-            nonisolated (nonsending)(any DatabaseConnection) async throws ->
-            sending Result
+        _ closure: nonisolated(nonsending)(any DatabaseConnection) async throws -> sending Result
     ) async throws -> sending Result {
         try await client.withTransaction(logger: logger, closure)
     }
