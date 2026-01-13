@@ -7,7 +7,10 @@
 
 public protocol DatabaseRow: Sendable {
 
-    func decode<T: Decodable>(column: String, as: T.Type) throws -> T
+    func decode<T: Decodable>(
+        column: String,
+        as: T.Type
+    ) throws(DecodingError) -> T
 }
 
 //func transform<T>(

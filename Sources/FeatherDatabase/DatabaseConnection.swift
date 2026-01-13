@@ -11,7 +11,7 @@ public protocol DatabaseConnection {
 
     var logger: Logger { get }
 
-    func run<T: DatabaseResult, Q: DatabaseQuery>(
+    func execute<T: DatabaseResult, Q: DatabaseQuery>(
         query: Q
     ) async throws -> T
 

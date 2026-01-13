@@ -66,6 +66,17 @@ extension SQLiteQuery {
         }
 
         @inlinable
+        public mutating func appendInterpolation(_ value: String?) throws {
+            switch value {
+            case .some(let value):
+                self.binds.append(.text(value))
+                self.sql.append(contentsOf: "?")
+            case .none:
+                self.sql.append(contentsOf: "NULL")
+            }
+        }
+
+        @inlinable
         public mutating func appendInterpolation(_ value: Int) throws {
             self.binds.append(.integer(value))
             self.sql.append(contentsOf: "?")
@@ -89,17 +100,17 @@ extension SQLiteQuery {
             self.sql.append(contentsOf: "?")
         }
 
-        @inlinable
-        public mutating func appendInterpolation(_ value: SQLiteData?) throws {
-            switch value {
-            case .none:
-                self.binds.append(.null)
-            case .some(let value):
-                self.binds.append(value)
-            }
-
-            self.sql.append(contentsOf: "?")
-        }
+        //        @inlinable
+        //        public mutating func appendInterpolation(_ value: SQLiteData?) throws {
+        //            switch value {
+        //            case .none:
+        //                self.binds.append(.null)
+        //            case .some(let value):
+        //                self.binds.append(value)
+        //            }
+        //
+        //            self.sql.append(contentsOf: "?")
+        //        }
 
         @inlinable
         public mutating func appendInterpolation(unescaped interpolated: String)
@@ -114,7 +125,7 @@ extension SQLiteQuery {
 
 extension SQLiteConnection: DatabaseConnection {
 
-    public func run<T: DatabaseResult, Q: DatabaseQuery>(
+    public func execute<T: DatabaseResult, Q: DatabaseQuery>(
         query: Q
     ) async throws -> T {
         print(query.sql)
@@ -159,42 +170,103 @@ public struct SQLiteResultSequence: DatabaseResult {
 
 extension SQLiteRow: DatabaseRow {
 
+    struct SingleValueDecoder: Decoder, SingleValueDecodingContainer {
+
+        var codingPath: [any CodingKey] { [] }
+        var userInfo: [CodingUserInfoKey: Any] { [:] }
+
+        let data: SQLiteData
+
+        func container<Key: CodingKey>(
+            keyedBy: Key.Type
+        ) throws(DecodingError) -> KeyedDecodingContainer<Key> {
+            throw DecodingError.typeMismatch(
+                KeyedDecodingContainer<Key>.self,
+                .init(
+                    codingPath: codingPath,
+                    debugDescription: "Keyed decoding is not supported."
+                )
+            )
+        }
+
+        func unkeyedContainer() throws(DecodingError)
+            -> any UnkeyedDecodingContainer
+        {
+            throw DecodingError.typeMismatch(
+                (any UnkeyedDecodingContainer).self,
+                .init(
+                    codingPath: codingPath,
+                    debugDescription: "Unkeyed decoding is not supported."
+                )
+            )
+        }
+
+        func singleValueContainer() throws(DecodingError)
+            -> any SingleValueDecodingContainer
+        {
+            self
+        }
+
+        func decodeNil() -> Bool {
+            data.isNull
+        }
+
+        func decode<T: Decodable>(
+            _ type: T.Type
+        ) throws(DecodingError) -> T {
+            if let convertible = type as? any SQLiteDataConvertible.Type {
+                guard let value = convertible.init(sqliteData: data) else {
+                    throw DecodingError.typeMismatch(
+                        T.self,
+                        .init(
+                            codingPath: codingPath,
+                            debugDescription:
+                                "Could not convert data to \(T.self): \(data)."
+                        )
+                    )
+                }
+                return value as! T
+            }
+
+            throw DecodingError.typeMismatch(
+                T.self,
+                .init(
+                    codingPath: codingPath,
+                    debugDescription:
+                        "Data is not convertible to \(T.self): \(data)."
+                )
+            )
+        }
+    }
+
     public func decode<T: Decodable>(
         column: String,
         as type: T.Type
-    ) throws -> T {
+    ) throws(DecodingError) -> T {
         guard let data = self.column(column) else {
-            throw DecodingError.typeMismatch(
-                T.self,
+            throw .dataCorrupted(
                 .init(
                     codingPath: [],
                     debugDescription: "Missing data for column \(column)."
                 )
             )
         }
-        //        if data.isNull {
-        //            return nil
-        //        }
-        if let type = type as? any SQLiteDataConvertible.Type {
-            guard let value = type.init(sqliteData: data) as? T else {
-                throw DecodingError.typeMismatch(
-                    T.self,
-                    .init(
-                        codingPath: [],
-                        debugDescription:
-                            "Could not convert data to \(T.self): \(data)."
-                    )
-                )
-            }
-            return value
+        do {
+            return try T(from: SingleValueDecoder(data: data))
         }
-        throw DecodingError.typeMismatch(
-            T.self,
-            .init(
-                codingPath: [],
-                debugDescription: "Data is not convertible to \(type)."
+        catch let error as DecodingError {
+            throw error
+        }
+        catch {
+            throw DecodingError.typeMismatch(
+                T.self,
+                .init(
+                    codingPath: [],
+                    debugDescription:
+                        "Data is not convertible to \(T.self): \(data)."
+                )
             )
-        )
+        }
     }
 }
 
@@ -219,6 +291,7 @@ extension SQLiteDatabase: Database {
     public typealias Query = SQLiteQuery
     public typealias Result = SQLiteResultSequence
 
+    @discardableResult
     public func connection(
         _ closure:
             nonisolated(nonsending)(any DatabaseConnection) async throws ->
@@ -227,6 +300,7 @@ extension SQLiteDatabase: Database {
         try await closure(connection)
     }
 
+    @discardableResult
     public func transaction(
         _ closure:
             nonisolated(nonsending)(any DatabaseConnection) async throws ->

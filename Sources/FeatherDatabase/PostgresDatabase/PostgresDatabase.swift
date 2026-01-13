@@ -16,7 +16,7 @@ extension PostgresQuery: DatabaseQuery {
 
 extension PostgresConnection: DatabaseConnection {
 
-    public func run<T: DatabaseResult, Q: DatabaseQuery>(
+    public func execute<T: DatabaseResult, Q: DatabaseQuery>(
         query: Q
     ) async throws -> T {
         let result = try await self.query(
@@ -70,11 +70,10 @@ extension PostgresRow: DatabaseRow {
     public func decode<T: Decodable>(
         column: String,
         as type: T.Type
-    ) throws -> T {
+    ) throws(DecodingError) -> T {
         let row = self.makeRandomAccess()
         guard row.contains(column) else {
-            throw DecodingError.typeMismatch(
-                T.self,
+            throw .dataCorrupted(
                 .init(
                     codingPath: [],
                     debugDescription: "Missing data for column \(column)."
@@ -136,14 +135,20 @@ extension PostgresDatabase: Database {
     public typealias Query = PostgresQuery
     public typealias Result = RowSequence
 
+    @discardableResult
     public func connection(
-        _ closure: nonisolated(nonsending)(any DatabaseConnection) async throws -> sending Result
+        _ closure:
+            nonisolated(nonsending)(any DatabaseConnection) async throws ->
+            sending Result
     ) async throws -> sending Result {
         try await client.withConnection(closure)
     }
 
+    @discardableResult
     public func transaction(
-        _ closure: nonisolated(nonsending)(any DatabaseConnection) async throws -> sending Result
+        _ closure:
+            nonisolated(nonsending)(any DatabaseConnection) async throws ->
+            sending Result
     ) async throws -> sending Result {
         try await client.withTransaction(logger: logger, closure)
     }
