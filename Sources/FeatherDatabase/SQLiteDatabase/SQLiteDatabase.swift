@@ -66,7 +66,7 @@ extension SQLiteQuery {
         }
 
         @inlinable
-        public mutating func appendInterpolation(_ value: String?) throws {
+        public mutating func appendInterpolation(_ value: String?) {
             switch value {
             case .some(let value):
                 self.binds.append(.text(value))
@@ -77,25 +77,25 @@ extension SQLiteQuery {
         }
 
         @inlinable
-        public mutating func appendInterpolation(_ value: Int) throws {
+        public mutating func appendInterpolation(_ value: Int) {
             self.binds.append(.integer(value))
             self.sql.append(contentsOf: "?")
         }
 
         @inlinable
-        public mutating func appendInterpolation(_ value: Double) throws {
+        public mutating func appendInterpolation(_ value: Double) {
             self.binds.append(.float(value))
             self.sql.append(contentsOf: "?")
         }
 
         @inlinable
-        public mutating func appendInterpolation(_ value: String) throws {
+        public mutating func appendInterpolation(_ value: String) {
             self.binds.append(.text(value))
             self.sql.append(contentsOf: "?")
         }
 
         @inlinable
-        public mutating func appendInterpolation(_ value: SQLiteData) throws {
+        public mutating func appendInterpolation(_ value: SQLiteData) {
             self.binds.append(value)
             self.sql.append(contentsOf: "?")
         }
