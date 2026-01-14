@@ -6,9 +6,8 @@
 //
 
 import Logging
-import PostgresNIO
-import SQLiteNIO
 import Testing
+import SQLiteNIO
 
 @testable import FeatherDatabase
 @testable import FeatherDatabaseTesting
@@ -34,7 +33,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func foreignKeySupport() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: "PRAGMA foreign_keys = ON"
@@ -53,7 +52,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func tableCreation() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -84,7 +83,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func tableInsert() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -129,7 +128,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func rowDecoding() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -184,7 +183,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func queryEncoding() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         let tableName = "foo"
         let idColumn = "id"
@@ -236,7 +235,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func unsafeSQLBindings() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -276,7 +275,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func optionalStringInterpolationNil() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -314,7 +313,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func sqliteDataInterpolation() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -352,7 +351,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func resultSequenceIterator() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -410,7 +409,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func transactionSuccess() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -449,7 +448,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func transactionFailurePropagates() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -508,7 +507,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func doubleRoundTrip() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -547,7 +546,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func missingColumnThrows() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -593,7 +592,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func typeMismatchThrows() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         try await database.execute(
             query: #"""
@@ -639,7 +638,7 @@ struct SQLiteDatabaseTestSuite {
     @Test
     func versionCheck() async throws {
         let database = try await getTestDatabaseClient()
-        // defer { Task { try await database.shutdown() } }
+        defer { Task { try await database.shutdown() } }
 
         let result = try await database.execute(
             query: #"""

@@ -83,13 +83,10 @@ public struct SQLiteDatabaseClient: DatabaseClient {
     // MARK: - service lifecycle
 
     public func run() async throws {
-        await withGracefulShutdownHandler {
-//            try await connection.close()
-        } onGracefulShutdown: {
-            Task {
-                try await connection.close()
-            }
-        }
+        // nothing to do
     }
-
+    
+    public func shutdown() async throws {
+        try await connection.close()
+    }
 }

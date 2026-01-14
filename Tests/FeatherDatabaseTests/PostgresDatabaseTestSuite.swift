@@ -6,8 +6,14 @@
 //
 
 import Logging
-import PostgresNIO
 import Testing
+import PostgresNIO
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 @testable import FeatherDatabase
 @testable import FeatherDatabaseTesting
@@ -15,23 +21,73 @@ import Testing
 @Suite
 struct PostgresDatabaseTestSuite {
 
-    @Test
-    func connection() async throws {
-        let logger = Logger(label: "test")
+    private func getTestDatabaseClient() async throws -> PostgresDatabaseClient {
+        var logger = Logger(label: "test")
+        logger.logLevel = .info
 
-        let database: any DatabaseClient = PostgresDatabaseClient(
+        let finalCertPath = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("docker")
+            .appendingPathComponent("certificates")
+            .appendingPathComponent("ca.pem")
+            .path()
+
+        var tlsConfig = TLSConfiguration.makeClientConfiguration()
+        let rootCert = try NIOSSLCertificate.fromPEMFile(finalCertPath)
+        tlsConfig.trustRoots = .certificates(rootCert)
+        tlsConfig.certificateVerification = .fullVerification
+
+        return .init(
             client: .init(
                 configuration: .init(
-                    host: "localhost",
+                    host: "127.0.0.1",
+                    port: 5432,
                     username: "postgres",
                     password: "postgres",
                     database: "postgres",
-                    tls: .disable
-                )
+                    tls: .require(tlsConfig)
+                ),
+                backgroundLogger: logger
             ),
             logger: logger
         )
+    }
+    
+    @Test
+    func versionCheck() async throws {
 
-        #expect(true)
+        let database = try await getTestDatabaseClient()
+        
+        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask {
+                try await database.run()
+            }
+
+            taskGroup.addTask {
+                let result = try await database.execute(
+                    query: #"""
+                        SELECT 
+                            version() AS "version" 
+                        WHERE 
+                            1=\#(1);
+                        """#
+                )
+                print("aaaaabbbbbcccccc")
+
+                let resultArray = try await result.collect()
+                #expect(resultArray.count == 1)
+
+                let item = resultArray[0]
+                let version = try item.decode(column: "version", as: String.self)
+                #expect(version.contains("PostgreSQL"))
+            }
+
+            try await taskGroup.next()
+            
+            taskGroup.cancelAll()
+        }
+        
     }
 }

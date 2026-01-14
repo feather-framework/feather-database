@@ -23,6 +23,8 @@ public protocol DatabaseClient: Service {
     func execute(
         query: Connection.Query,
     ) async throws -> Connection.Result
+    
+    func shutdown() async throws
 }
 
 extension DatabaseClient {

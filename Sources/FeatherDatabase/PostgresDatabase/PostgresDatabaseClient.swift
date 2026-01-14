@@ -39,4 +39,8 @@ public struct PostgresDatabaseClient: DatabaseClient {
     public func run() async throws {
         await client.run()
     }
+    
+    public func shutdown() async throws {
+        // nothing to do
+    }
 }
