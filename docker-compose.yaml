@@ -37,9 +37,9 @@ services:
             MYSQL_PASSWORD: mariadb
             MYSQL_DATABASE: mariadb
         ports:
-          - "3306:3306"
+            - "3306:3306"
         volumes:
-            - "mariadb:/docker-entrypoint-initdb.d/1.sql"
+            - ./mariadb/init:/docker-entrypoint-initdb.d:ro
 
 volumes:
     postgres:
