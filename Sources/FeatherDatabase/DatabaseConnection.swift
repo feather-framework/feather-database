@@ -15,6 +15,7 @@ public protocol DatabaseConnection {
 
     var logger: Logger { get }
 
+    @discardableResult
     func execute(
         query: Query
     ) async throws -> Result

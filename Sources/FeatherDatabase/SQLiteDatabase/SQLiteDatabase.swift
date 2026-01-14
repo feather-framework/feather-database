@@ -128,6 +128,7 @@ extension SQLiteConnection: DatabaseConnection {
     public typealias Query = SQLiteQuery
     public typealias Result = SQLiteResultSequence
 
+    @discardableResult
     public func execute(
         query: Query
     ) async throws -> Result {
@@ -289,6 +290,34 @@ public struct SQLiteDatabase: Sendable {
     }
 }
 
+
+public struct SQLiteTransactionError: DatabaseTransactionError {
+
+    public let file: String
+    public let line: UInt
+
+    public var beginError: Error?
+    public var closureError: Error?
+    public var commitError: Error?
+    public var rollbackError: Error?
+
+    public init(
+        file: String = #fileID,
+        line: UInt = #line,
+        beginError: Error? = nil,
+        closureError: Error? = nil,
+        commitError: Error? = nil,
+        rollbackError: Error? = nil
+    ) {
+        self.file = file
+        self.line = line
+        self.beginError = beginError
+        self.closureError = closureError
+        self.commitError = commitError
+        self.rollbackError = rollbackError
+    }
+}
+
 extension SQLiteDatabase: Database {
 
     public typealias Connection = SQLiteConnection
@@ -308,8 +337,52 @@ extension SQLiteDatabase: Database {
             nonisolated(nonsending)(Connection) async throws ->
         sending Connection.Result
     ) async throws -> sending Connection.Result {
-        // TODO: implement proper transaction support
-        try await closure(connection)
+
+        do {
+            try await connection.execute(query: "BEGIN;")
+        }
+        catch {
+            throw DatabaseError.transaction(
+                SQLiteTransactionError(beginError: error)
+            )
+        }
+
+        var closureHasFinished = false
+
+        do {
+            let result = try await closure(connection)
+            closureHasFinished = true
+
+            do {
+                try await connection.execute(query: "COMMIT;")
+            }
+            catch {
+                throw DatabaseError.transaction(
+                    SQLiteTransactionError(commitError: error)
+                )
+            }
+
+            return result
+        }
+        catch {
+            var txError = SQLiteTransactionError()
+
+            if !closureHasFinished {
+                txError.closureError = error
+
+                do {
+                    try await connection.execute(query: "ROLLBACK;")
+                }
+                catch {
+                    txError.rollbackError = error
+                }
+            }
+            else {
+                txError.commitError = error
+            }
+
+            throw DatabaseError.transaction(txError)
+        }
     }
 
     public func shutdown() async throws {

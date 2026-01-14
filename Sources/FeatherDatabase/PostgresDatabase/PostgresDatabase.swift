@@ -19,6 +19,7 @@ extension PostgresConnection: DatabaseConnection {
     public typealias Query = PostgresQuery
     public typealias Result = RowSequence
 
+    @discardableResult
     public func execute(
         query: Query
     ) async throws -> Result {

@@ -453,22 +453,58 @@ struct SQLiteDatabaseTestSuite {
         let database = try await getTestDatabase()
         defer { Task { try await database.shutdown() } }
 
-        enum TestError: Error {
-            case expected
-        }
+        try await database.execute(
+            query: #"""
+                CREATE TABLE "dummy" (
+                    "id" INTEGER NOT NULL PRIMARY KEY,
+                    "name" TEXT NOT NULL
+                );
+                """#
+        )
 
         do {
             _ = try await database.transaction { _ in
-                throw TestError.expected
+                try await database.execute(
+                    query: #"""
+                        INSERT INTO "dummy"
+                            ("id", "name")
+                        VALUES
+                            (1, 'ok');
+                        """#
+                )
+
+                return try await database.execute(
+                    query: #"""
+                        INSERT INTO "dummy"
+                            ("id", "name")
+                        VALUES
+                            (2, NULL);
+                        """#
+                )
             }
-            Issue.record("Expected transaction error to be thrown.")
+            Issue.record("Expected database transaction error to be thrown.")
         }
-        catch TestError.expected {
-            #expect(true)
+        catch DatabaseError.transaction(let error) {
+            #expect(error.beginError == nil)
+            #expect(error.closureError != nil)
+            #expect(error.closureError.debugDescription.contains("NOT NULL constraint failed"))
+            #expect(error.rollbackError == nil)
+            #expect(error.commitError == nil)
         }
         catch {
-            Issue.record("Expected TestError.expected to be thrown.")
+            Issue.record("Expected database transaction error to be thrown.")
         }
+
+        let result =
+            try await database.execute(
+                query: #"""
+                    SELECT "id"
+                    FROM "dummy";
+                    """#
+            )
+            .collect()
+
+        #expect(result.isEmpty)
     }
 
     @Test
