@@ -2,7 +2,7 @@
 //  DatabaseError.swift
 //  Feather-database
 //
-//  Created by Tibor Bodecs on 2026. 01. 14..
+//  Created by Tibor Bödecs on 2026. 01. 14..
 //
 
 /// A transaction error that captures failure details.
