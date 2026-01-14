@@ -1,5 +1,5 @@
 services:
-    db:
+    postgres:
         build:
             context: .
             dockerfile: docker/db/Dockerfile
@@ -29,20 +29,18 @@ services:
             timeout: 5s
             retries: 10
 
-    migrator:
-        build:
-            context: .
-            dockerfile: docker/migrator/Dockerfile
-        depends_on:
-            db:
-                condition: service_healthy
+    mariadb:
+        image: mariadb
         environment:
-            DATABASE_HOST: db
-            DATABASE_PORT: 5432
-            DATABASE_USER: postgres
-            DATABASE_PASSWORD: postgres
-            DATABASE_NAME: postgres
-            DATABASE_CERT_PATH: ca.pem
+            MYSQL_ROOT_PASSWORD: mariadb
+            MYSQL_USER: mariadb
+            MYSQL_PASSWORD: mariadb
+            MYSQL_DATABASE: mariadb
+        ports:
+          - "3306:3306"
+        volumes:
+            - "mariadb:/docker-entrypoint-initdb.d/1.sql"
 
 volumes:
     postgres:
+    mariadb:

@@ -49,4 +49,5 @@ let package = Package(
 
 - Avoid calling database.execute when you're in a transaction, use connection
 - Use proper service lifecycle for the SQLite driver.
+- upgrade to latest workflows -> fix package name in headers
 
