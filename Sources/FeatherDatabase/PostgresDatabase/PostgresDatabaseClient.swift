@@ -25,6 +25,9 @@ public struct PostgresDatabaseClient: DatabaseClient {
         do {
             return try await client.withConnection(closure)
         }
+        catch let error as DatabaseError {
+            throw error
+        }
         catch {
             throw .connection(error)
         }

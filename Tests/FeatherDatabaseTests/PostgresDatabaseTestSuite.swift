@@ -1,10 +1,3 @@
-//
-//  DatabaseTestSuite.swift
-//  feather-database
-//
-//  Created by Tibor Bodecs on 2023. 01. 16..
-//
-
 import Logging
 import Testing
 import PostgresNIO

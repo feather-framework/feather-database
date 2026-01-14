@@ -1,10 +1,3 @@
-//
-//  DatabaseTestSuite.swift
-//  feather-database
-//
-//  Created by Tibor Bodecs on 2023. 01. 16..
-//
-
 import Logging
 import Testing
 import SQLiteNIO
@@ -632,6 +625,28 @@ struct SQLiteDatabaseTestSuite {
         }
         catch {
             Issue.record("Expected a typeMismatch error when decoding a string as Int.")
+        }
+    }
+
+    @Test
+    func queryFailureErrorText() async throws {
+        let database = try await getTestDatabaseClient()
+        defer { Task { try await database.shutdown() } }
+
+        do {
+            _ = try await database.execute(
+                query: #"""
+                    SELECT *
+                    FROM "missing_table";
+                    """#
+            )
+            Issue.record("Expected query to fail for missing table.")
+        }
+        catch DatabaseError.query(let error) {
+            #expect("\(error)".contains("no such table"))
+        }
+        catch {
+            Issue.record("Expected database query error to be thrown.")
         }
     }
 

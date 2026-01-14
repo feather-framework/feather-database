@@ -24,6 +24,9 @@ public struct SQLiteDatabaseClient: DatabaseClient {
         do {
             return try await closure(connection)
         }
+        catch let error as DatabaseError {
+            throw error
+        }
         catch {
             throw .connection(error)
         }

@@ -1,93 +1,6 @@
-//
-//  DatabaseTestSuite.swift
-//  feather-database
-//
-//  Created by Tibor Bodecs on 17/11/2023.
-//
-
 import FeatherDatabase
 
-///// database test suit error.
-//public struct DatabaseTestSuiteError: Error {
-//
-//    /// function.
-//    public let function: String
-//    /// line.
-//    public let line: Int
-//    /// error.
-//    public let error: Error?
-//
-//    init(
-//        function: String = #function,
-//        line: Int = #line,
-//        error: Error? = nil
-//    ) {
-//        self.function = function
-//        self.line = line
-//        self.error = error
-//    }
-//}
-//
-///// database test suite.
-//public struct DatabaseTestSuite {
-//
-//    let component: DatabaseComponent
-//
-//    /// database test suite init.
-//    public init(_ component: DatabaseComponent) {
-//        self.component = component
-//    }
-//
-//    /// test all database sending.
-//    public func testAll() async throws {
-//        do {
-//            let db = try await component.connection()
-//
-//            let tests: [(Database) async throws -> Void] = [
-//                testInsert,
-//                testCount,
-//                testCountFilterGroup,
-//                testGet,
-//                testFirst,
-//                testUpdateOne,
-//                testDelete,
-//                testAll,
-//                testAllWithOrder,
-//                testListFilterGroupUsingOrRelation,
-//                testListFilterGroupRelation,
-//                testListOrder,
-//                testList,
-//                testListWithoutPaging,
-//                testJoinTag,
-//                testJoinPost,
-//            ]
-//
-//            for test in tests {
-//                try await Blog.Tag.Table.create(on: db)
-//                try await Blog.Category.Table.create(on: db)
-//                try await Blog.Post.Table.create(on: db)
-//                try await Blog.PostTag.Table.create(on: db)
-//
-//                try await test(db)
-//
-//                try await Blog.PostTag.Table.drop(on: db)
-//                try await Blog.Post.Table.drop(on: db)
-//                try await Blog.Category.Table.drop(on: db)
-//                try await Blog.Tag.Table.drop(on: db)
-//            }
-//        }
-//        catch let error as DatabaseTestSuiteError {
-//            throw error
-//        }
-//        catch {
-//            throw DatabaseTestSuiteError(error: error)
-//        }
-//    }
-//}
-//
-//extension DatabaseTestSuite {
-//
-//    // MARK: - tests
+
 //
 //    public func testInsert(_ db: Database) async throws {
 //        let test = Blog.Tag.Model.mock()
@@ -725,5 +638,3 @@ import FeatherDatabase
 //            XCTAssertEqual(res[0].published, index % 2 == 0)
 //        }
 //    }
-//
-//}
