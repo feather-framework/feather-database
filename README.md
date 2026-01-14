@@ -43,3 +43,10 @@ let package = Package(
     ]
 )
 ```
+
+
+# Notes
+
+- Avoid calling database.execute when you're in a transaction, use connection
+- Use proper service lifecycle for the SQLite driver.
+

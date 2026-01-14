@@ -468,8 +468,8 @@ struct SQLiteDatabaseTestSuite {
         )
 
         do {
-            _ = try await database.transaction { _ in
-                try await database.execute(
+            _ = try await database.transaction { connection in
+                try await connection.execute(
                     query: #"""
                         INSERT INTO "dummy"
                             ("id", "name")
@@ -478,7 +478,7 @@ struct SQLiteDatabaseTestSuite {
                         """#
                 )
 
-                return try await database.execute(
+                return try await connection.execute(
                     query: #"""
                         INSERT INTO "dummy"
                             ("id", "name")
