@@ -55,38 +55,40 @@ struct PostgresDatabaseTestSuite {
         )
     }
     
-    @Test
-    func versionCheck() async throws {
-
+    private func runUsingTestDatabaseClient(
+        _ closure: ((PostgresDatabaseClient) async throws -> Void)
+    ) async throws {
         let database = try await getTestDatabaseClient()
         
         try await withThrowingTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask {
                 try await database.run()
             }
-
-            taskGroup.addTask {
-                let result = try await database.execute(
-                    query: #"""
-                        SELECT 
-                            version() AS "version" 
-                        WHERE 
-                            1=\#(1);
-                        """#
-                )
-
-                let resultArray = try await result.collect()
-                #expect(resultArray.count == 1)
-
-                let item = resultArray[0]
-                let version = try item.decode(column: "version", as: String.self)
-                #expect(version.contains("PostgreSQL"))
-            }
-
-            try await taskGroup.next()
-            
+            try await closure(database)
             taskGroup.cancelAll()
         }
-        
+    }
+    
+    // MARK: -
+    
+    @Test
+    func versionCheck() async throws {
+        try await runUsingTestDatabaseClient { database in
+            let result = try await database.execute(
+                query: #"""
+                    SELECT 
+                        version() AS "version" 
+                    WHERE 
+                        1=\#(1);
+                    """#
+            )
+
+            let resultArray = try await result.collect()
+            #expect(resultArray.count == 1)
+
+            let item = resultArray[0]
+            let version = try item.decode(column: "version", as: String.self)
+            #expect(version.contains("PostgreSQL"))
+        }
     }
 }
