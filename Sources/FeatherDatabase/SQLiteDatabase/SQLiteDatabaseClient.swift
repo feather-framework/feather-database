@@ -1,12 +1,28 @@
+//
+//  SQLiteDatabaseClient.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import Logging
 import SQLiteNIO
 import ServiceLifecycle
 
+/// A SQLite-backed database client.
+///
+/// Use this client to execute queries and manage transactions on SQLite.
 public struct SQLiteDatabaseClient: DatabaseClient {
-    
+
     var connection: SQLiteConnection
     var logger: Logger
 
+    /// Create a SQLite database client.
+    ///
+    /// Use this initializer to provide an already-open connection.
+    /// - Parameters:
+    ///   - connection: The SQLite connection to use.
+    ///   - logger: The logger for database operations.
     public init(
         connection: SQLiteConnection,
         logger: Logger
@@ -17,9 +33,16 @@ public struct SQLiteDatabaseClient: DatabaseClient {
 
     // MARK: - database api
 
+    /// Execute work using the stored connection.
+    ///
+    /// The closure is executed with the current connection.
+    /// - Parameter closure: A closure that receives the SQLite connection.
+    /// - Throws: A `DatabaseError` if the connection fails.
+    /// - Returns: The query result produced by the closure.
     @discardableResult
     public func connection(
-        _ closure: nonisolated(nonsending)(SQLiteConnection) async throws -> sending SQLiteQueryResult
+        _ closure: nonisolated(nonsending)(SQLiteConnection) async throws
+            -> sending SQLiteQueryResult
     ) async throws(DatabaseError) -> sending SQLiteQueryResult {
         do {
             return try await closure(connection)
@@ -32,9 +55,16 @@ public struct SQLiteDatabaseClient: DatabaseClient {
         }
     }
 
+    /// Execute work inside a SQLite transaction.
+    ///
+    /// The closure runs between `BEGIN` and `COMMIT` with rollback on failure.
+    /// - Parameter closure: A closure that receives the SQLite connection.
+    /// - Throws: A `DatabaseError` if transaction handling fails.
+    /// - Returns: The query result produced by the closure.
     @discardableResult
     public func transaction(
-        _ closure: nonisolated(nonsending)(SQLiteConnection) async throws -> sending SQLiteQueryResult
+        _ closure: nonisolated(nonsending)(SQLiteConnection) async throws
+            -> sending SQLiteQueryResult
     ) async throws(DatabaseError) -> sending SQLiteQueryResult {
 
         do {
@@ -83,13 +113,23 @@ public struct SQLiteDatabaseClient: DatabaseClient {
             throw DatabaseError.transaction(txError)
         }
     }
-    
+
     // MARK: - service lifecycle
 
+    /// Start the client service.
+    ///
+    /// SQLite clients have no run-time behavior to start.
+    /// - Throws: Nothing.
+    /// - Returns: Nothing.
     public func run() async throws {
         // nothing to do
     }
-    
+
+    /// Shut down the client and close the connection.
+    ///
+    /// This releases SQLite resources held by the connection.
+    /// - Throws: A `DatabaseError` if closing fails.
+    /// - Returns: Nothing.
     public func shutdown() async throws(DatabaseError) {
         do {
             try await connection.close()

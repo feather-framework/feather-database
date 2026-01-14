@@ -1,13 +1,32 @@
+//
+//  PostgresDatabaseClient.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import Logging
 import PostgresNIO
 
+/// Make Postgres transaction errors conform to `DatabaseTransactionError`.
+///
+/// This allows Postgres errors to flow through `DatabaseError`.
 extension PostgresTransactionError: DatabaseTransactionError {}
 
+/// A Postgres-backed database client.
+///
+/// Use this client to execute queries and manage transactions on Postgres.
 public struct PostgresDatabaseClient: DatabaseClient {
-    
+
     var client: PostgresClient
     var logger: Logger
 
+    /// Create a Postgres database client.
+    ///
+    /// Use this initializer to provide an existing Postgres client.
+    /// - Parameters:
+    ///   - client: The underlying Postgres client.
+    ///   - logger: The logger for database operations.
     public init(
         client: PostgresClient,
         logger: Logger
@@ -18,9 +37,16 @@ public struct PostgresDatabaseClient: DatabaseClient {
 
     // MARK: - database api
 
+    /// Execute work using a managed Postgres connection.
+    ///
+    /// The closure receives a Postgres connection for the duration of the call.
+    /// - Parameter closure: A closure that receives the connection.
+    /// - Throws: A `DatabaseError` if connection handling fails.
+    /// - Returns: The query result produced by the closure.
     @discardableResult
     public func connection(
-        _ closure: nonisolated(nonsending)(PostgresConnection) async throws -> sending PostgresQueryResult
+        _ closure: nonisolated(nonsending)(PostgresConnection) async throws
+            -> sending PostgresQueryResult
     ) async throws(DatabaseError) -> sending PostgresQueryResult {
         do {
             return try await client.withConnection(closure)
@@ -33,9 +59,16 @@ public struct PostgresDatabaseClient: DatabaseClient {
         }
     }
 
+    /// Execute work inside a Postgres transaction.
+    ///
+    /// The closure is wrapped in a transactional scope.
+    /// - Parameter closure: A closure that receives the connection.
+    /// - Throws: A `DatabaseError` if the transaction fails.
+    /// - Returns: The query result produced by the closure.
     @discardableResult
     public func transaction(
-        _ closure: nonisolated(nonsending)(PostgresConnection) async throws -> sending PostgresQueryResult
+        _ closure: nonisolated(nonsending)(PostgresConnection) async throws
+            -> sending PostgresQueryResult
     ) async throws(DatabaseError) -> sending PostgresQueryResult {
         do {
             return try await client.withTransaction(logger: logger, closure)
@@ -47,13 +80,23 @@ public struct PostgresDatabaseClient: DatabaseClient {
             throw .connection(error)
         }
     }
-    
+
     // MARK: - service lifecycle
 
+    /// Start the client service.
+    ///
+    /// This forwards to the underlying Postgres client run loop.
+    /// - Throws: An error if the run loop fails.
+    /// - Returns: Nothing.
     public func run() async throws {
         await client.run()
     }
-    
+
+    /// Shut down the client.
+    ///
+    /// Postgres clients do not require explicit shutdown work here.
+    /// - Throws: A `DatabaseError` if shutdown fails.
+    /// - Returns: Nothing.
     public func shutdown() async throws(DatabaseError) {
         // nothing to do
     }

@@ -1,5 +1,11 @@
-import FeatherDatabase
+//
+//  DatabaseTestSuite.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
 
+import FeatherDatabase
 
 //
 //    public func testInsert(_ db: Database) async throws {

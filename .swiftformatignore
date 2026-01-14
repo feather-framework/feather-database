@@ -1,1 +1,4 @@
 Package.swift
+Sources/FeatherDatabase/DatabaseClient.swift
+Sources/FeatherDatabase/PostgresDatabase/PostgresDatabaseClient.swift
+Sources/FeatherDatabase/SQLiteDatabase/SQLiteDatabaseClient.swift

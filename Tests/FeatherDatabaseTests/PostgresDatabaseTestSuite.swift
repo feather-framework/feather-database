@@ -1,6 +1,16 @@
+//
+//  PostgresDatabaseTestSuite.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import Logging
-import Testing
 import PostgresNIO
+import Testing
+
+@testable import FeatherDatabase
+@testable import FeatherDatabaseTesting
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
@@ -8,13 +18,11 @@ import FoundationEssentials
 import Foundation
 #endif
 
-@testable import FeatherDatabase
-@testable import FeatherDatabaseTesting
-
 @Suite
 struct PostgresDatabaseTestSuite {
 
-    private func getTestDatabaseClient() async throws -> PostgresDatabaseClient {
+    private func getTestDatabaseClient() async throws -> PostgresDatabaseClient
+    {
         var logger = Logger(label: "test")
         logger.logLevel = .info
 
@@ -47,12 +55,12 @@ struct PostgresDatabaseTestSuite {
             logger: logger
         )
     }
-    
+
     private func runUsingTestDatabaseClient(
         _ closure: ((PostgresDatabaseClient) async throws -> Void)
     ) async throws {
         let database = try await getTestDatabaseClient()
-        
+
         try await withThrowingTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask {
                 try await database.run()
@@ -61,9 +69,9 @@ struct PostgresDatabaseTestSuite {
             taskGroup.cancelAll()
         }
     }
-    
+
     // MARK: -
-    
+
     @Test
     func versionCheck() async throws {
         try await runUsingTestDatabaseClient { database in

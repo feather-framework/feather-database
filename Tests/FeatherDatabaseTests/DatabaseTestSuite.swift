@@ -1,3 +1,10 @@
+//
+//  DatabaseTestSuite.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import Testing
 
 @testable import FeatherDatabase

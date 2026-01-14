@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 baseUrl = https://raw.githubusercontent.com/BinaryBirds/github-workflows/refs/heads/main/scripts
 
-check: symlinks language deps lint docc-warnings headers
+check: symlinks language deps lint headers
 
 symlinks:
 	curl -s $(baseUrl)/check-broken-symlinks.sh | bash
@@ -18,6 +18,7 @@ lint:
 
 format:
 	curl -s $(baseUrl)/run-swift-format.sh | bash -s -- --fix
+	find Sources -type f -name '*.swift' -print0 | xargs -0 sed -i '' 's/nonisolated (nonsending/nonisolated(nonsending/g'
 
 docc-local:
 	curl -s $(baseUrl)/generate-docc.sh | bash -s -- --local

@@ -1,7 +1,20 @@
+//
+//  SQLiteConnection.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import SQLiteNIO
 
 extension SQLiteConnection: DatabaseConnection {
 
+    /// Execute a SQLite query on this connection.
+    ///
+    /// This wraps `SQLiteNIO` query execution and maps errors.
+    /// - Parameter query: The SQLite query to execute.
+    /// - Throws: A `DatabaseError` if the query fails.
+    /// - Returns: A query result containing the returned rows.
     @discardableResult
     public func execute(
         query: SQLiteQuery

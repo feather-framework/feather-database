@@ -1,6 +1,13 @@
+//
+//  SQLiteDatabaseTestSuite.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import Logging
-import Testing
 import SQLiteNIO
+import Testing
 
 @testable import FeatherDatabase
 @testable import FeatherDatabaseTesting
@@ -262,7 +269,9 @@ struct SQLiteDatabaseTestSuite {
             .collect()
 
         #expect(result.count == 1)
-        #expect(try result[0].decode(column: "name", as: String.self) == "gizmo")
+        #expect(
+            try result[0].decode(column: "name", as: String.self) == "gizmo"
+        )
     }
 
     @Test
@@ -338,7 +347,9 @@ struct SQLiteDatabaseTestSuite {
             .collect()
 
         #expect(result.count == 1)
-        #expect(try result[0].decode(column: "label", as: String.self) == "alpha")
+        #expect(
+            try result[0].decode(column: "label", as: String.self) == "alpha"
+        )
     }
 
     @Test
@@ -392,7 +403,9 @@ struct SQLiteDatabaseTestSuite {
 
         if let second {
             #expect(try second.decode(column: "id", as: Int.self) == 2)
-            #expect(try second.decode(column: "value", as: String.self) == "two")
+            #expect(
+                try second.decode(column: "value", as: String.self) == "two"
+            )
         }
         else {
             Issue.record("Expected second iterator element to exist.")
@@ -435,7 +448,9 @@ struct SQLiteDatabaseTestSuite {
             .collect()
 
         #expect(result.count == 1)
-        #expect(try result[0].decode(column: "name", as: String.self) == "widget")
+        #expect(
+            try result[0].decode(column: "name", as: String.self) == "widget"
+        )
     }
 
     @Test
@@ -477,7 +492,11 @@ struct SQLiteDatabaseTestSuite {
         catch DatabaseError.transaction(let error) {
             #expect(error.beginError == nil)
             #expect(error.closureError != nil)
-            #expect(error.closureError.debugDescription.contains("NOT NULL constraint failed"))
+            #expect(
+                error.closureError.debugDescription.contains(
+                    "NOT NULL constraint failed"
+                )
+            )
             #expect(error.rollbackError == nil)
             #expect(error.commitError == nil)
         }
@@ -533,7 +552,9 @@ struct SQLiteDatabaseTestSuite {
             .collect()
 
         #expect(result.count == 1)
-        #expect(try result[0].decode(column: "value", as: Double.self) == expected)
+        #expect(
+            try result[0].decode(column: "value", as: Double.self) == expected
+        )
     }
 
     @Test
@@ -624,7 +645,9 @@ struct SQLiteDatabaseTestSuite {
             #expect(true)
         }
         catch {
-            Issue.record("Expected a typeMismatch error when decoding a string as Int.")
+            Issue.record(
+                "Expected a typeMismatch error when decoding a string as Int."
+            )
         }
     }
 

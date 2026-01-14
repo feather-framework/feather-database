@@ -1,3 +1,10 @@
+//
+//  SQLiteRow+DatabaseRow.swift
+//  Feather-database
+//
+//  Created by Tibor Bodecs on 2026. 01. 10..
+//
+
 import SQLiteNIO
 
 extension SQLiteRow: DatabaseRow {
@@ -71,6 +78,14 @@ extension SQLiteRow: DatabaseRow {
         }
     }
 
+    /// Decode a column value as the given type.
+    ///
+    /// This uses SQLite data conversion rules for `Decodable` types.
+    /// - Parameters:
+    ///   - column: The column name to decode.
+    ///   - type: The expected type to decode as.
+    /// - Throws: A `DecodingError` if the value cannot be decoded.
+    /// - Returns: The decoded value.
     public func decode<T: Decodable>(
         column: String,
         as type: T.Type
