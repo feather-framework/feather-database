@@ -18,7 +18,7 @@ public protocol DatabaseConnection {
     @discardableResult
     func execute(
         query: Query
-    ) async throws -> Result
+    ) async throws(DatabaseError) -> Result
 
     func close() async throws
 }

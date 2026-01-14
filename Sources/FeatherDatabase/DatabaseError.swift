@@ -7,7 +7,7 @@
 
 public protocol DatabaseTransactionError: Error, Sendable {
     var file: String { get }
-    var line: UInt { get }
+    var line: Int { get }
 
     var beginError: Error? { get set }
     var closureError: Error? { get set }
@@ -15,7 +15,7 @@ public protocol DatabaseTransactionError: Error, Sendable {
     var rollbackError: Error? { get set }
 }
 
-public enum DatabaseError: Error {
+public enum DatabaseError: Error, Sendable {
     case connection(Error)
     case query(Error)
     case transaction(DatabaseTransactionError)

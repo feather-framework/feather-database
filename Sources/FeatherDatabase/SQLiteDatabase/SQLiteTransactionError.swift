@@ -1,7 +1,7 @@
 public struct SQLiteTransactionError: DatabaseTransactionError {
 
     public let file: String
-    public let line: UInt
+    public let line: Int
 
     public var beginError: Error?
     public var closureError: Error?
@@ -10,7 +10,7 @@ public struct SQLiteTransactionError: DatabaseTransactionError {
 
     public init(
         file: String = #fileID,
-        line: UInt = #line,
+        line: Int = #line,
         beginError: Error? = nil,
         closureError: Error? = nil,
         commitError: Error? = nil,

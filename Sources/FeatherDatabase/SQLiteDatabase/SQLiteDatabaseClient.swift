@@ -19,19 +19,20 @@ public struct SQLiteDatabaseClient: DatabaseClient {
 
     @discardableResult
     public func connection(
-        _ closure:
-            nonisolated(nonsending)(SQLiteConnection) async throws ->
-        sending SQLiteQueryResult
-    ) async throws -> sending SQLiteQueryResult {
-        try await closure(connection)
+        _ closure: nonisolated(nonsending)(SQLiteConnection) async throws -> sending SQLiteQueryResult
+    ) async throws(DatabaseError) -> sending SQLiteQueryResult {
+        do {
+            return try await closure(connection)
+        }
+        catch {
+            throw .connection(error)
+        }
     }
 
     @discardableResult
     public func transaction(
-        _ closure:
-            nonisolated(nonsending)(SQLiteConnection) async throws ->
-        sending SQLiteQueryResult
-    ) async throws -> sending SQLiteQueryResult {
+        _ closure: nonisolated(nonsending)(SQLiteConnection) async throws -> sending SQLiteQueryResult
+    ) async throws(DatabaseError) -> sending SQLiteQueryResult {
 
         do {
             try await connection.execute(query: "BEGIN;")
@@ -86,7 +87,12 @@ public struct SQLiteDatabaseClient: DatabaseClient {
         // nothing to do
     }
     
-    public func shutdown() async throws {
-        try await connection.close()
+    public func shutdown() async throws(DatabaseError) {
+        do {
+            try await connection.close()
+        }
+        catch {
+            throw .connection(error)
+        }
     }
 }
