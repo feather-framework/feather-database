@@ -1,17 +1,9 @@
-//
-//  File.swift
-//
-//
-//  Created by Tibor Bodecs on 07/03/2024.
-//
 import ServiceLifecycle
 
-/// The Database protocol.
-public protocol Database: Sendable, ServiceLifecycle.Service {
+/// The database client protocol.
+public protocol DatabaseClient: Service {
 
     associatedtype Connection: DatabaseConnection
-
-    //    var dialect: String { get }
 
     @discardableResult
     func connection(
@@ -31,14 +23,9 @@ public protocol Database: Sendable, ServiceLifecycle.Service {
     func execute(
         query: Connection.Query,
     ) async throws -> Connection.Result
-
 }
 
-extension Database {
-
-    public func run() async throws {
-
-    }
+extension DatabaseClient {
 
     @discardableResult
     public func execute(

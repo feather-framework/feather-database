@@ -19,7 +19,7 @@ struct PostgresDatabaseTestSuite {
     func connection() async throws {
         let logger = Logger(label: "test")
 
-        let database: any Database = PostgresDatabase(
+        let database: any DatabaseClient = PostgresDatabaseClient(
             client: .init(
                 configuration: .init(
                     host: "localhost",

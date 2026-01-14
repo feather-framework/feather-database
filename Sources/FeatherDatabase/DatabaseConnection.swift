@@ -11,7 +11,7 @@ import Logging
 public protocol DatabaseConnection {
     
     associatedtype Query: DatabaseQuery
-    associatedtype Result: DatabaseResult
+    associatedtype Result: DatabaseQueryResult
 
     var logger: Logger { get }
 
