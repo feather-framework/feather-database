@@ -74,7 +74,6 @@ struct PostgresDatabaseTestSuite {
                             1=\#(1);
                         """#
                 )
-                print("aaaaabbbbbcccccc")
 
                 let resultArray = try await result.collect()
                 #expect(resultArray.count == 1)
