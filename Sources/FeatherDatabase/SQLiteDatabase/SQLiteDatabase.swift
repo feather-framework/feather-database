@@ -125,18 +125,21 @@ extension SQLiteQuery {
 
 extension SQLiteConnection: DatabaseConnection {
 
-    public func execute<T: DatabaseResult, Q: DatabaseQuery>(
-        query: Q
-    ) async throws -> T {
+    public typealias Query = SQLiteQuery
+    public typealias Result = SQLiteResultSequence
+
+    public func execute(
+        query: Query
+    ) async throws -> Result {
         print(query.sql)
         print(query.bindings)
 
         let result = try await self.query(
             query.sql,
-            query.bindings as! [SQLiteData]
+            query.bindings
         )
 
-        return SQLiteResultSequence(elements: result) as! T
+        return SQLiteResultSequence(elements: result)
     }
 }
 
@@ -288,25 +291,24 @@ public struct SQLiteDatabase: Sendable {
 
 extension SQLiteDatabase: Database {
 
-    public typealias Query = SQLiteQuery
-    public typealias Result = SQLiteResultSequence
+    public typealias Connection = SQLiteConnection
 
     @discardableResult
     public func connection(
         _ closure:
-            nonisolated(nonsending)(any DatabaseConnection) async throws ->
-            sending Result
-    ) async throws -> sending Result {
+            nonisolated(nonsending)(Connection) async throws ->
+        sending Connection.Result
+    ) async throws -> sending Connection.Result {
         try await closure(connection)
     }
 
     @discardableResult
     public func transaction(
         _ closure:
-            nonisolated(nonsending)(any DatabaseConnection) async throws ->
-            sending Result
-    ) async throws -> sending Result {
-        // TODO: implement proper transaction
+            nonisolated(nonsending)(Connection) async throws ->
+        sending Connection.Result
+    ) async throws -> sending Connection.Result {
+        // TODO: implement proper transaction support
         try await closure(connection)
     }
 

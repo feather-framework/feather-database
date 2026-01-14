@@ -425,12 +425,12 @@ struct SQLiteDatabaseTestSuite {
 
         try await database.transaction { connection in
             try await connection.execute(
-                query: SQLiteQuery(unsafeSQL: #"""
+                query: #"""
                     INSERT INTO "items"
                         ("id", "name")
                     VALUES
                         (1, 'widget');
-                    """#)
+                    """#
             )
         }
 

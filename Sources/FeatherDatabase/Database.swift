@@ -9,29 +9,28 @@ import ServiceLifecycle
 /// The Database protocol.
 public protocol Database: Sendable, ServiceLifecycle.Service {
 
-    associatedtype Query: DatabaseQuery
-    associatedtype Result: DatabaseResult
+    associatedtype Connection: DatabaseConnection
 
     //    var dialect: String { get }
 
     @discardableResult
     func connection(
         _:
-            nonisolated(nonsending)(any DatabaseConnection) async throws ->
-            sending Result,
-    ) async throws -> sending Result
+            nonisolated(nonsending)(Connection) async throws ->
+        sending Connection.Result,
+    ) async throws -> sending Connection.Result
 
     @discardableResult
     func transaction(
         _:
-            nonisolated(nonsending)(any DatabaseConnection) async throws ->
-            sending Result,
-    ) async throws -> sending Result
+            nonisolated(nonsending)(Connection) async throws ->
+        sending Connection.Result,
+    ) async throws -> sending Connection.Result
 
     @discardableResult
     func execute(
-        query: Query,
-    ) async throws -> Result
+        query: Connection.Query,
+    ) async throws -> Connection.Result
 
 }
 
@@ -43,8 +42,8 @@ extension Database {
 
     @discardableResult
     public func execute(
-        query: Query,
-    ) async throws -> Result {
+        query: Connection.Query,
+    ) async throws -> Connection.Result {
         try await connection { connection in
             try await connection.execute(query: query)
         }

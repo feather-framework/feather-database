@@ -7,13 +7,17 @@
 
 import Logging
 
+
 public protocol DatabaseConnection {
+    
+    associatedtype Query: DatabaseQuery
+    associatedtype Result: DatabaseResult
 
     var logger: Logger { get }
 
-    func execute<T: DatabaseResult, Q: DatabaseQuery>(
-        query: Q
-    ) async throws -> T
+    func execute(
+        query: Query
+    ) async throws -> Result
 
     func close() async throws
 }

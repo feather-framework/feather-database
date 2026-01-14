@@ -15,18 +15,21 @@ extension PostgresQuery: DatabaseQuery {
 }
 
 extension PostgresConnection: DatabaseConnection {
+    
+    public typealias Query = PostgresQuery
+    public typealias Result = RowSequence
 
-    public func execute<T: DatabaseResult, Q: DatabaseQuery>(
-        query: Q
-    ) async throws -> T {
+    public func execute(
+        query: Query
+    ) async throws -> Result {
         let result = try await self.query(
             .init(
                 unsafeSQL: query.sql,
-                binds: query.bindings as! PostgresBindings
+                binds: query.bindings
             ),
             logger: logger
         )
-        return RowSequence(backingSequence: result) as! T
+        return RowSequence(backingSequence: result)
     }
 }
 
@@ -132,24 +135,23 @@ public struct PostgresDatabase: Sendable {
 }
 
 extension PostgresDatabase: Database {
-    public typealias Query = PostgresQuery
-    public typealias Result = RowSequence
+    public typealias Connection = PostgresConnection
 
     @discardableResult
     public func connection(
         _ closure:
-            nonisolated(nonsending)(any DatabaseConnection) async throws ->
-            sending Result
-    ) async throws -> sending Result {
+            nonisolated(nonsending)(Connection) async throws ->
+        sending Connection.Result
+    ) async throws -> sending Connection.Result {
         try await client.withConnection(closure)
     }
 
     @discardableResult
     public func transaction(
         _ closure:
-            nonisolated(nonsending)(any DatabaseConnection) async throws ->
-            sending Result
-    ) async throws -> sending Result {
+            nonisolated(nonsending)(Connection) async throws ->
+        sending Connection.Result
+    ) async throws -> sending Connection.Result {
         try await client.withTransaction(logger: logger, closure)
     }
 
