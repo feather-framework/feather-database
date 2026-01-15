@@ -15,6 +15,6 @@ struct DatabaseTestSuite {
 
     @Test
     func example() async throws {
-        
+
     }
 }
