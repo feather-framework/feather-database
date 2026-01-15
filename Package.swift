@@ -1,16 +1,19 @@
 // swift-tools-version:6.2
 import PackageDescription
 
+// NOTE: https://github.com/swift-server/swift-http-server/blob/main/Package.swift
 var defaultSwiftSettings: [SwiftSetting] =
 [
+    // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0441-formalize-language-mode-terminology.md
     .swiftLanguageMode(.v6),
-    .enableExperimentalFeature("AvailabilityMacro=featherDatabase 1.0:macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"),
     // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0444-member-import-visibility.md
     .enableUpcomingFeature("MemberImportVisibility"),
+    // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md
+    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
     // https://forums.swift.org/t/experimental-support-for-lifetime-dependencies-in-swift-6-2-and-beyond/78638
     .enableExperimentalFeature("Lifetimes"),
-    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-
+    // https://github.com/swiftlang/swift/pull/65218
+    .enableExperimentalFeature("AvailabilityMacro=featherDatabase 1.0:macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"),
 ]
 
 let package = Package(
@@ -25,7 +28,6 @@ let package = Package(
     ],
     products: [
         .library(name: "FeatherDatabase", targets: ["FeatherDatabase"]),
-        .library(name: "FeatherDatabaseTesting", targets: ["FeatherDatabaseTesting"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log", from: "1.5.0"),
@@ -44,17 +46,10 @@ let package = Package(
             ],
             swiftSettings: defaultSwiftSettings
         ),
-        .target(
-            name: "FeatherDatabaseTesting",
-            dependencies: [
-                .target(name: "FeatherDatabase"),
-            ],
-            swiftSettings: defaultSwiftSettings
-        ),
         .testTarget(
             name: "FeatherDatabaseTests",
             dependencies: [
-                .target(name: "FeatherDatabaseTesting"),
+                .target(name: "FeatherDatabase"),
             ],
             swiftSettings: defaultSwiftSettings
         ),

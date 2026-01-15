@@ -7,6 +7,7 @@ AGENTS.md
 .swiftheaderignore
 LICENSE
 Makefile
+Package.swift
 Package.resolved
 README.md
 docker-compose.yaml

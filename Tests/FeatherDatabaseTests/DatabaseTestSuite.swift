@@ -1,6 +1,6 @@
 //
 //  DatabaseTestSuite.swift
-//  Feather-database
+//  feather-database
 //
 //  Created by Tibor Bödecs on 2026. 01. 10..
 //
