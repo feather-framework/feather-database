@@ -41,5 +41,9 @@ testprep:
 	rm -rf docker/mariadb/certificates && mkdir -p docker/mariadb/certificates && cd docker/mariadb/certificates && ../scripts/generate-certificates.sh
 	docker compose up -d --build postgres mariadb
 
-test: testprep
+testrun: testprep
 	swift test --parallel
+
+test: testrun
+	docker compose down
+	

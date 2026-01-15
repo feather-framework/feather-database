@@ -36,11 +36,4 @@ public protocol DatabaseConnection {
     func execute(
         query: Query
     ) async throws(DatabaseError) -> Result
-
-    /// Close the underlying connection.
-    ///
-    /// Call this to release resources when the connection is no longer needed.
-    /// - Throws: An error if closing the connection fails.
-    /// - Returns: Nothing.
-    func close() async throws
 }

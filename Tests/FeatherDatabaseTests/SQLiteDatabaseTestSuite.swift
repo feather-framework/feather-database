@@ -19,7 +19,7 @@ struct SQLiteDatabaseTestSuite {
         _ closure: ((SQLiteDatabaseClient) async throws -> Void)
     ) async throws {
         var logger = Logger(label: "test")
-        logger.logLevel = .debug
+        logger.logLevel = .info
 
         let connection = try await SQLiteConnection.open(
             storage: .memory,
@@ -620,7 +620,7 @@ struct SQLiteDatabaseTestSuite {
                 Issue.record("Expected decoding a missing column to throw.")
             }
             catch DecodingError.dataCorrupted {
-                #expect(true)
+                
             }
             catch {
                 Issue.record(
@@ -668,7 +668,7 @@ struct SQLiteDatabaseTestSuite {
                 Issue.record("Expected decoding a string as Int to throw.")
             }
             catch DecodingError.typeMismatch {
-                #expect(true)
+                
             }
             catch {
                 Issue.record(

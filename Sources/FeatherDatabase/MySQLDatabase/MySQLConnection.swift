@@ -28,14 +28,4 @@ extension MySQLConnection: DatabaseConnection {
             throw .query(error)
         }
     }
-
-    /// Close the underlying connection.
-    ///
-    /// Call this to release resources when the connection is no longer needed.
-    /// - Throws: An error if closing the connection fails.
-    /// - Returns: Nothing.
-    public func close() async throws {
-        let future: EventLoopFuture<Void> = self.close()
-        try await future.get()
-    }
 }

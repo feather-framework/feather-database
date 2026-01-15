@@ -77,11 +77,11 @@ struct MySQLDatabaseTestSuite {
         do {
             try await closure(database)
 
-            try await connection.close()
+            try await connection.close().get()
             try await eventLoopGroup.shutdownGracefully()
         }
         catch {
-            try await connection.close()
+            try await connection.close().get()
             try await eventLoopGroup.shutdownGracefully()
 
             throw error
@@ -797,7 +797,7 @@ struct MySQLDatabaseTestSuite {
                 Issue.record("Expected decoding a missing column to throw.")
             }
             catch DecodingError.dataCorrupted {
-                #expect(true)
+                
             }
             catch {
                 Issue.record(
@@ -852,7 +852,7 @@ struct MySQLDatabaseTestSuite {
                 Issue.record("Expected decoding a string as Int to throw.")
             }
             catch DecodingError.typeMismatch {
-                #expect(true)
+                
             }
             catch {
                 Issue.record(
