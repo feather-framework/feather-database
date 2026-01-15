@@ -3,3 +3,4 @@ Sources/FeatherDatabase/DatabaseClient.swift
 Sources/FeatherDatabase/PostgresDatabase/PostgresDatabaseClient.swift
 Sources/FeatherDatabase/SQLiteDatabase/SQLiteDatabaseClient.swift
 Sources/FeatherDatabase/MySQLDatabase/MySQLDatabaseClient.swift
+Tests/FeatherDatabaseTests/Mocks/MockDatabaseClient.swift

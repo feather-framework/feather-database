@@ -19,6 +19,7 @@ lint:
 format:
 	curl -s $(baseUrl)/run-swift-format.sh | bash -s -- --fix
 	find Sources -type f -name '*.swift' -print0 | xargs -0 sed -i '' 's/nonisolated (nonsending/nonisolated(nonsending/g'
+	find Tests -type f -name '*.swift' -print0 | xargs -0 sed -i '' 's/nonisolated (nonsending/nonisolated(nonsending/g'
 
 docc-local:
 	curl -s $(baseUrl)/generate-docc.sh | bash -s -- --local
@@ -46,4 +47,3 @@ testrun: testprep
 
 test: testrun
 	docker compose down
-	
