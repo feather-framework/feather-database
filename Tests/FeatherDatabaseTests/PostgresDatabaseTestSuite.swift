@@ -32,7 +32,8 @@ struct PostgresDatabaseTestSuite {
     }
 
     private func runUsingTestDatabaseClient(
-        _ closure: ((PostgresDatabaseClient) async throws -> Void)
+        _ closure:
+            @escaping (@Sendable (PostgresDatabaseClient) async throws -> Void)
     ) async throws {
         var logger = Logger(label: "test")
         logger.logLevel = .info
@@ -69,12 +70,15 @@ struct PostgresDatabaseTestSuite {
             logger: logger
         )
 
-        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask {
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
                 await client.run()
             }
-            try await closure(database)
-            taskGroup.cancelAll()
+            group.addTask {
+                try await closure(database)
+            }
+            try await group.next()
+            group.cancelAll()
         }
     }
 
