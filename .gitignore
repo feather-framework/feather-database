@@ -7,3 +7,4 @@ DerivedData
 .swiftpm
 *.xctestplan
 docker/postgres/certificates
+docker/mariadb/certificates
