@@ -11,7 +11,6 @@ import PostgresNIO
 import Testing
 
 @testable import FeatherDatabase
-@testable import FeatherDatabaseTesting
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
@@ -572,6 +571,53 @@ struct PostgresDatabaseTestSuite {
             else {
                 Issue.record("Expected second iterator element to exist.")
             }
+        }
+    }
+
+    @Test
+    func collectFirstReturnsFirstRow() async throws {
+        try await runUsingTestDatabaseClient { database in
+            let suffix = randomTableSuffix()
+            let table = "widgets_\(suffix)"
+
+            try await database.execute(
+                query: #"""
+                    DROP TABLE IF EXISTS "\#(unescaped: table)" CASCADE;
+                    """#
+            )
+            try await database.execute(
+                query: #"""
+                    CREATE TABLE "\#(unescaped: table)" (
+                        "id" SERIAL PRIMARY KEY,
+                        "name" TEXT NOT NULL
+                    );
+                    """#
+            )
+
+            try await database.execute(
+                query: #"""
+                    INSERT INTO "\#(unescaped: table)"
+                        ("name")
+                    VALUES
+                        ('alpha'),
+                        ('beta');
+                    """#
+            )
+
+            let result = try await database.execute(
+                query: #"""
+                    SELECT "name"
+                    FROM "\#(unescaped: table)"
+                    ORDER BY "id" ASC;
+                    """#
+            )
+
+            let first = try await result.collectFirst()
+
+            #expect(first != nil)
+            #expect(
+                try first?.decode(column: "name", as: String.self) == "alpha"
+            )
         }
     }
 

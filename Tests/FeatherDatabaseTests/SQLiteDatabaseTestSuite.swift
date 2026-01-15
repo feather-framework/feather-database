@@ -10,7 +10,6 @@ import SQLiteNIO
 import Testing
 
 @testable import FeatherDatabase
-@testable import FeatherDatabaseTesting
 
 @Suite
 struct SQLiteDatabaseTestSuite {
@@ -428,6 +427,46 @@ struct SQLiteDatabaseTestSuite {
             else {
                 Issue.record("Expected second iterator element to exist.")
             }
+        }
+    }
+
+    @Test
+    func collectFirstReturnsFirstRow() async throws {
+        try await runUsingTestDatabaseClient { database in
+
+            try await database.execute(
+                query: #"""
+                    CREATE TABLE "widgets" (
+                        "id" INTEGER NOT NULL PRIMARY KEY,
+                        "name" TEXT NOT NULL
+                    );
+                    """#
+            )
+
+            try await database.execute(
+                query: #"""
+                    INSERT INTO "widgets"
+                        ("id", "name")
+                    VALUES
+                        (1, 'alpha'),
+                        (2, 'beta');
+                    """#
+            )
+
+            let result = try await database.execute(
+                query: #"""
+                    SELECT "name"
+                    FROM "widgets"
+                    ORDER BY "id" ASC;
+                    """#
+            )
+
+            let first = try await result.collectFirst()
+
+            #expect(first != nil)
+            #expect(
+                try first?.decode(column: "name", as: String.self) == "alpha"
+            )
         }
     }
 
