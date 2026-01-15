@@ -1,15 +1,6 @@
 {
-  "originHash" : "8491150f1348e9f9fcf89285c37e5bd66aab86f2b06604491b1a166adf4e4333",
+  "originHash" : "9cd847148e4ac55ca0e786a5b371d876f7c6f1e353fe0d499e1fcd03ff32f886",
   "pins" : [
-    {
-      "identity" : "async-kit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vapor/async-kit",
-      "state" : {
-        "revision" : "6f3615ccf2ac3c2ae0c8087d527546e9544a43dd",
-        "version" : "1.21.0"
-      }
-    },
     {
       "identity" : "mysql-nio",
       "kind" : "remoteSourceControl",

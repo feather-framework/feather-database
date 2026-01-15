@@ -10,7 +10,7 @@ WORKDIR /var/lib/postgresql
 RUN rm -rf data/*
 
 # Copy SSL certificate files into the /certs/ directory in the container
-COPY docker/certificates/server.pem docker/certificates/server.key docker/certificates/ca.pem /certs/
+COPY docker/postgres/certificates/server.pem docker/postgres/certificates/server.key docker/postgres/certificates/ca.pem /certs/
 # Set ownership to the postgres user and restrict permissions on the private key for security
 RUN chown postgres:postgres /certs/* && chmod 600 /certs/server.key
 

@@ -5,12 +5,10 @@
 //  Created by Tibor Bödecs on 2026. 01. 10..
 //
 
-import ServiceLifecycle
-
 /// A database client that manages connections and transactions.
 ///
 /// Implementations provide convenience APIs for executing queries.
-public protocol DatabaseClient: Service {
+public protocol DatabaseClient: Sendable {
 
     /// The connection type used by this client.
     ///
@@ -52,12 +50,6 @@ public protocol DatabaseClient: Service {
         query: Connection.Query,
     ) async throws(DatabaseError) -> Connection.Result
 
-    /// Shut down the client and release any resources.
-    ///
-    /// Call this during application shutdown or when the client is no longer needed.
-    /// - Throws: A `DatabaseError` if shutdown fails.
-    /// - Returns: Nothing.
-    func shutdown() async throws(DatabaseError)
 }
 
 extension DatabaseClient {

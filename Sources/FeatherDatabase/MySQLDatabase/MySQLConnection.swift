@@ -8,7 +8,6 @@
 import MySQLNIO
 import NIOCore
 
-
 extension MySQLConnection: DatabaseConnection {
 
     /// Execute a MySQL query on this connection.

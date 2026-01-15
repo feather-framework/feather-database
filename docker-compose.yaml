@@ -2,7 +2,7 @@ services:
     postgres:
         build:
             context: .
-            dockerfile: docker/db/Dockerfile
+            dockerfile: docker/postgres/Dockerfile
         volumes:
             - 'postgres:/var/lib/postgresql'
         ports:

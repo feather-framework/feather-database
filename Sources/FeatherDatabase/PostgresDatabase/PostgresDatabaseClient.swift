@@ -80,24 +80,4 @@ public struct PostgresDatabaseClient: DatabaseClient {
             throw .connection(error)
         }
     }
-
-    // MARK: - service lifecycle
-
-    /// Start the client service.
-    ///
-    /// This forwards to the underlying Postgres client run loop.
-    /// - Throws: An error if the run loop fails.
-    /// - Returns: Nothing.
-    public func run() async throws {
-        await client.run()
-    }
-
-    /// Shut down the client.
-    ///
-    /// Postgres clients do not require explicit shutdown work here.
-    /// - Throws: A `DatabaseError` if shutdown fails.
-    /// - Returns: Nothing.
-    public func shutdown() async throws(DatabaseError) {
-        // nothing to do
-    }
 }

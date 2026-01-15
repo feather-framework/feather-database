@@ -29,25 +29,18 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log", from: "1.5.0"),
-        .package(url: "https://github.com/swift-server/swift-service-lifecycle", from: "2.9.0"),
-//        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
         .package(url: "https://github.com/vapor/postgres-nio", from: "1.30.0"),
         .package(url: "https://github.com/vapor/sqlite-nio", from: "1.12.0"),
         .package(url: "https://github.com/vapor/mysql-nio", from: "1.9.0"),
-        
-        .package(url: "https://github.com/vapor/async-kit", from: "1.21.0"),
     ],
     targets: [
         .target(
             name: "FeatherDatabase",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
-//                .product(name: "Algorithms", package: "swift-algorithms"),
-                .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
                 .product(name: "PostgresNIO", package: "postgres-nio"),
                 .product(name: "SQLiteNIO", package: "sqlite-nio"),
                 .product(name: "MySQLNIO", package: "mysql-nio"),
-                .product(name: "AsyncKit", package: "async-kit"),
             ],
             swiftSettings: defaultSwiftSettings
         ),

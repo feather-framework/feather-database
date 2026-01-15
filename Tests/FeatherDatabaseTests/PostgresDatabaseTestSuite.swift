@@ -21,41 +21,6 @@ import Foundation
 @Suite
 struct PostgresDatabaseTestSuite {
 
-    private func getTestDatabaseClient() async throws -> PostgresDatabaseClient
-    {
-        var logger = Logger(label: "test")
-        logger.logLevel = .info
-
-        let finalCertPath = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-            .appendingPathComponent("docker")
-            .appendingPathComponent("certificates")
-            .appendingPathComponent("ca.pem")
-            .path()
-
-        var tlsConfig = TLSConfiguration.makeClientConfiguration()
-        let rootCert = try NIOSSLCertificate.fromPEMFile(finalCertPath)
-        tlsConfig.trustRoots = .certificates(rootCert)
-        tlsConfig.certificateVerification = .fullVerification
-
-        return .init(
-            client: .init(
-                configuration: .init(
-                    host: "127.0.0.1",
-                    port: 5432,
-                    username: "postgres",
-                    password: "postgres",
-                    database: "postgres",
-                    tls: .require(tlsConfig)
-                ),
-                backgroundLogger: logger
-            ),
-            logger: logger
-        )
-    }
-
     private func randomTableSuffix() -> String {
         let characters = Array("abcdefghijklmnopqrstuvwxyz0123456789")
         var suffix = ""
@@ -69,11 +34,44 @@ struct PostgresDatabaseTestSuite {
     private func runUsingTestDatabaseClient(
         _ closure: ((PostgresDatabaseClient) async throws -> Void)
     ) async throws {
-        let database = try await getTestDatabaseClient()
+        var logger = Logger(label: "test")
+        logger.logLevel = .info
+
+        let finalCertPath = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("docker")
+            .appendingPathComponent("postgres")
+            .appendingPathComponent("certificates")
+            .appendingPathComponent("ca.pem")
+            .path()
+
+        var tlsConfig = TLSConfiguration.makeClientConfiguration()
+        let rootCert = try NIOSSLCertificate.fromPEMFile(finalCertPath)
+        tlsConfig.trustRoots = .certificates(rootCert)
+        tlsConfig.certificateVerification = .fullVerification
+
+        let client = PostgresClient(
+            configuration: .init(
+                host: "127.0.0.1",
+                port: 5432,
+                username: "postgres",
+                password: "postgres",
+                database: "postgres",
+                tls: .require(tlsConfig)
+            ),
+            backgroundLogger: logger
+        )
+
+        let database = PostgresDatabaseClient(
+            client: client,
+            logger: logger
+        )
 
         try await withThrowingTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask {
-                try await database.run()
+                await client.run()
             }
             try await closure(database)
             taskGroup.cancelAll()

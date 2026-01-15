@@ -27,44 +27,41 @@ struct MySQLDatabaseTestSuite {
         return suffix
     }
 
-
     private func runUsingTestDatabaseClient(
         _ closure: ((MySQLDatabaseClient) async throws -> Void)
     ) async throws {
+        var logger = Logger(label: "test")
+        logger.logLevel = .info
+
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        var client: MySQLDatabaseClient?
+
+        let connection =
+            try await MySQLConnection.connect(
+                to: try SocketAddress(ipAddress: "127.0.0.1", port: 3306),
+                username: "mariadb",
+                database: "mariadb",
+                password: "mariadb",
+                tlsConfiguration: nil,
+                logger: logger,
+                on: eventLoopGroup.next()
+            )
+            .get()
+
+        let database = MySQLDatabaseClient(
+            connection: connection,
+            logger: logger
+        )
 
         do {
-            var logger = Logger(label: "test")
-            logger.logLevel = .info
+            try await closure(database)
 
-            let connection = try await
-                MySQLConnection.connect(
-                    to: try SocketAddress(ipAddress: "127.0.0.1", port: 3306),
-                    username: "mariadb",
-                    database: "mariadb",
-                    password: "mariadb",
-                    tlsConfiguration: nil,
-                    logger: logger,
-                    on: eventLoopGroup.next()
-                ).get()
-            
-
-            let databaseClient = MySQLDatabaseClient(
-                connection: connection,
-                logger: logger
-            )
-            client = databaseClient
-
-            try await closure(databaseClient)
-            try await databaseClient.shutdown()
-//            try await shutdownEventLoopGroup(eventLoopGroup)
+            try await connection.close()
+            try await eventLoopGroup.shutdownGracefully()
         }
         catch {
-            if let client {
-                try? await client.shutdown()
-            }
-//            try? await shutdownEventLoopGroup(eventLoopGroup)
+            try await connection.close()
+            try await eventLoopGroup.shutdownGracefully()
+
             throw error
         }
     }
@@ -275,7 +272,9 @@ struct MySQLDatabaseTestSuite {
             #expect((try? item1.decode(column: "value", as: Int?.self)) == nil)
 
             #expect(try item1.decode(column: "value", as: String.self) == "abc")
-            #expect((try? item2.decode(column: "value", as: String.self)) == nil)
+            #expect(
+                (try? item2.decode(column: "value", as: String.self)) == nil
+            )
 
             #expect(
                 (try item1.decode(column: "value", as: String?.self))
@@ -339,7 +338,9 @@ struct MySQLDatabaseTestSuite {
             #expect(try item1.decode(column: "id", as: Int.self) == 1)
             #expect(try item2.decode(column: "id", as: Int.self) == 2)
 
-            #expect(try item1.decode(column: "value", as: String?.self) == "abc")
+            #expect(
+                try item1.decode(column: "value", as: String?.self) == "abc"
+            )
             #expect(try item2.decode(column: "value", as: String?.self) == nil)
         }
     }
@@ -434,7 +435,9 @@ struct MySQLDatabaseTestSuite {
                 .collect()
 
             #expect(result.count == 1)
-            #expect(try result[0].decode(column: "body", as: String?.self) == nil)
+            #expect(
+                try result[0].decode(column: "body", as: String?.self) == nil
+            )
         }
     }
 
@@ -480,7 +483,8 @@ struct MySQLDatabaseTestSuite {
 
             #expect(result.count == 1)
             #expect(
-                try result[0].decode(column: "label", as: String.self) == "alpha"
+                try result[0].decode(column: "label", as: String.self)
+                    == "alpha"
             )
         }
     }
@@ -597,7 +601,8 @@ struct MySQLDatabaseTestSuite {
 
             #expect(result.count == 1)
             #expect(
-                try result[0].decode(column: "name", as: String.self) == "widget"
+                try result[0].decode(column: "name", as: String.self)
+                    == "widget"
             )
         }
     }
@@ -642,19 +647,25 @@ struct MySQLDatabaseTestSuite {
                             """#
                     )
                 }
-                Issue.record("Expected database transaction error to be thrown.")
+                Issue.record(
+                    "Expected database transaction error to be thrown."
+                )
             }
             catch DatabaseError.transaction(let error) {
                 #expect(error.beginError == nil)
                 #expect(error.closureError != nil)
                 #expect(
-                    error.closureError.debugDescription.contains("cannot be null")
+                    error.closureError.debugDescription.contains(
+                        "cannot be null"
+                    )
                 )
                 #expect(error.rollbackError == nil)
                 #expect(error.commitError == nil)
             }
             catch {
-                Issue.record("Expected database transaction error to be thrown.")
+                Issue.record(
+                    "Expected database transaction error to be thrown."
+                )
             }
 
             let result =
@@ -713,7 +724,8 @@ struct MySQLDatabaseTestSuite {
 
             #expect(result.count == 1)
             #expect(
-                try result[0].decode(column: "value", as: Double.self) == expected
+                try result[0].decode(column: "value", as: Double.self)
+                    == expected
             )
         }
     }
@@ -766,7 +778,9 @@ struct MySQLDatabaseTestSuite {
                 #expect(true)
             }
             catch {
-                Issue.record("Expected a dataCorrupted error for missing column.")
+                Issue.record(
+                    "Expected a dataCorrupted error for missing column."
+                )
             }
         }
     }

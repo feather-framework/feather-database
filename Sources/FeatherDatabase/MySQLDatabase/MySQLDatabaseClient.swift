@@ -41,7 +41,8 @@ public struct MySQLDatabaseClient: DatabaseClient {
     /// - Returns: The query result produced by the closure.
     @discardableResult
     public func connection(
-        _ closure: nonisolated(nonsending)(MySQLConnection) async throws
+        _ closure:
+            nonisolated(nonsending)(MySQLConnection) async throws
             -> sending MySQLQueryResult
     ) async throws(DatabaseError) -> sending MySQLQueryResult {
         do {
@@ -63,7 +64,8 @@ public struct MySQLDatabaseClient: DatabaseClient {
     /// - Returns: The query result produced by the closure.
     @discardableResult
     public func transaction(
-        _ closure: nonisolated(nonsending)(MySQLConnection) async throws
+        _ closure:
+            nonisolated(nonsending)(MySQLConnection) async throws
             -> sending MySQLQueryResult
     ) async throws(DatabaseError) -> sending MySQLQueryResult {
 
@@ -111,31 +113,6 @@ public struct MySQLDatabaseClient: DatabaseClient {
             }
 
             throw DatabaseError.transaction(txError)
-        }
-    }
-
-    // MARK: - service lifecycle
-
-    /// Start the client service.
-    ///
-    /// MySQL clients have no run-time behavior to start.
-    /// - Throws: Nothing.
-    /// - Returns: Nothing.
-    public func run() async throws {
-        // nothing to do
-    }
-
-    /// Shut down the client and close the connection.
-    ///
-    /// This releases MySQL resources held by the connection.
-    /// - Throws: A `DatabaseError` if closing fails.
-    /// - Returns: Nothing.
-    public func shutdown() async throws(DatabaseError) {
-        do {
-            try await connection.close()
-        }
-        catch {
-            throw .connection(error)
         }
     }
 }

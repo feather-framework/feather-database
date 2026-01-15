@@ -113,29 +113,4 @@ public struct SQLiteDatabaseClient: DatabaseClient {
             throw DatabaseError.transaction(txError)
         }
     }
-
-    // MARK: - service lifecycle
-
-    /// Start the client service.
-    ///
-    /// SQLite clients have no run-time behavior to start.
-    /// - Throws: Nothing.
-    /// - Returns: Nothing.
-    public func run() async throws {
-        // nothing to do
-    }
-
-    /// Shut down the client and close the connection.
-    ///
-    /// This releases SQLite resources held by the connection.
-    /// - Throws: A `DatabaseError` if closing fails.
-    /// - Returns: Nothing.
-    public func shutdown() async throws(DatabaseError) {
-        do {
-            try await connection.close()
-        }
-        catch {
-            throw .connection(error)
-        }
-    }
 }

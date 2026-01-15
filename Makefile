@@ -35,5 +35,11 @@ headers:
 fix-headers:
 	curl -s $(baseUrl)/check-swift-headers.sh | bash -s -- --fix
 
-test:
+
+testprep:
+	rm -rf docker/postgres/certificates && mkdir -p docker/postgres/certificates && cd docker/postgres/certificates && ../scripts/generate-certificates.sh
+
+test: testprep
+	docker compose up --build postgres mariadb &
 	swift test --parallel
+	docker compose down
