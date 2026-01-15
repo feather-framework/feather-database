@@ -30,7 +30,9 @@ services:
             retries: 10
 
     mariadb:
-        image: mariadb
+        build:
+            context: .
+            dockerfile: docker/mariadb/Dockerfile
         environment:
             MYSQL_ROOT_PASSWORD: mariadb
             MYSQL_USER: mariadb
@@ -39,7 +41,7 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - ./mariadb/init:/docker-entrypoint-initdb.d:ro
+            - 'mariadb:/docker-entrypoint-initdb.d:ro'
 
 volumes:
     postgres:

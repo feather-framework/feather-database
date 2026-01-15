@@ -6,6 +6,7 @@
 //
 
 import Logging
+import NIOSSL
 import PostgresNIO
 import Testing
 

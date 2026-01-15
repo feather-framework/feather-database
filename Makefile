@@ -38,8 +38,8 @@ fix-headers:
 
 testprep:
 	rm -rf docker/postgres/certificates && mkdir -p docker/postgres/certificates && cd docker/postgres/certificates && ../scripts/generate-certificates.sh
+	rm -rf docker/mariadb/certificates && mkdir -p docker/mariadb/certificates && cd docker/mariadb/certificates && ../scripts/generate-certificates.sh
+	docker compose up -d --build postgres mariadb
 
 test: testprep
-	docker compose up --build postgres mariadb &
 	swift test --parallel
-	docker compose down

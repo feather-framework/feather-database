@@ -1,4 +1,4 @@
-# Use the official PostgreSQL image (using the "latest" tag)
+# Use the official PostgreSQL image
 FROM postgres:18.1
 
 # Update package lists, install netcat-openbsd (useful for waiting on network connections), and clean up apt cache

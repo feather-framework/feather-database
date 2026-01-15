@@ -9,10 +9,17 @@ import Logging
 import MySQLNIO
 import NIOCore
 import NIOPosix
+import NIOSSL
 import Testing
 
 @testable import FeatherDatabase
 @testable import FeatherDatabaseTesting
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 @Suite
 struct MySQLDatabaseTestSuite {
@@ -35,13 +42,28 @@ struct MySQLDatabaseTestSuite {
 
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
+        let finalCertPath = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("docker")
+            .appendingPathComponent("mariadb")
+            .appendingPathComponent("certificates")
+            .appendingPathComponent("ca.pem")
+            .path()
+
+        var tlsConfig = TLSConfiguration.makeClientConfiguration()
+        let rootCert = try NIOSSLCertificate.fromPEMFile(finalCertPath)
+        tlsConfig.trustRoots = .certificates(rootCert)
+        tlsConfig.certificateVerification = .fullVerification
+
         let connection =
             try await MySQLConnection.connect(
                 to: try SocketAddress(ipAddress: "127.0.0.1", port: 3306),
                 username: "mariadb",
                 database: "mariadb",
                 password: "mariadb",
-                tlsConfiguration: nil,
+                tlsConfiguration: tlsConfig,
                 logger: logger,
                 on: eventLoopGroup.next()
             )
@@ -884,4 +906,47 @@ struct MySQLDatabaseTestSuite {
             #expect(!version.isEmpty)
         }
     }
+
+    @Test
+    func sslCheckStatus() async throws {
+        try await runUsingTestDatabaseClient { database in
+            let result = try await database.execute(
+                query: #"""
+                    SHOW VARIABLES LIKE 'have_ssl';
+                    """#
+            )
+
+            let resultArray = try await result.collect()
+            #expect(resultArray.count == 1)
+
+            let item = resultArray[0]
+            let name = try item.decode(column: "Variable_name", as: String.self)
+            #expect(name == "have_ssl")
+
+            let value = try item.decode(column: "Value", as: String.self)
+            #expect(value == "YES")
+        }
+    }
+
+    @Test
+    func sslCheckCypher() async throws {
+        try await runUsingTestDatabaseClient { database in
+            let result = try await database.execute(
+                query: #"""
+                    SHOW SESSION STATUS LIKE "ssl_cipher";
+                    """#
+            )
+
+            let resultArray = try await result.collect()
+            #expect(resultArray.count == 1)
+
+            let item = resultArray[0]
+            let name = try item.decode(column: "Variable_name", as: String.self)
+            #expect(name == "Ssl_cipher")
+
+            let value = try item.decode(column: "Value", as: String.self)
+            #expect(value == "TLS_AES_128_GCM_SHA256")
+        }
+    }
+
 }
