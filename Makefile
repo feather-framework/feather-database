@@ -47,3 +47,6 @@ testrun: testprep
 
 test: testrun
 	docker compose down
+
+docker-test:
+	docker build -t feather-database-tests . -f ./docker/tests/Dockerfile && docker run --rm feather-database-tests
