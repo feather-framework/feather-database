@@ -1,3 +1,1 @@
 Package.swift
-Sources/FeatherDatabase/DatabaseClient.swift
-Tests/FeatherDatabaseTests/Mocks/MockDatabaseClient.swift
