@@ -6,8 +6,6 @@ Abstract database component, providing a shared API surface for database drivers
 
 ## Features
 
-
-
 - 🤝 Database-agnostic abstraction layer
 - 🔀 Designed for modern Swift concurrency
 - 📚 API Documentation is available using DocC
@@ -19,7 +17,7 @@ Abstract database component, providing a shared API surface for database drivers
 ![Platforms: Linux, macOS, iOS, tvOS, watchOS, visionOS](https://img.shields.io/badge/Platforms-Linux_%7C_macOS_%7C_iOS_%7C_tvOS_%7C_watchOS_%7C_visionOS-F05138)
         
 - Swift 6.1+
-- Swift Package Manager
+
 - Platforms: 
     - Linux
     - macOS 15+
@@ -30,21 +28,23 @@ Abstract database component, providing a shared API surface for database drivers
 
 ## Installation
 
-Add the dependency to your `Package.swift`:
+Use Swift Package Manager; add the dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-beta.1")
+.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-beta.1"),
 ```
 
 Then add `FeatherDatabase` to your target dependencies:
 
 ```swift
-.product(name: "FeatherDatabase", package: "feather-database")
+.product(name: "FeatherDatabase", package: "feather-database"),
 ```
 
 ## Usage
-
+ 
 ![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)
+
+API documentation is available at the following link. Refer to the mock objects in the Tests directory if you want to build a custom database driver implementation.
 
 > [!TIP]
 > Avoid calling `database.execute` while in a transaction; use the transaction `connection` instead.
@@ -52,12 +52,22 @@ Then add `FeatherDatabase` to your target dependencies:
 > [!WARNING]  
 > This repository is a work in progress, things can break until it reaches v1.0.0.
 
+
+## Database drivers
+
+The following database driver implementations are available for use:
+
+- [SQLite](https://github.com/feather-framework/feather-sqlite-database)
+- [Postgres](https://github.com/feather-framework/feather-postgres-database)
+- [MySQL](https://github.com/feather-framework/feather-mysql-database)
+
 ## Development
 
 - Build: `swift build`
 - Test: `swift test`
 - Format: `make format`
 - Check: `make check`
+
 
 ## Contributing
 
