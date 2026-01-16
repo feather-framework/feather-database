@@ -18,8 +18,6 @@ lint:
 
 format:
 	curl -s $(baseUrl)/run-swift-format.sh | bash -s -- --fix
-	find Sources -type f -name '*.swift' -print0 | xargs -0 sed -i '' 's/nonisolated (nonsending/nonisolated(nonsending/g'
-	find Tests -type f -name '*.swift' -print0 | xargs -0 sed -i '' 's/nonisolated (nonsending/nonisolated(nonsending/g'
 
 docc-local:
 	curl -s $(baseUrl)/generate-docc.sh | bash -s -- --local
@@ -35,18 +33,9 @@ headers:
 
 fix-headers:
 	curl -s $(baseUrl)/check-swift-headers.sh | bash -s -- --fix
-
-
-testprep:
-	rm -rf docker/postgres/certificates && mkdir -p docker/postgres/certificates && cd docker/postgres/certificates && ../scripts/generate-certificates.sh
-	rm -rf docker/mariadb/certificates && mkdir -p docker/mariadb/certificates && cd docker/mariadb/certificates && ../scripts/generate-certificates.sh
-	docker compose up -d --build postgres mariadb
-
-testrun: testprep
+	
+test:
 	swift test --parallel
-
-test: testrun
-	docker compose down
 
 docker-test:
 	docker build -t feather-database-tests . -f ./docker/tests/Dockerfile && docker run --rm feather-database-tests
