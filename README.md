@@ -1,13 +1,12 @@
 # Feather Database
 
-![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)
-![Platforms: Linux, macOS, iOS, tvOS, watchOS, visionOS](https://img.shields.io/badge/Platforms-Linux_%7C_macOS_%7C_iOS_%7C_tvOS_%7C_watchOS_%7C_visionOS-F05138)
-![Swift 6.1+](https://img.shields.io/badge/Swift-6%2E1%2B-F05138)
+Abstract database component, providing a shared API surface for database drivers written in Swift.
+
 ![Release: 1.0.0-beta.1](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E1-F05138)
 
-Abstract database component for Feather CMS, providing a shared API surface for database drivers written in Swift.
-
 ## Features
+
+
 
 - 🤝 Database-agnostic abstraction layer
 - 🔀 Designed for modern Swift concurrency
@@ -15,6 +14,9 @@ Abstract database component for Feather CMS, providing a shared API surface for 
 - ✅ Code coverage and unit tests
 
 ## Requirements
+
+![Swift 6.1+](https://img.shields.io/badge/Swift-6%2E1%2B-F05138)
+![Platforms: Linux, macOS, iOS, tvOS, watchOS, visionOS](https://img.shields.io/badge/Platforms-Linux_%7C_macOS_%7C_iOS_%7C_tvOS_%7C_watchOS_%7C_visionOS-F05138)
         
 - Swift 6.1+
 - Swift Package Manager
@@ -41,6 +43,8 @@ Then add `FeatherDatabase` to your target dependencies:
 ```
 
 ## Usage
+
+![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)
 
 > [!TIP]
 > Avoid calling `database.execute` while in a transaction; use the transaction `connection` instead.
