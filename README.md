@@ -64,11 +64,12 @@ The following database driver implementations are available for use:
 ## Development
 
 - Build: `swift build`
-- Test: `swift test`
+- Test: 
+    - local: `swift test`
+    - using Docker: `swift docker-test`
 - Format: `make format`
 - Check: `make check`
 
-
 ## Contributing
 
-Pull requests are welcome. Please keep changes focused and include tests for new logic.
+[Pull requests](https://github.com/feather-framework/feather-database/pulls) are welcome. Please keep changes focused and include tests for new logic.
