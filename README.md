@@ -8,8 +8,8 @@ Abstract database component, providing a shared API surface for database drivers
 
 - 🤝 Database-agnostic abstraction layer
 - 🔀 Designed for modern Swift concurrency
-- 📚 API Documentation is available using DocC
-- ✅ Code coverage and unit tests
+- 📚 DocC-based API Documentation
+- ✅ Unit tests and code coverage
 
 ## Requirements
 
@@ -72,4 +72,4 @@ The following database driver implementations are available for use:
 
 ## Contributing
 
-[Pull requests](https://github.com/feather-framework/feather-database/pulls) are welcome. Please keep changes focused and include tests for new logic.
+[Pull requests](https://github.com/feather-framework/feather-database/pulls) are welcome. Please keep changes focused and include tests for new logic. 🙏
