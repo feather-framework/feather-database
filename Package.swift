@@ -24,7 +24,6 @@ defaultSwiftSettings.append(
 
 let package = Package(
     name: "feather-database",
-    // NOTE: platfroms is needed because of dependencies, remove when remove pg & sqlite
     platforms: [
         .macOS(.v15),
         .iOS(.v18),
