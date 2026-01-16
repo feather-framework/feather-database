@@ -1,0 +1,13 @@
+.github/**
+docker/**
+AGENTS.md
+.gitignore
+.swift-format
+.swiftformatignore
+.swiftheaderignore
+LICENSE
+Makefile
+Package.swift
+Package.resolved
+README.md
+docker-compose.yaml
