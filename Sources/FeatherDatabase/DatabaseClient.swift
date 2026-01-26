@@ -24,10 +24,10 @@ public protocol DatabaseClient: Sendable {
     /// - Throws: A `DatabaseError` if acquiring or using the connection fails.
     /// - Returns: The result returned by the closure.
     @discardableResult
-    func connection(
+    func connection<T>(
         isolation: isolated (any Actor)?,
-        _ closure: (Connection) async throws -> sending Connection.Result,
-    ) async throws(DatabaseError) -> sending Connection.Result
+        _ closure: (Connection) async throws -> sending T,
+    ) async throws(DatabaseError) -> sending T
 
     /// Execute work inside a transaction.
     ///
@@ -38,10 +38,10 @@ public protocol DatabaseClient: Sendable {
     /// - Throws: A `DatabaseError` if the transaction fails.
     /// - Returns: The result returned by the closure.
     @discardableResult
-    func transaction(
+    func transaction<T>(
         isolation: isolated (any Actor)?,
-        _ closure: (Connection) async throws -> sending Connection.Result,
-    ) async throws(DatabaseError) -> sending Connection.Result
+        _ closure: (Connection) async throws -> sending T,
+    ) async throws(DatabaseError) -> sending T
 
     /// Execute a query using a managed connection.
     ///
