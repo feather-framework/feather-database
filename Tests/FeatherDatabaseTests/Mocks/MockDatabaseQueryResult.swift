@@ -29,7 +29,7 @@ struct MockDatabaseQueryResult: DatabaseQueryResult {
         }
     }
 
-    func collect() async throws -> [Element] {
+    func collect() async throws(DatabaseError) -> [Element] {
         rows
     }
 
