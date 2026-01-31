@@ -26,7 +26,7 @@ public protocol DatabaseClient: Sendable {
     @discardableResult
     func connection<T>(
         isolation: isolated (any Actor)?,
-        _ closure: (Connection) async throws -> sending T,
+        _ closure: (Connection) async throws(DatabaseError) -> sending T,
     ) async throws(DatabaseError) -> sending T
 
     /// Execute work inside a transaction.
@@ -40,7 +40,7 @@ public protocol DatabaseClient: Sendable {
     @discardableResult
     func transaction<T>(
         isolation: isolated (any Actor)?,
-        _ closure: (Connection) async throws -> sending T,
+        _ closure: (Connection) async throws(DatabaseError) -> sending T,
     ) async throws(DatabaseError) -> sending T
 
     /// Execute a query using a managed connection.
@@ -57,7 +57,7 @@ public protocol DatabaseClient: Sendable {
         isolation: isolated (any Actor)?,
         query: Connection.Query,
         _ handler:
-            @Sendable (Connection.Result) async throws(DatabaseError) -> T
+            @Sendable (Connection.Result) async throws -> T
     ) async throws(DatabaseError) -> T
 
     func execute(
@@ -83,10 +83,19 @@ extension DatabaseClient {
         isolation: isolated (any Actor)? = #isolation,
         query: Connection.Query,
         _ handler:
-            @Sendable (Connection.Result) async throws(DatabaseError) -> T
+            @Sendable (Connection.Result) async throws -> T
     ) async throws(DatabaseError) -> T {
-        try await connection(isolation: isolation) { connection in
-            try await connection.execute(query: query, handler)
+        try await connection(isolation: isolation) {
+            connection async throws(DatabaseError) in
+            do {
+                return try await connection.execute(query: query, handler)
+            }
+            catch let error as DatabaseError {
+                throw error
+            }
+            catch {
+                throw .result(error)
+            }
         }
     }
 

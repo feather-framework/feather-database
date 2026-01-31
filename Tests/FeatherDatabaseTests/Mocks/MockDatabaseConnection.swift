@@ -16,9 +16,17 @@ struct MockDatabaseConnection: DatabaseConnection {
 
     func execute<T>(
         query: MockDatabaseQuery,
-        _ handler: (MockDatabaseQueryResult) async throws(DatabaseError) -> T
-    ) async throws -> T {
+        _ handler: (MockDatabaseQueryResult) async throws -> T
+    ) async throws(DatabaseError) -> T {
         await state.recordExecution(query)
-        return try await handler(result)
+        do {
+            return try await handler(result)
+        }
+        catch let error as DatabaseError {
+            throw error
+        }
+        catch {
+            throw .result(error)
+        }
     }
 }

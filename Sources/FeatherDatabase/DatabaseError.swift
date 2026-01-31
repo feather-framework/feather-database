@@ -46,6 +46,11 @@ public enum DatabaseError: Error, Sendable {
     /// The associated error provides the underlying cause.
     case connection(Error)
 
+    /// A transaction failure.
+    ///
+    /// The associated error includes phase-specific details.
+    case transaction(DatabaseTransactionError)
+
     /// A query execution failure.
     ///
     /// The associated error provides the underlying cause.
@@ -54,10 +59,5 @@ public enum DatabaseError: Error, Sendable {
     /// A query result related failure.
     ///
     /// The associated error provides the underlying cause.
-    case queryResult(Error)
-
-    /// A transaction failure.
-    ///
-    /// The associated error includes phase-specific details.
-    case transaction(DatabaseTransactionError)
+    case result(Error)
 }
