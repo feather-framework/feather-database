@@ -24,14 +24,14 @@ where
     /// This method consumes the sequence and returns all elements.
     /// - Throws: An error if iteration fails.
     /// - Returns: An array of all rows produced by the query.
-    func collect() async throws -> [Element]
+    func collect() async throws(DatabaseError) -> [Element]
 
     /// Collect the first available row from the sequence.
     ///
     /// This method short-circuits after the first element is received.
     /// - Throws: An error if iteration fails.
     /// - Returns: The first row, or `nil` when the sequence is empty.
-    func collectFirst() async throws -> Element?
+    func collectFirst() async throws(DatabaseError) -> Element?
 }
 
 extension DatabaseQueryResult {
@@ -41,10 +41,15 @@ extension DatabaseQueryResult {
     /// This default implementation iterates until it finds the first element.
     /// - Throws: An error if iteration fails.
     /// - Returns: The first row, or `nil` when the sequence is empty.
-    public func collectFirst() async throws -> Element? {
-        for try await item in self {
-            return item
+    public func collectFirst() async throws(DatabaseError) -> Element? {
+        do {
+            for try await item in self {
+                return item
+            }
+            return nil
         }
-        return nil
+        catch {
+            throw .queryResult(error)
+        }
     }
 }
