@@ -29,7 +29,7 @@ struct FeatherDatabaseTestSuite {
         let client = MockDatabaseClient(state: state, connection: connection)
         let query = MockDatabaseQuery(sql: "SELECT 1", bindings: [])
 
-        _ = try await client.execute(query: query)
+        try await client.execute(query: query)
 
         #expect(await state.connectionCount() == 1)
         let executedQueries = await state.executedQueryList()

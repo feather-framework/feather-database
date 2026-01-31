@@ -28,12 +28,14 @@ public protocol DatabaseConnection {
 
     /// Execute a query against the connection.
     ///
-    /// Implementations should translate errors to `DatabaseError`.
-    /// - Parameter query: The query to execute.
+    /// - Parameters:
+    ///  - query: The query to execute.
+    ///  - handler: A closure that transforms the result into a generic value.
     /// - Throws: A `DatabaseError` if execution fails.
     /// - Returns: The result of the query execution.
     @discardableResult
-    func execute(
-        query: Query
-    ) async throws(DatabaseError) -> Result
+    func execute<T>(
+        query: Query,
+        _ handler: (Result) async throws(DatabaseError) -> T
+    ) async throws -> T
 }
