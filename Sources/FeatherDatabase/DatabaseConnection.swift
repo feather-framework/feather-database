@@ -26,7 +26,7 @@ public protocol DatabaseConnection {
     /// This is used to record database-related diagnostics.
     var logger: Logger { get }
 
-    /// Execute a query against the connection.
+    /// Runs a query using the database connection.
     ///
     /// - Parameters:
     ///  - query: The query to execute.
@@ -34,8 +34,13 @@ public protocol DatabaseConnection {
     /// - Throws: A `DatabaseError` if execution fails.
     /// - Returns: The result of the query execution.
     @discardableResult
-    func execute<T>(
-        query: Query,
-        _ handler: (Result) async throws -> T
-    ) async throws -> T
+    func run<T: Sendable>(
+        _ query: Query,
+        _ handler: (Result.Row) async throws -> T
+    ) async throws(DatabaseError) -> [T]
+
+    func run(
+        _ query: Query,
+        _ handler: (Result.Row) async throws -> Void
+    ) async throws(DatabaseError)
 }
