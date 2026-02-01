@@ -30,7 +30,7 @@ struct FeatherDatabaseTestSuite {
         let query = MockDatabaseQuery(sql: "SELECT 1", bindings: [])
 
         let decodedRows = try await client.withConnection { connection in
-            try await connection.run(query) { row in
+            try await connection.run(query: query) { row in
                 try row.decode(column: "name", as: String.self)
             }
         }
@@ -38,17 +38,17 @@ struct FeatherDatabaseTestSuite {
 
         var items: [String] = []
         try await client.withConnection { connection in
-            try await connection.run(query) { row in
+            try await connection.run(query: query) { row in
                 items.append(try row.decode(column: "name", as: String.self))
             }
         }
         print(items)
 
         try await client.withTransaction { connection in
-            try await connection.run(query) { row in
+            try await connection.run(query: query) { row in
                 try row.decode(column: "name", as: String.self)
             }
-            try await connection.run(query) { row in
+            try await connection.run(query: query) { row in
                 try row.decode(column: "name", as: String.self)
             }
             return "ok"

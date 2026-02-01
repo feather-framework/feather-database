@@ -19,8 +19,8 @@ struct MockDatabaseConnection: DatabaseConnection {
 
     @discardableResult
     func run<T: Sendable>(
-        _ query: MockDatabaseQuery,
-        _ handler: (MockDatabaseQueryResult.Row) async throws -> T
+        query: MockDatabaseQuery,
+        _ handler: (MockDatabaseQueryResult.Row) async throws -> T = { $0 }
     ) async throws(DatabaseError) -> [T] {
         await state.recordExecution(query)
         do {
@@ -39,8 +39,8 @@ struct MockDatabaseConnection: DatabaseConnection {
     }
 
     func run(
-        _ query: Query,
-        _ handler: (Result.Row) async throws -> Void
+        query: Query,
+        _ handler: (Result.Row) async throws -> Void = { _ in }
     ) async throws(DatabaseError) {
         await state.recordExecution(query)
         do {

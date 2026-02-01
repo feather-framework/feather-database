@@ -35,12 +35,12 @@ public protocol DatabaseConnection {
     /// - Returns: The result of the query execution.
     @discardableResult
     func run<T: Sendable>(
-        _ query: Query,
+        query: Query,
         _ handler: (Result.Row) async throws -> T
     ) async throws(DatabaseError) -> [T]
 
     func run(
-        _ query: Query,
+        query: Query,
         _ handler: (Result.Row) async throws -> Void
     ) async throws(DatabaseError)
 }
