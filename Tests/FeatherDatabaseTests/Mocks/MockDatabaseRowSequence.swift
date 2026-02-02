@@ -1,5 +1,5 @@
 //
-//  MockDatabaseQueryResult.swift
+//  MockDatabaseRowSequence.swift
 //  feather-database
 //
 //  Created by Tibor Bodecs on 2026. 01. 10..
@@ -7,7 +7,7 @@
 
 import FeatherDatabase
 
-struct MockDatabaseQueryResult: DatabaseQueryResult {
+struct MockDatabaseRowSequence: DatabaseRowSequence {
 
     let rows: [MockDatabaseRow]
 

@@ -11,42 +11,20 @@ import Logging
 struct MockDatabaseConnection: DatabaseConnection {
 
     typealias Query = MockDatabaseQuery
-    typealias Result = MockDatabaseQueryResult
+    typealias RowSequence = MockDatabaseRowSequence
 
     let logger: Logger
     let state: MockDatabaseState
-    let mockResult: [MockDatabaseQueryResult.Row]
+    let mockSequence: RowSequence
 
     @discardableResult
     func run<T: Sendable>(
-        query: MockDatabaseQuery,
-        _ handler: (MockDatabaseQueryResult.Row) async throws -> T = { $0 }
-    ) async throws(DatabaseError) -> [T] {
-        await state.recordExecution(query)
-        do {
-            var result: [T] = []
-            for item in mockResult {
-                result.append(try await handler(item))
-            }
-            return result
-        }
-        catch let error as DatabaseError {
-            throw error
-        }
-        catch {
-            throw .query(error)
-        }
-    }
-
-    func run(
         query: Query,
-        _ handler: (Result.Row) async throws -> Void = { _ in }
-    ) async throws(DatabaseError) {
+        _ handler: (RowSequence) async throws -> T
+    ) async throws(DatabaseError) -> T {
         await state.recordExecution(query)
         do {
-            for item in mockResult {
-                try await handler(item)
-            }
+            return try await handler(mockSequence)
         }
         catch let error as DatabaseError {
             throw error

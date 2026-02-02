@@ -16,10 +16,11 @@ public protocol DatabaseConnection {
     ///
     /// Use this to define the SQL and bindings type.
     associatedtype Query: DatabaseQuery
-    /// The query result type produced by this connection.
+
+    /// The row sequence type produced by this connection.
     ///
-    /// The result must conform to `DatabaseQueryResult`.
-    associatedtype Result: DatabaseQueryResult
+    /// The result must conform to `DatabaseRowSequence`.
+    associatedtype RowSequence: DatabaseRowSequence
 
     /// The logger used for connection operations.
     ///
@@ -36,11 +37,6 @@ public protocol DatabaseConnection {
     @discardableResult
     func run<T: Sendable>(
         query: Query,
-        _ handler: (Result.Row) async throws -> T
-    ) async throws(DatabaseError) -> [T]
-
-    func run(
-        query: Query,
-        _ handler: (Result.Row) async throws -> Void
-    ) async throws(DatabaseError)
+        _ handler: (RowSequence) async throws -> T
+    ) async throws(DatabaseError) -> T
 }

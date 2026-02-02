@@ -14,9 +14,8 @@ struct MockDatabaseClient: DatabaseClient {
 
     @discardableResult
     func withConnection<T>(
-        isolation: isolated (any Actor)? = #isolation,
-        _ closure: (MockDatabaseConnection) async throws -> sending T
-    ) async throws(DatabaseError) -> sending T {
+        _ closure: (MockDatabaseConnection) async throws -> T
+    ) async throws(DatabaseError) -> T {
         await state.recordConnection()
 
         do {
@@ -32,9 +31,8 @@ struct MockDatabaseClient: DatabaseClient {
 
     @discardableResult
     func withTransaction<T>(
-        isolation: isolated (any Actor)? = #isolation,
-        _ closure: (MockDatabaseConnection) async throws -> sending T
-    ) async throws(DatabaseError) -> sending T {
+        _ closure: (MockDatabaseConnection) async throws -> T
+    ) async throws(DatabaseError) -> T {
         await state.recordConnection()
         do {
             return try await closure(connection)
