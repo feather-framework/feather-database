@@ -3,9 +3,9 @@
 Abstract database component, providing a shared API surface for database drivers written in Swift.
 
 [
-    ![Release: 1.0.0-beta.2](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E2-F05138)
+    ![Release: 1.0.0-beta.3](https://img.shields.io/badge/Release-1%2E0%2E0--beta%3E2-F05138)
 ](
-    https://github.com/feather-framework/feather-database/releases/tag/1.0.0-beta.2
+    https://github.com/feather-framework/feather-database/releases/tag/1.0.0-beta.3
 )
 
 ## Features
@@ -35,7 +35,7 @@ Abstract database component, providing a shared API surface for database drivers
 Use Swift Package Manager; add the dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-beta.1"),
+.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-beta.3"),
 ```
 
 Then add `FeatherDatabase` to your target dependencies:
@@ -54,9 +54,6 @@ Then add `FeatherDatabase` to your target dependencies:
 
 
 API documentation is available at the following link. Refer to the mock objects in the Tests directory if you want to build a custom database driver implementation.
-
-> [!TIP]
-> Avoid calling `database.execute` while in a transaction; use the transaction `connection.execute` instead.
 
 > [!WARNING]  
 > This repository is a work in progress, things can break until it reaches v1.0.0.

@@ -16,7 +16,7 @@ struct FeatherDatabaseTestSuite {
     @Test
     func executeUsesConnection() async throws {
         let state = MockDatabaseState()
-        let result = MockDatabaseQueryResult(
+        let sequence = MockDatabaseRowSequence(
             rows: [
                 MockDatabaseRow(storage: ["name": .string("alpha")])
             ]
@@ -24,16 +24,55 @@ struct FeatherDatabaseTestSuite {
         let connection = MockDatabaseConnection(
             logger: Logger(label: "test"),
             state: state,
-            result: result
+            mockSequence: sequence
         )
         let client = MockDatabaseClient(state: state, connection: connection)
         let query = MockDatabaseQuery(sql: "SELECT 1", bindings: [])
 
-        _ = try await client.execute(query: query)
+        let decodedRows = try await client.withConnection { connection in
+            try await connection.run(query: query) { sequence in
+                try await sequence.collect()
+                    .map {
+                        try $0.decode(column: "name", as: String.self)
+                    }
+            }
+        }
+        #expect(decodedRows.count == 1)
 
-        #expect(await state.connectionCount() == 1)
+        try await client.withConnection { connection in
+            try await connection.run(query: query) { sequence in
+                try await sequence.collect()
+                    .map {
+                        try $0.decode(column: "name", as: String.self)
+                    }
+            }
+        }
+
+        try await client.withConnection { connection in
+            try await connection.run(query: query) { _ in
+                // no value returned, no sequence iteration
+            }
+        }
+
+        try await client.withTransaction { connection in
+            try await connection.run(query: query) { sequence in
+                try await sequence.collect()
+                    .map {
+                        try $0.decode(column: "name", as: String.self)
+                    }
+            }
+            try await connection.run(query: query) { sequence in
+                try await sequence.collect()
+                    .map {
+                        try $0.decode(column: "name", as: String.self)
+                    }
+            }
+            return "ok"
+        }
+
+        #expect(await state.connectionCount() == 4)
         let executedQueries = await state.executedQueryList()
-        #expect(executedQueries.count == 1)
+        #expect(executedQueries.count == 5)
         #expect(executedQueries.first?.sql == query.sql)
     }
 
@@ -43,9 +82,9 @@ struct FeatherDatabaseTestSuite {
             MockDatabaseRow(storage: ["name": .string("alpha")]),
             MockDatabaseRow(storage: ["name": .string("beta")]),
         ]
-        let result = MockDatabaseQueryResult(rows: rows)
+        let result = MockDatabaseRowSequence(rows: rows)
 
-        let first = try await result.collectFirst()
+        let first = try await result.collect().first
 
         #expect(first != nil)
         #expect(
@@ -55,9 +94,9 @@ struct FeatherDatabaseTestSuite {
 
     @Test
     func collectFirstReturnsNilWhenEmpty() async throws {
-        let result = MockDatabaseQueryResult(rows: [])
+        let result = MockDatabaseRowSequence(rows: [])
 
-        let first = try await result.collectFirst()
+        let first = try await result.collect().first
 
         #expect(first == nil)
     }
