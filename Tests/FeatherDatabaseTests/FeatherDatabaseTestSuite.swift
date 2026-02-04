@@ -37,7 +37,7 @@ struct FeatherDatabaseTestSuite {
                     }
             }
         }
-        print(decodedRows)
+        #expect(decodedRows.count == 1)
 
         try await client.withConnection { connection in
             try await connection.run(query: query) { sequence in

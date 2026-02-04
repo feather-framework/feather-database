@@ -10,7 +10,7 @@ import Logging
 /// A connection that can execute database queries.
 ///
 /// Implementations provide query execution and lifecycle management.
-public protocol DatabaseConnection {
+public protocol DatabaseConnection: Sendable {
 
     /// The query type supported by this connection.
     ///

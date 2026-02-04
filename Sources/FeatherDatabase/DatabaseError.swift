@@ -8,7 +8,7 @@
 /// High-level database errors surfaced by the client API.
 ///
 /// Use these cases to represent connection, query, and transaction failures.
-public enum DatabaseError: Error, Sendable {
+public enum DatabaseError: Error {
 
     /// A connection-level failure.
     ///
