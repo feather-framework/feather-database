@@ -3,7 +3,7 @@
 Abstract database component, providing a shared API surface for database drivers written in Swift.
 
 [
-    ![Release: 1.0.0-beta.3](https://img.shields.io/badge/Release-1%2E0%2E0--beta%3E2-F05138)
+    ![Release: 1.0.0-beta.3](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E3-F05138)
 ](
     https://github.com/feather-framework/feather-database/releases/tag/1.0.0-beta.3
 )
