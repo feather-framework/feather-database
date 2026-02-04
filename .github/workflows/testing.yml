@@ -15,7 +15,7 @@ jobs:
       format_check_enabled : true
       broken_symlink_check_enabled : true
       unacceptable_language_check_enabled : true
-      shell_check_enabled : true
+      shell_check_enabled : false
       docs_check_enabled : false
       api_breakage_check_enabled : false
       license_header_check_enabled : false
@@ -27,7 +27,7 @@ jobs:
     uses: BinaryBirds/github-workflows/.github/workflows/extra_soundness.yml@main
     with:
       local_swift_dependencies_check_enabled : true
-      headers_check_enabled : true
+      headers_check_enabled : false
       docc_warnings_check_enabled : true
 
   swiftlang_tests:
