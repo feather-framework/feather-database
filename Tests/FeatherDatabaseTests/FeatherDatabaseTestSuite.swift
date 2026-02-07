@@ -166,4 +166,24 @@ struct FeatherDatabaseTestSuite {
         #expect(query.bindings.count == 1)
         #expect(query.bindings[0] == .init(index: 0, binding: .string("beta")))
     }
+
+    @Test
+    func queryUnsafeSQLInitializer() async throws {
+        let bindings = [
+            OrderedBinding(index: 0, binding: .string("alpha")),
+            OrderedBinding(index: 1, binding: .int(9)),
+        ]
+        let query = Query(unsafeSQL: "SELECT * FROM demo WHERE name = {{1}} AND age > {{2}}", bindings: bindings)
+
+        #expect(query.sql == "SELECT * FROM demo WHERE name = {{1}} AND age > {{2}}")
+        #expect(query.bindings == bindings)
+    }
+
+    @Test
+    func queryStringLiteralInitializer() async throws {
+        let query: Query = "SELECT 1"
+
+        #expect(query.sql == "SELECT 1")
+        #expect(query.bindings.isEmpty)
+    }
 }
