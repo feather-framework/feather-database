@@ -100,5 +100,16 @@ struct FeatherDatabaseTestSuite {
 
         #expect(first == nil)
     }
-
+    
+    @Test
+    func queryInterpolation() async throws {
+        let table = "foo"
+        let query: Query = #"""
+        SELECT * FROM \#(table)
+        """#
+        
+        #expect(query.sql == "SELECT * FROM {{1}}")
+        #expect(query.bindings.count == 1)
+        #expect(query.bindings[0] == .init(index: 0, binding: .string("foo")))
+    }
 }
