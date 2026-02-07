@@ -112,4 +112,58 @@ struct FeatherDatabaseTestSuite {
         #expect(query.bindings.count == 1)
         #expect(query.bindings[0] == .init(index: 0, binding: .string("foo")))
     }
+
+    @Test
+    func queryInterpolationBindsIntsAndDoubles() async throws {
+        let count = 7
+        let ratio = 3.5
+        let query: Query = #"""
+        SELECT * FROM stats WHERE count > \#(count) AND ratio < \#(ratio)
+        """#
+
+        #expect(query.sql == "SELECT * FROM stats WHERE count > {{1}} AND ratio < {{2}}")
+        #expect(query.bindings.count == 2)
+        #expect(query.bindings[0] == .init(index: 0, binding: .int(7)))
+        #expect(query.bindings[1] == .init(index: 1, binding: .double(3.5)))
+    }
+
+    @Test
+    func queryInterpolationMultipleBindings() async throws {
+        let name = "alpha"
+        let age = 42
+        let score = 9.25
+        let query: Query = #"""
+        INSERT INTO people (name, age, score) VALUES (\#(name), \#(age), \#(score))
+        """#
+
+        #expect(query.sql == "INSERT INTO people (name, age, score) VALUES ({{1}}, {{2}}, {{3}})")
+        #expect(query.bindings.count == 3)
+        #expect(query.bindings[0] == .init(index: 0, binding: .string("alpha")))
+        #expect(query.bindings[1] == .init(index: 1, binding: .int(42)))
+        #expect(query.bindings[2] == .init(index: 2, binding: .double(9.25)))
+    }
+
+    @Test
+    func queryInterpolationOptionalAndUnescaped() async throws {
+        let table = "users"
+        let name: String? = nil
+        let query: Query = #"""
+        SELECT * FROM \#(unescaped: table) WHERE name IS \#(name)
+        """#
+
+        #expect(query.sql == "SELECT * FROM users WHERE name IS NULL")
+        #expect(query.bindings.isEmpty)
+    }
+
+    @Test
+    func queryInterpolationOptionalBindsWhenPresent() async throws {
+        let name: String? = "beta"
+        let query: Query = #"""
+        SELECT * FROM people WHERE name = \#(name)
+        """#
+
+        #expect(query.sql == "SELECT * FROM people WHERE name = {{1}}")
+        #expect(query.bindings.count == 1)
+        #expect(query.bindings[0] == .init(index: 0, binding: .string("beta")))
+    }
 }
