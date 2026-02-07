@@ -10,7 +10,6 @@ import Logging
 
 struct MockDatabaseConnection: DatabaseConnection {
 
-    typealias Query = MockDatabaseQuery
     typealias RowSequence = MockDatabaseRowSequence
 
     let logger: Logger
@@ -19,7 +18,7 @@ struct MockDatabaseConnection: DatabaseConnection {
 
     @discardableResult
     func run<T: Sendable>(
-        query: Query,
+        query: DatabaseQuery,
         _ handler: (RowSequence) async throws -> T
     ) async throws(DatabaseError) -> T {
         await state.recordExecution(query)
