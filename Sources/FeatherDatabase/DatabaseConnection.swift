@@ -36,7 +36,7 @@ public protocol DatabaseConnection: Sendable {
     /// - Returns: The result of the query execution.
     @discardableResult
     func run<T: Sendable>(
-        query: Query,
+        query: DatabaseQuery,
         _ handler: (RowSequence) async throws -> T
     ) async throws(DatabaseError) -> T
 }

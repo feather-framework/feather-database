@@ -27,7 +27,7 @@ struct FeatherDatabaseTestSuite {
             mockSequence: sequence
         )
         let client = MockDatabaseClient(state: state, connection: connection)
-        let query = Query(unsafeSQL: "SELECT 1", bindings: [])
+        let query = DatabaseQuery(unsafeSQL: "SELECT 1", bindings: [])
 
         let decodedRows = try await client.withConnection { connection in
             try await connection.run(query: query) { sequence in
@@ -108,7 +108,7 @@ struct FeatherDatabaseTestSuite {
     @Test
     func queryInterpolation() async throws {
         let table = "foo"
-        let query: Query = #"""
+        let query: DatabaseQuery = #"""
         SELECT * FROM \#(table)
         """#
         
@@ -121,7 +121,7 @@ struct FeatherDatabaseTestSuite {
     func queryInterpolationBindsIntsAndDoubles() async throws {
         let count = 7
         let ratio = 3.5
-        let query: Query = #"""
+        let query: DatabaseQuery = #"""
         SELECT * FROM stats WHERE count > \#(count) AND ratio < \#(ratio)
         """#
 
@@ -136,7 +136,7 @@ struct FeatherDatabaseTestSuite {
         let name = "alpha"
         let age = 42
         let score = 9.25
-        let query: Query = #"""
+        let query: DatabaseQuery = #"""
         INSERT INTO people (name, age, score) VALUES (\#(name), \#(age), \#(score))
         """#
 
@@ -151,7 +151,7 @@ struct FeatherDatabaseTestSuite {
     func queryInterpolationOptionalAndUnescaped() async throws {
         let table = "users"
         let name: String? = nil
-        let query: Query = #"""
+        let query: DatabaseQuery = #"""
         SELECT * FROM \#(unescaped: table) WHERE name IS \#(name)
         """#
 
@@ -162,7 +162,7 @@ struct FeatherDatabaseTestSuite {
     @Test
     func queryInterpolationOptionalBindsWhenPresent() async throws {
         let name: String? = "beta"
-        let query: Query = #"""
+        let query: DatabaseQuery = #"""
         SELECT * FROM people WHERE name = \#(name)
         """#
 
@@ -174,10 +174,10 @@ struct FeatherDatabaseTestSuite {
     @Test
     func queryUnsafeSQLInitializer() async throws {
         let bindings = [
-            OrderedBinding(index: 0, binding: .string("alpha")),
-            OrderedBinding(index: 1, binding: .int(9)),
+            DatabaseQueryBindings(index: 0, binding: .string("alpha")),
+            DatabaseQueryBindings(index: 1, binding: .int(9)),
         ]
-        let query = Query(unsafeSQL: "SELECT * FROM demo WHERE name = {{1}} AND age > {{2}}", bindings: bindings)
+        let query = DatabaseQuery(unsafeSQL: "SELECT * FROM demo WHERE name = {{1}} AND age > {{2}}", bindings: bindings)
 
         #expect(query.sql == "SELECT * FROM demo WHERE name = {{1}} AND age > {{2}}")
         #expect(query.bindings == bindings)
@@ -185,7 +185,7 @@ struct FeatherDatabaseTestSuite {
 
     @Test
     func queryStringLiteralInitializer() async throws {
-        let query: Query = "SELECT 1"
+        let query: DatabaseQuery = "SELECT 1"
 
         #expect(query.sql == "SELECT 1")
         #expect(query.bindings.isEmpty)
