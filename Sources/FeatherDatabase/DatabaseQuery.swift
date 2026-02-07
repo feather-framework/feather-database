@@ -5,16 +5,16 @@
 //  Created by Tibor Bödecs on 2026. 02. 07..
 //
 
-/// A SQLite query with SQL text and bound parameters.
+/// A database query with SQL text and bound parameters.
 ///
-/// Use this type to construct SQLite queries safely.
+/// Use this type to construct database queries safely.
 public struct DatabaseQuery: Sendable, Equatable, Hashable, Codable {
-    
+
     /// The SQL text to execute.
     ///
     /// This is the raw SQL string for the query.
     public var sql: String
-    
+
     /// The bound parameters for the SQL text.
     ///
     /// These values are passed alongside `sql`.
@@ -35,10 +35,9 @@ public struct DatabaseQuery: Sendable, Equatable, Hashable, Codable {
     }
 }
 
-
 extension DatabaseQuery: ExpressibleByStringInterpolation {
 
-    /// A string interpolation builder for SQLite queries.
+    /// A string interpolation builder for database queries.
     ///
     /// Use interpolation to bind values safely into SQL text.
     public struct StringInterpolation: StringInterpolationProtocol, Sendable {
@@ -80,7 +79,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             sql.append(contentsOf: literal)
         }
 
-        
         /// Append an interpolated optional string value.
         ///
         /// Non-nil values are bound, and nil values emit `NULL`.
@@ -104,10 +102,9 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             }
         }
 
-        
         /// Append an interpolated integer value.
         ///
-        /// The value is bound as a SQLite integer.
+        /// The value is bound as an integer.
         /// - Parameter value: The integer value to interpolate.
         /// - Returns: Nothing.
         @inlinable
@@ -123,10 +120,9 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             sql.append(contentsOf: "{{\(binds.count)}}")
         }
 
-        
         /// Append an interpolated floating-point value.
         ///
-        /// The value is bound as a SQLite float.
+        /// The value is bound as a floating-point value.
         /// - Parameter value: The double value to interpolate.
         /// - Returns: Nothing.
         @inlinable
@@ -142,10 +138,9 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             sql.append(contentsOf: "{{\(binds.count)}}")
         }
 
-        
         /// Append an interpolated string value.
         ///
-        /// The value is bound as a SQLite text value.
+        /// The value is bound as a text value.
         /// - Parameter value: The string value to interpolate.
         /// - Returns: Nothing.
         @inlinable
@@ -160,33 +155,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             )
             sql.append(contentsOf: "{{\(binds.count)}}")
         }
-
-//        @inlinable
-//        /// Append an interpolated SQLite data value.
-//        ///
-//        /// The value is bound directly as SQLite data.
-//        /// - Parameter value: The SQLite data value to interpolate.
-//        /// - Returns: Nothing.
-//        public mutating func appendInterpolation(
-//            _ value: SQLiteData
-//        ) {
-//            self.binds.append(value)
-//            self.sql.append(contentsOf: "?")
-//        }
-
-        //        @inlinable
-        //        public mutating func appendInterpolation(_ value: SQLiteData?) throws {
-        //            switch value {
-        //            case .none:
-        //                self.binds.append(.null)
-        //            case .some(let value):
-        //                self.binds.append(value)
-        //            }
-        //
-        //            self.sql.append(contentsOf: "?")
-        //        }
-
-        
 
         /// Append an unescaped SQL fragment.
         ///
