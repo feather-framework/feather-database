@@ -15,7 +15,7 @@ public protocol DatabaseConnection: Sendable {
     /// The query type supported by this connection.
     ///
     /// Use this to define the SQL and bindings type.
-    associatedtype Query: DatabaseQuery
+//    associatedtype Query: DatabaseQuery
 
     /// The row sequence type produced by this connection.
     ///

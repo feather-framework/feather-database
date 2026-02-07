@@ -10,13 +10,13 @@ import FeatherDatabase
 actor MockDatabaseState {
 
     private var connectionCallCount = 0
-    private var executedQueries: [MockDatabaseQuery] = []
+    private var executedQueries: [Query] = []
 
     func recordConnection() {
         connectionCallCount += 1
     }
 
-    func recordExecution(_ query: MockDatabaseQuery) {
+    func recordExecution(_ query: Query) {
         executedQueries.append(query)
     }
 
@@ -24,7 +24,7 @@ actor MockDatabaseState {
         connectionCallCount
     }
 
-    func executedQueryList() -> [MockDatabaseQuery] {
+    func executedQueryList() -> [Query] {
         executedQueries
     }
 }

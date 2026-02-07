@@ -10,7 +10,7 @@ import Logging
 
 struct MockDatabaseConnection: DatabaseConnection {
 
-    typealias Query = MockDatabaseQuery
+//    typealias Query = MockDatabaseQuery
     typealias RowSequence = MockDatabaseRowSequence
 
     let logger: Logger

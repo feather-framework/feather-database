@@ -27,7 +27,7 @@ struct FeatherDatabaseTestSuite {
             mockSequence: sequence
         )
         let client = MockDatabaseClient(state: state, connection: connection)
-        let query = MockDatabaseQuery(sql: "SELECT 1", bindings: [])
+        let query = Query(unsafeSQL: "SELECT 1", bindings: [])
 
         let decodedRows = try await client.withConnection { connection in
             try await connection.run(query: query) { sequence in
@@ -40,7 +40,11 @@ struct FeatherDatabaseTestSuite {
         #expect(decodedRows.count == 1)
 
         try await client.withConnection { connection in
-            try await connection.run(query: query) { sequence in
+            try await connection.run(
+                query: #"""
+                SELECT 1 WHERE 1 = \#(1)
+                """#
+            ) { sequence in
                 try await sequence.collect()
                     .map {
                         try $0.decode(column: "name", as: String.self)
