@@ -1,5 +1,5 @@
 //
-//  DatabaseIndexedQueryBinding.swift
+//  DatabaseQueryBindings.swift
 //  feather-database
 //
 //  Created by Tibor Bödecs on 2026. 02. 07..

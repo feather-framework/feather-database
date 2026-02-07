@@ -83,7 +83,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
         ///
         /// Non-nil values are bound, and nil values emit `NULL`.
         /// - Parameter value: The optional string value to interpolate.
-        /// - Returns: Nothing.
         @inlinable
         public mutating func appendInterpolation(
             _ value: String?
@@ -106,7 +105,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
         ///
         /// The value is bound as an integer.
         /// - Parameter value: The integer value to interpolate.
-        /// - Returns: Nothing.
         @inlinable
         public mutating func appendInterpolation(
             _ value: Int
@@ -124,7 +122,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
         ///
         /// The value is bound as a floating-point value.
         /// - Parameter value: The double value to interpolate.
-        /// - Returns: Nothing.
         @inlinable
         public mutating func appendInterpolation(
             _ value: Double
@@ -142,7 +139,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
         ///
         /// The value is bound as a text value.
         /// - Parameter value: The string value to interpolate.
-        /// - Returns: Nothing.
         @inlinable
         public mutating func appendInterpolation(
             _ value: String
@@ -160,7 +156,6 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
         ///
         /// Use this only for trusted identifiers or SQL keywords.
         /// - Parameter interpolated: The raw SQL fragment to insert.
-        /// - Returns: Nothing.
         @inlinable
         public mutating func appendInterpolation(
             unescaped interpolated: String
