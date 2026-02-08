@@ -13,4 +13,6 @@ public enum DatabaseQueryBinding: Sendable, Equatable, Hashable, Codable {
     case int(Int)
     /// A floating-point value.
     case double(Double)
+    /// A boolean value.
+    case bool(Bool)
 }
