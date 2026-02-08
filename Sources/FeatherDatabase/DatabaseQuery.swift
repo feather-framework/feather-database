@@ -87,8 +87,7 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
         public mutating func appendInterpolation(
             _ value: String?
         ) {
-            switch value {
-            case .some(let value):
+            if let value {
                 binds.append(
                     .init(
                         index: binds.count,
@@ -96,7 +95,8 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
                     )
                 )
                 sql.append(contentsOf: "{{\(binds.count)}}")
-            case .none:
+            }
+            else {
                 sql.append(contentsOf: "NULL")
             }
         }
@@ -135,6 +135,23 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             sql.append(contentsOf: "{{\(binds.count)}}")
         }
 
+        /// Append an interpolated boolean value.
+        ///
+        /// The value is bound as a boolean value.
+        /// - Parameter value: The boolean value to interpolate.
+        @inlinable
+        public mutating func appendInterpolation(
+            _ value: Bool
+        ) {
+            binds.append(
+                .init(
+                    index: binds.count,
+                    binding: .bool(value)
+                )
+            )
+            sql.append(contentsOf: "{{\(binds.count)}}")
+        }
+
         /// Append an interpolated string value.
         ///
         /// The value is bound as a text value.
@@ -161,6 +178,39 @@ extension DatabaseQuery: ExpressibleByStringInterpolation {
             unescaped interpolated: String
         ) {
             self.sql.append(contentsOf: interpolated)
+        }
+
+        /// Append an unescaped SQL fragment.
+        ///
+        /// Use this only for trusted identifiers or SQL keywords.
+        /// - Parameter interpolated: The raw SQL fragment to insert.
+        @inlinable
+        public mutating func appendInterpolation(
+            unescaped interpolated: Int
+        ) {
+            self.sql.append(contentsOf: String(interpolated))
+        }
+
+        /// Append an unescaped SQL fragment.
+        ///
+        /// Use this only for trusted identifiers or SQL keywords.
+        /// - Parameter interpolated: The raw SQL fragment to insert.
+        @inlinable
+        public mutating func appendInterpolation(
+            unescaped interpolated: Double
+        ) {
+            self.sql.append(contentsOf: String(interpolated))
+        }
+
+        /// Append an unescaped SQL fragment.
+        ///
+        /// Use this only for trusted identifiers or SQL keywords.
+        /// - Parameter interpolated: The raw SQL fragment to insert.
+        @inlinable
+        public mutating func appendInterpolation(
+            unescaped interpolated: Bool
+        ) {
+            self.sql.append(contentsOf: String(interpolated))
         }
     }
 

@@ -135,6 +135,18 @@ struct FeatherDatabaseTestSuite {
     }
 
     @Test
+    func queryInterpolationBindsBool() async throws {
+        let isEnabled = true
+        let query: DatabaseQuery = #"""
+            SELECT * FROM features WHERE enabled = \#(isEnabled)
+            """#
+
+        #expect(query.sql == "SELECT * FROM features WHERE enabled = {{1}}")
+        #expect(query.bindings.count == 1)
+        #expect(query.bindings[0] == .init(index: 0, binding: .bool(true)))
+    }
+
+    @Test
     func queryInterpolationMultipleBindings() async throws {
         let name = "alpha"
         let age = 42
@@ -175,6 +187,35 @@ struct FeatherDatabaseTestSuite {
         #expect(query.sql == "SELECT * FROM people WHERE name = {{1}}")
         #expect(query.bindings.count == 1)
         #expect(query.bindings[0] == .init(index: 0, binding: .string("beta")))
+    }
+
+    @Test
+    func queryInterpolationUnescapedNumbersAndBool() async throws {
+        let limit = 10
+        let ratio = 2.75
+        let isActive = false
+        let query: DatabaseQuery = #"""
+            SELECT * FROM metrics LIMIT \#(unescaped: limit) OFFSET \#(unescaped: 0) WHERE ratio > \#(unescaped: ratio) AND active = \#(unescaped: isActive)
+            """#
+
+        #expect(
+            query.sql
+                == "SELECT * FROM metrics LIMIT 10 OFFSET 0 WHERE ratio > 2.75 AND active = false"
+        )
+        #expect(query.bindings.isEmpty)
+    }
+
+    @Test
+    func queryInterpolationUnescapedAndBoundMix() async throws {
+        let table = "events"
+        let name = "alpha"
+        let query: DatabaseQuery = #"""
+            SELECT * FROM \#(unescaped: table) WHERE name = \#(name)
+            """#
+
+        #expect(query.sql == "SELECT * FROM events WHERE name = {{1}}")
+        #expect(query.bindings.count == 1)
+        #expect(query.bindings[0] == .init(index: 0, binding: .string("alpha")))
     }
 
     @Test
