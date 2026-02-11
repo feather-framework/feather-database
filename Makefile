@@ -7,6 +7,9 @@ check: symlinks language deps lint headers docc-warnings package
 package:
 	curl -s $(baseUrl)/check-swift-package.sh | bash
 
+breakage:
+	curl -s $(baseUrl)/check-api-breakage.sh | bash
+
 symlinks:
 	curl -s $(baseUrl)/check-broken-symlinks.sh | bash
 
