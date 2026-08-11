@@ -6,13 +6,11 @@
 //
 
 import FeatherDatabase
-import Logging
 
 struct MockDatabaseConnection: DatabaseConnection {
 
     typealias RowSequence = MockDatabaseRowSequence
 
-    let logger: Logger
     let state: MockDatabaseState
     let mockSequence: RowSequence
 

@@ -5,8 +5,6 @@
 //  Created by Tibor Bödecs on 2026. 01. 10..
 //
 
-import Logging
-
 /// A connection that can execute database queries.
 ///
 /// Implementations provide query execution and lifecycle management.
@@ -21,11 +19,6 @@ public protocol DatabaseConnection: Sendable {
     ///
     /// The result must conform to `DatabaseRowSequence`.
     associatedtype RowSequence: DatabaseRowSequence
-
-    /// The logger used for connection operations.
-    ///
-    /// This is used to record database-related diagnostics.
-    var logger: Logger { get }
 
     /// Runs a query using the database connection.
     ///
