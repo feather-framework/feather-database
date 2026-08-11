@@ -3,10 +3,9 @@ name: Testing
 on:
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
-
   api_breakage:
     name: Check API breakage
     uses: BinaryBirds/github-workflows/.github/workflows/api_breakage.yml@main
@@ -16,22 +15,22 @@ jobs:
     uses: swiftlang/github-workflows/.github/workflows/soundness.yml@main
     with:
       license_header_check_project_name: "project"
-      format_check_enabled : true
-      broken_symlink_check_enabled : true
-      unacceptable_language_check_enabled : true
-      shell_check_enabled : false
-      docs_check_enabled : false
-      api_breakage_check_enabled : false
-      license_header_check_enabled : false
-      yamllint_check_enabled : false
-      python_lint_check_enabled : false
+      format_check_enabled: true
+      broken_symlink_check_enabled: true
+      unacceptable_language_check_enabled: true
+      shell_check_enabled: false
+      docs_check_enabled: false
+      api_breakage_check_enabled: false
+      license_header_check_enabled: false
+      yamllint_check_enabled: false
+      python_lint_check_enabled: false
 
   bb_checks:
     name: BB Checks
     uses: BinaryBirds/github-workflows/.github/workflows/extra_soundness.yml@main
     with:
-      local_swift_dependencies_check_enabled : true
-      run_tests_with_cache_enabled : true
-      headers_check_enabled : false
-      docc_warnings_check_enabled : true
-      run_tests_swift_versions: '["6.1","6.2"]'
+      local_swift_dependencies_check_enabled: true
+      run_tests_with_cache_enabled: true
+      headers_check_enabled: false
+      docc_warnings_check_enabled: true
+      run_tests_swift_versions: '["6.1", "6.2", "6.3"]'

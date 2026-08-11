@@ -188,6 +188,82 @@ struct FeatherDatabaseTestSuite {
     }
 
     @Test
+    func queryInterpolationOptionalNumbersAndBool() async throws {
+        let age: Int? = nil
+        let ratio: Float? = 1.5
+        let score: Double? = nil
+        let isActive: Bool? = true
+        let query: DatabaseQuery = #"""
+            SELECT * FROM demo WHERE age IS \#(age) AND ratio = \#(ratio) AND score IS \#(score) AND active = \#(isActive)
+            """#
+
+        #expect(
+            query.sql
+                == "SELECT * FROM demo WHERE age IS NULL AND ratio = {{1}} AND score IS NULL AND active = {{2}}"
+        )
+        #expect(query.bindings.count == 2)
+        #expect(query.bindings[0] == .init(index: 0, binding: .double(1.5)))
+        #expect(query.bindings[1] == .init(index: 1, binding: .bool(true)))
+    }
+
+    @Test
+    func queryInterpolationArrayValues() async throws {
+        let names = ["alpha", "beta"]
+        let ids = [1, 2, 3]
+        let ratios: [Float] = [1.5, 2.25]
+        let scores = [3.5, 4.75]
+        let flags = [true, false]
+        let query: DatabaseQuery = #"""
+            SELECT * FROM demo WHERE name IN (\#(names)) AND id IN (\#(ids)) AND ratio IN (\#(ratios)) AND score IN (\#(scores)) AND enabled IN (\#(flags))
+            """#
+
+        #expect(
+            query.sql
+                == "SELECT * FROM demo WHERE name IN ({{1}}, {{2}}) AND id IN ({{3}}, {{4}}, {{5}}) AND ratio IN ({{6}}, {{7}}) AND score IN ({{8}}, {{9}}) AND enabled IN ({{10}}, {{11}})"
+        )
+        #expect(query.bindings.count == 11)
+        #expect(query.bindings[0] == .init(index: 0, binding: .string("alpha")))
+        #expect(query.bindings[1] == .init(index: 1, binding: .string("beta")))
+        #expect(query.bindings[2] == .init(index: 2, binding: .int(1)))
+        #expect(query.bindings[3] == .init(index: 3, binding: .int(2)))
+        #expect(query.bindings[4] == .init(index: 4, binding: .int(3)))
+        #expect(query.bindings[5] == .init(index: 5, binding: .double(1.5)))
+        #expect(query.bindings[6] == .init(index: 6, binding: .double(2.25)))
+        #expect(query.bindings[7] == .init(index: 7, binding: .double(3.5)))
+        #expect(query.bindings[8] == .init(index: 8, binding: .double(4.75)))
+        #expect(query.bindings[9] == .init(index: 9, binding: .bool(true)))
+        #expect(query.bindings[10] == .init(index: 10, binding: .bool(false)))
+    }
+
+    @Test
+    func queryInterpolationOptionalArrayValues() async throws {
+        let names: [String?] = ["alpha", nil, "beta"]
+        let ids: [Int?] = [1, nil, 3]
+        let ratios: [Float?] = [1.5, nil, 2.25]
+        let scores: [Double?] = [3.5, nil, 4.75]
+        let flags: [Bool?] = [true, nil, false]
+        let query: DatabaseQuery = #"""
+            SELECT * FROM demo WHERE name IN (\#(names)) AND id IN (\#(ids)) AND ratio IN (\#(ratios)) AND score IN (\#(scores)) AND enabled IN (\#(flags))
+            """#
+
+        #expect(
+            query.sql
+                == "SELECT * FROM demo WHERE name IN ({{1}}, NULL, {{2}}) AND id IN ({{3}}, NULL, {{4}}) AND ratio IN ({{5}}, NULL, {{6}}) AND score IN ({{7}}, NULL, {{8}}) AND enabled IN ({{9}}, NULL, {{10}})"
+        )
+        #expect(query.bindings.count == 10)
+        #expect(query.bindings[0] == .init(index: 0, binding: .string("alpha")))
+        #expect(query.bindings[1] == .init(index: 1, binding: .string("beta")))
+        #expect(query.bindings[2] == .init(index: 2, binding: .int(1)))
+        #expect(query.bindings[3] == .init(index: 3, binding: .int(3)))
+        #expect(query.bindings[4] == .init(index: 4, binding: .double(1.5)))
+        #expect(query.bindings[5] == .init(index: 5, binding: .double(2.25)))
+        #expect(query.bindings[6] == .init(index: 6, binding: .double(3.5)))
+        #expect(query.bindings[7] == .init(index: 7, binding: .double(4.75)))
+        #expect(query.bindings[8] == .init(index: 8, binding: .bool(true)))
+        #expect(query.bindings[9] == .init(index: 9, binding: .bool(false)))
+    }
+
+    @Test
     func queryInterpolationUnescapedNumbersAndBool() async throws {
         let limit = 10
         let ratio = 2.75
@@ -199,6 +275,30 @@ struct FeatherDatabaseTestSuite {
         #expect(
             query.sql
                 == "SELECT * FROM metrics LIMIT 10 OFFSET 0 WHERE ratio > 2.75 AND active = false"
+        )
+        #expect(query.bindings.isEmpty)
+    }
+
+    @Test
+    func queryInterpolationUnescapedOptionalValuesAndFloat() async throws {
+        let table: String? = nil
+        let name: String? = "users"
+        let age: Int? = 21
+        let missingAge: Int? = nil
+        let ratio: Float = 1.25
+        let optionalRatio: Float? = nil
+        let score: Double? = 3.75
+        let missingScore: Double? = nil
+        let isActive: Bool? = true
+        let missingActive: Bool? = nil
+
+        let query: DatabaseQuery = #"""
+            SELECT * FROM \#(unescaped: table) \#(unescaped: name) WHERE age > \#(unescaped: age) AND missing_age IS \#(unescaped: missingAge) AND ratio = \#(unescaped: ratio) AND optional_ratio IS \#(unescaped: optionalRatio) AND score = \#(unescaped: score) AND missing_score IS \#(unescaped: missingScore) AND active = \#(unescaped: isActive) AND missing_active IS \#(unescaped: missingActive)
+            """#
+
+        #expect(
+            query.sql
+                == "SELECT * FROM NULL users WHERE age > 21 AND missing_age IS NULL AND ratio = 1.25 AND optional_ratio IS NULL AND score = 3.75 AND missing_score IS NULL AND active = true AND missing_active IS NULL"
         )
         #expect(query.bindings.isEmpty)
     }
