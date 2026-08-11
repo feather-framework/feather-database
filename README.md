@@ -2,11 +2,7 @@
 
 Abstract database component, providing a shared API surface for database drivers written in Swift.
 
-[
-    ![Release: 1.0.0-rc.1](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E1-F05138)
-](
-    https://github.com/feather-framework/feather-database/releases/tag/1.0.0-rc.1
-)
+[![Release: 1.0.0-rc.2](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E1-F05138)](https://github.com/feather-framework/feather-database/releases/tag/1.0.0-rc.2)
 
 ## Features
 
@@ -35,7 +31,7 @@ Abstract database component, providing a shared API surface for database drivers
 Use Swift Package Manager; add the dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-rc.1"),
+.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-rc.2"),
 ```
 
 Then add `FeatherDatabase` to your target dependencies:
@@ -46,11 +42,7 @@ Then add `FeatherDatabase` to your target dependencies:
 
 ## Usage
 
-[
-    ![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)
-](
-    https://feather-framework.github.io/feather-database/
-)
+[![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)](https://feather-framework.github.io/feather-database/)
 
 API documentation is available at the following link. Refer to the mock objects in the Tests directory if you want to build a custom database driver implementation.
 
