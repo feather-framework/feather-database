@@ -5,7 +5,6 @@
 //  Created by Tibor Bödecs on 2026. 01. 10..
 //
 
-import Logging
 import Testing
 
 @testable import FeatherDatabase
@@ -22,7 +21,6 @@ struct FeatherDatabaseTestSuite {
             ]
         )
         let connection = MockDatabaseConnection(
-            logger: Logger(label: "test"),
             state: state,
             mockSequence: sequence
         )
