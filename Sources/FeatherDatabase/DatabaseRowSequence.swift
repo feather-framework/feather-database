@@ -26,3 +26,35 @@ where
     /// - Returns: An array of all rows produced by the query.
     func collect() async throws -> [Element]
 }
+
+extension DatabaseRowSequence {
+
+    /// Returns the first row without collecting the rest of the result sequence.
+    public func first() async throws -> Element? {
+        for try await row in self {
+            return row
+        }
+        return nil
+    }
+
+    /// Decodes the first row without collecting the rest of the result sequence.
+    public func first<T: Decodable>(
+        decoding type: T.Type,
+        with decoder: DatabaseRowDecoder = .init()
+    ) async throws -> T? {
+        guard let row = try await first() else { return nil }
+        return try row.decode(model: type, with: decoder)
+    }
+
+    /// Decodes each row as a flat `Decodable` value while consuming the sequence.
+    public func decode<T: Decodable>(
+        model type: T.Type,
+        with decoder: DatabaseRowDecoder = .init()
+    ) async throws -> [T] {
+        var result: [T] = []
+        for try await row in self {
+            result.append(try row.decode(model: type, with: decoder))
+        }
+        return result
+    }
+}

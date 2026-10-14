@@ -21,17 +21,17 @@ public protocol DatabaseTransactionError: Error {
     /// The error thrown while beginning the transaction.
     ///
     /// This is set when the begin step fails.
-    var beginError: Error? { get }
+    var beginError: (any Error)? { get }
     /// The error thrown inside the transaction closure.
     ///
     /// This is set when the closure fails before commit.
-    var closureError: Error? { get }
+    var closureError: (any Error)? { get }
     /// The error thrown while committing the transaction.
     ///
     /// This is set when the commit step fails.
-    var commitError: Error? { get }
+    var commitError: (any Error)? { get }
     /// The error thrown while rolling back the transaction.
     ///
     /// This is set when the rollback step fails.
-    var rollbackError: Error? { get }
+    var rollbackError: (any Error)? { get }
 }
