@@ -5,7 +5,11 @@
 //  Created by Tibor Bödecs on 2026. 02. 07..
 //
 
+#if canImport(FoundationEssentials)
+public import FoundationEssentials
+#else
 public import Foundation
+#endif
 
 /// A single bindable value used by a database query.
 public enum DatabaseQueryBinding: Sendable, Equatable, Hashable, Codable {

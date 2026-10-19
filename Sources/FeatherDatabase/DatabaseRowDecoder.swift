@@ -1,4 +1,8 @@
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// Decodes flat `Decodable` values from database rows.
 public struct DatabaseRowDecoder: Sendable {
