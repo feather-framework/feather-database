@@ -10,7 +10,7 @@ on:
 jobs:
 
   create-docc-and-deploy:
-    uses: BinaryBirds/github-workflows/.github/workflows/docc_deploy.yml@main
+    uses: BinaryBirds/github-workflows/.github/workflows/docc_deploy.yml@0.2.0
     permissions:
       contents: read
       pages: write

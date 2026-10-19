@@ -5,6 +5,7 @@
 //  Created by Tibor Bödecs on 2026. 01. 10..
 //
 
+import Foundation
 import Testing
 
 @testable import FeatherDatabase
@@ -79,14 +80,14 @@ struct FeatherDatabaseTestSuite {
     }
 
     @Test
-    func collectFirstReturnsFirstRow() async throws {
+    func firstReturnsFirstRow() async throws {
         let rows = [
             MockDatabaseRow(storage: ["name": .string("alpha")]),
             MockDatabaseRow(storage: ["name": .string("beta")]),
         ]
         let result = MockDatabaseRowSequence(rows: rows)
 
-        let first = try await result.collect().first
+        let first = try await result.first()
 
         #expect(first != nil)
         #expect(
@@ -95,12 +96,272 @@ struct FeatherDatabaseTestSuite {
     }
 
     @Test
-    func collectFirstReturnsNilWhenEmpty() async throws {
+    func firstReturnsNilWhenEmpty() async throws {
         let result = MockDatabaseRowSequence(rows: [])
 
-        let first = try await result.collect().first
+        let first = try await result.first()
 
         #expect(first == nil)
+    }
+
+    @Test
+    func decodesFlatModelsWithSnakeCaseAndNulls() throws {
+        struct Account: Decodable, Equatable {
+            let displayName: String
+            let nickname: String?
+            let isActive: Bool
+        }
+
+        let row = MockDatabaseRow(storage: [
+            "display_name": .string("Feather"),
+            "nickname": .null,
+            "is_active": .bool(true),
+        ])
+
+        let account = try row.decode(
+            model: Account.self,
+            with: .init(keyDecodingStrategy: .convertFromSnakeCase)
+        )
+
+        #expect(
+            account
+                == Account(
+                    displayName: "Feather",
+                    nickname: nil,
+                    isActive: true
+                )
+        )
+    }
+
+    @Test
+    func decodesFlatModelsWithColumnPrefixAndCustomKeys() throws {
+        struct Account: Decodable, Equatable {
+            let name: String
+        }
+        struct UppercaseKey: CodingKey {
+            let stringValue: String
+            let intValue: Int? = nil
+            init(stringValue: String) {
+                self.stringValue = stringValue.uppercased()
+            }
+            init?(intValue: Int) { return nil }
+        }
+
+        let row = MockDatabaseRow(storage: ["p_NAME": .string("Feather")])
+        let decoder = DatabaseRowDecoder(
+            prefix: "p_",
+            keyDecodingStrategy: .custom { path in
+                UppercaseKey(stringValue: path.last!.stringValue)
+            }
+        )
+
+        #expect(
+            try row.decode(model: Account.self, with: decoder)
+                == Account(name: "Feather")
+        )
+    }
+
+    @Test
+    func decodesFlatDatabaseScalarTypesAndNullValues() throws {
+        struct Record: Decodable, Equatable {
+            let id: Int
+            let enabled: Bool
+            let score: Double
+            let title: String
+            let createdAt: Date
+            let payload: Data?
+            let nullableTitle: String?
+            let missingTitle: String?
+        }
+
+        let createdAt = Date(timeIntervalSince1970: 1_760_000_000)
+        let payload = Data([0x00, 0x2A, 0xFF])
+        let row = MockDatabaseRow(storage: [
+            "id": .int(42),
+            "enabled": .bool(true),
+            "score": .double(9.5),
+            "title": .string("Feather"),
+            "created_at": .date(createdAt),
+            "payload": .data(payload),
+            "nullable_title": .null,
+        ])
+
+        let record = try row.decode(
+            model: Record.self,
+            with: .init(keyDecodingStrategy: .convertFromSnakeCase)
+        )
+
+        #expect(
+            record
+                == Record(
+                    id: 42,
+                    enabled: true,
+                    score: 9.5,
+                    title: "Feather",
+                    createdAt: createdAt,
+                    payload: payload,
+                    nullableTitle: nil,
+                    missingTitle: nil
+                )
+        )
+    }
+
+    @Test
+    func decodesFlatStringDictionaryWithPrefixAndSnakeCaseKeys() throws {
+        let row = MockDatabaseRow(storage: [
+            "p_display_name": .string("Feather"),
+            "p_is_active": .string("true"),
+        ])
+
+        let values = try row.decode(
+            model: [String: String].self,
+            with: .init(
+                prefix: "p_",
+                keyDecodingStrategy: .convertFromSnakeCase
+            )
+        )
+
+        #expect(values == ["displayName": "Feather", "isActive": "true"])
+    }
+
+    @Test
+    func decoderPassesUserInfoToDecodableValues() throws {
+        struct ContextValue: Decodable, Equatable {
+            let source: String
+
+            init(from decoder: any Decoder) throws {
+                let key = CodingUserInfoKey(rawValue: "source")!
+                source = decoder.userInfo[key] as? String ?? "missing"
+            }
+        }
+
+        let row = MockDatabaseRow(storage: [:])
+        let value = try row.decode(
+            model: ContextValue.self,
+            with: .init(userInfo: [
+                CodingUserInfoKey(rawValue: "source")!: "database-row"
+            ])
+        )
+
+        #expect(value.source == "database-row")
+    }
+
+    @Test
+    func decodeNilErrorsIncludeTheModelCodingPath() throws {
+        struct NullableValue: Decodable {
+            let name: String?
+        }
+
+        struct FailingRow: DatabaseRow {
+            var columns: [String] { ["name"] }
+            func contains(column: String) -> Bool { column == "name" }
+            func decodeNil(column: String) throws(DecodingError) -> Bool {
+                throw .valueNotFound(
+                    Optional<String>.self,
+                    .init(
+                        codingPath: [],
+                        debugDescription: "Cannot inspect SQL NULL."
+                    )
+                )
+            }
+            func decode<T: Decodable>(column: String, as: T.Type)
+                throws(DecodingError) -> T
+            {
+                throw .typeMismatch(
+                    T.self,
+                    .init(
+                        codingPath: [],
+                        debugDescription: "Unexpected decode call."
+                    )
+                )
+            }
+        }
+
+        let error = #expect(throws: DecodingError.self) {
+            try FailingRow().decode(model: NullableValue.self)
+        }
+        guard case .valueNotFound(_, let context) = error else {
+            Issue.record("Expected the row's decodeNil error.")
+            return
+        }
+        #expect(context.codingPath.map(\.stringValue) == ["name"])
+    }
+
+    @Test
+    func rowDecoderReportsMissingColumnAndTypeMismatchPaths() throws {
+        struct Required: Decodable { let name: String }
+        struct WrongType: Decodable { let age: String }
+
+        let emptyRow = MockDatabaseRow(storage: [:])
+        let missingError = #expect(throws: DecodingError.self) {
+            try emptyRow.decode(model: Required.self)
+        }
+        guard
+            case .keyNotFound(let missingKey, let missingContext) = missingError
+        else {
+            Issue.record("Expected keyNotFound for a missing required column.")
+            return
+        }
+        #expect(missingKey.stringValue == "name")
+        #expect(missingContext.codingPath.isEmpty)
+
+        let row = MockDatabaseRow(storage: ["age": .int(42)])
+        let typeError = #expect(throws: DecodingError.self) {
+            try row.decode(model: WrongType.self)
+        }
+        guard case .typeMismatch(_, let typeContext) = typeError else {
+            Issue.record(
+                "Expected typeMismatch for a column with the wrong type."
+            )
+            return
+        }
+        #expect(typeContext.codingPath.map(\.stringValue) == ["age"])
+    }
+
+    @Test
+    func rowDecoderRejectsNestedObjects() {
+        struct Address: Decodable { let city: String }
+        struct Account: Decodable { let address: Address }
+
+        let row = MockDatabaseRow(storage: [
+            "address": .string("not a nested object")
+        ])
+        #expect(throws: DecodingError.self) {
+            try row.decode(model: Account.self)
+        }
+    }
+
+    @Test
+    func sequenceDecodesModels() async throws {
+        struct Account: Decodable, Equatable { let name: String }
+        let rows = MockDatabaseRowSequence(rows: [
+            MockDatabaseRow(storage: ["name": .string("alpha")]),
+            MockDatabaseRow(storage: ["name": .string("beta")]),
+        ])
+
+        #expect(
+            try await rows.decode(model: Account.self) == [
+                Account(name: "alpha"), Account(name: "beta"),
+            ]
+        )
+    }
+
+    @Test
+    func sequenceDecodesFirstModelWithoutCollectingAllRows() async throws {
+        struct Account: Decodable, Equatable { let name: String }
+        let rows = MockDatabaseRowSequence(rows: [
+            MockDatabaseRow(storage: ["name": .string("alpha")]),
+            MockDatabaseRow(storage: ["name": .string("beta")]),
+        ])
+
+        #expect(
+            try await rows.first(decoding: Account.self)
+                == Account(name: "alpha")
+        )
+        #expect(
+            try await MockDatabaseRowSequence(rows: [])
+                .first(decoding: Account.self) == nil
+        )
     }
 
     @Test

@@ -13,16 +13,16 @@ public enum DatabaseError: Error {
     /// A connection-level failure.
     ///
     /// The associated error provides the underlying cause.
-    case connection(Error)
+    case connection(any Error)
 
     /// A transaction failure.
     ///
     /// The associated error includes phase-specific details.
-    case transaction(DatabaseTransactionError)
+    case transaction(any DatabaseTransactionError)
 
     /// A query execution failure.
     ///
     /// The associated error provides the underlying cause.
-    case query(Error)
+    case query(any Error)
 
 }

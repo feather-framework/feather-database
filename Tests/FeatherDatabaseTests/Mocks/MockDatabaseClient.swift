@@ -40,7 +40,7 @@ struct MockDatabaseClient: DatabaseClient {
         catch let error as DatabaseError {
             throw error
         }
-        catch let error as DatabaseTransactionError {
+        catch let error as any DatabaseTransactionError {
             throw .transaction(error)
         }
         catch {
