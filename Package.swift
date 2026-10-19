@@ -17,7 +17,6 @@ let swiftSettings: [SwiftSetting] = [
     .enableExperimentalFeature("Lifetimes"),
 ]
 
-
 let package = Package(
     name: "feather-database",
     platforms: [
@@ -29,6 +28,7 @@ let package = Package(
     ],
     products: [
         .library(name: "FeatherDatabase", targets: ["FeatherDatabase"]),
+        .library(name: "FeatherDatabaseTesting", targets: ["FeatherDatabaseTesting"]),
     ],
     dependencies: [
     ],
@@ -36,6 +36,14 @@ let package = Package(
         .target(
             name: "FeatherDatabase",
             dependencies: [],
+            swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "FeatherDatabaseTesting",
+            dependencies: [
+                .target(name: "FeatherDatabase"),
+            ],
+            path: "Sources/Testing",
             swiftSettings: swiftSettings
         ),
         .testTarget(

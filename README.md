@@ -2,7 +2,7 @@
 
 Abstract database component, providing a shared API surface for database drivers written in Swift.
 
-[![Release: 1.0.0-rc.2](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E1-F05138)](https://github.com/feather-framework/feather-database/releases/tag/1.0.0-rc.2)
+[![Release: 1.0.0-rc.3](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E3-F05138)](https://github.com/feather-framework/feather-database/releases/tag/1.0.0-rc.3)
 
 ## Features
 
@@ -31,7 +31,7 @@ Abstract database component, providing a shared API surface for database drivers
 Use Swift Package Manager; add the dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-rc.2"),
+.package(url: "https://github.com/feather-framework/feather-database", exact: "1.0.0-rc.3"),
 ```
 
 Then add `FeatherDatabase` to your target dependencies:

@@ -5,8 +5,8 @@
 //  Created by Tibor Bödecs on 2026. 01. 10..
 //
 
-import Testing
 import Foundation
+import Testing
 
 @testable import FeatherDatabase
 
@@ -123,7 +123,14 @@ struct FeatherDatabaseTestSuite {
             with: .init(keyDecodingStrategy: .convertFromSnakeCase)
         )
 
-        #expect(account == Account(displayName: "Feather", nickname: nil, isActive: true))
+        #expect(
+            account
+                == Account(
+                    displayName: "Feather",
+                    nickname: nil,
+                    isActive: true
+                )
+        )
     }
 
     @Test
@@ -134,7 +141,9 @@ struct FeatherDatabaseTestSuite {
         struct UppercaseKey: CodingKey {
             let stringValue: String
             let intValue: Int? = nil
-            init(stringValue: String) { self.stringValue = stringValue.uppercased() }
+            init(stringValue: String) {
+                self.stringValue = stringValue.uppercased()
+            }
             init?(intValue: Int) { return nil }
         }
 
@@ -146,7 +155,10 @@ struct FeatherDatabaseTestSuite {
             }
         )
 
-        #expect(try row.decode(model: Account.self, with: decoder) == Account(name: "Feather"))
+        #expect(
+            try row.decode(model: Account.self, with: decoder)
+                == Account(name: "Feather")
+        )
     }
 
     @Test
@@ -179,16 +191,19 @@ struct FeatherDatabaseTestSuite {
             with: .init(keyDecodingStrategy: .convertFromSnakeCase)
         )
 
-        #expect(record == Record(
-            id: 42,
-            enabled: true,
-            score: 9.5,
-            title: "Feather",
-            createdAt: createdAt,
-            payload: payload,
-            nullableTitle: nil,
-            missingTitle: nil
-        ))
+        #expect(
+            record
+                == Record(
+                    id: 42,
+                    enabled: true,
+                    score: 9.5,
+                    title: "Feather",
+                    createdAt: createdAt,
+                    payload: payload,
+                    nullableTitle: nil,
+                    missingTitle: nil
+                )
+        )
     }
 
     @Test
@@ -200,7 +215,10 @@ struct FeatherDatabaseTestSuite {
 
         let values = try row.decode(
             model: [String: String].self,
-            with: .init(prefix: "p_", keyDecodingStrategy: .convertFromSnakeCase)
+            with: .init(
+                prefix: "p_",
+                keyDecodingStrategy: .convertFromSnakeCase
+            )
         )
 
         #expect(values == ["displayName": "Feather", "isActive": "true"])
@@ -220,7 +238,9 @@ struct FeatherDatabaseTestSuite {
         let row = MockDatabaseRow(storage: [:])
         let value = try row.decode(
             model: ContextValue.self,
-            with: .init(userInfo: [CodingUserInfoKey(rawValue: "source")!: "database-row"])
+            with: .init(userInfo: [
+                CodingUserInfoKey(rawValue: "source")!: "database-row"
+            ])
         )
 
         #expect(value.source == "database-row")
@@ -238,13 +258,21 @@ struct FeatherDatabaseTestSuite {
             func decodeNil(column: String) throws(DecodingError) -> Bool {
                 throw .valueNotFound(
                     Optional<String>.self,
-                    .init(codingPath: [], debugDescription: "Cannot inspect SQL NULL.")
+                    .init(
+                        codingPath: [],
+                        debugDescription: "Cannot inspect SQL NULL."
+                    )
                 )
             }
-            func decode<T: Decodable>(column: String, as: T.Type) throws(DecodingError) -> T {
+            func decode<T: Decodable>(column: String, as: T.Type)
+                throws(DecodingError) -> T
+            {
                 throw .typeMismatch(
                     T.self,
-                    .init(codingPath: [], debugDescription: "Unexpected decode call.")
+                    .init(
+                        codingPath: [],
+                        debugDescription: "Unexpected decode call."
+                    )
                 )
             }
         }
@@ -268,7 +296,9 @@ struct FeatherDatabaseTestSuite {
         let missingError = #expect(throws: DecodingError.self) {
             try emptyRow.decode(model: Required.self)
         }
-        guard case .keyNotFound(let missingKey, let missingContext) = missingError else {
+        guard
+            case .keyNotFound(let missingKey, let missingContext) = missingError
+        else {
             Issue.record("Expected keyNotFound for a missing required column.")
             return
         }
@@ -280,7 +310,9 @@ struct FeatherDatabaseTestSuite {
             try row.decode(model: WrongType.self)
         }
         guard case .typeMismatch(_, let typeContext) = typeError else {
-            Issue.record("Expected typeMismatch for a column with the wrong type.")
+            Issue.record(
+                "Expected typeMismatch for a column with the wrong type."
+            )
             return
         }
         #expect(typeContext.codingPath.map(\.stringValue) == ["age"])
@@ -291,7 +323,9 @@ struct FeatherDatabaseTestSuite {
         struct Address: Decodable { let city: String }
         struct Account: Decodable { let address: Address }
 
-        let row = MockDatabaseRow(storage: ["address": .string("not a nested object")])
+        let row = MockDatabaseRow(storage: [
+            "address": .string("not a nested object")
+        ])
         #expect(throws: DecodingError.self) {
             try row.decode(model: Account.self)
         }
@@ -305,7 +339,11 @@ struct FeatherDatabaseTestSuite {
             MockDatabaseRow(storage: ["name": .string("beta")]),
         ])
 
-        #expect(try await rows.decode(model: Account.self) == [Account(name: "alpha"), Account(name: "beta")])
+        #expect(
+            try await rows.decode(model: Account.self) == [
+                Account(name: "alpha"), Account(name: "beta"),
+            ]
+        )
     }
 
     @Test
@@ -316,8 +354,14 @@ struct FeatherDatabaseTestSuite {
             MockDatabaseRow(storage: ["name": .string("beta")]),
         ])
 
-        #expect(try await rows.first(decoding: Account.self) == Account(name: "alpha"))
-        #expect(try await MockDatabaseRowSequence(rows: []).first(decoding: Account.self) == nil)
+        #expect(
+            try await rows.first(decoding: Account.self)
+                == Account(name: "alpha")
+        )
+        #expect(
+            try await MockDatabaseRowSequence(rows: [])
+                .first(decoding: Account.self) == nil
+        )
     }
 
     @Test

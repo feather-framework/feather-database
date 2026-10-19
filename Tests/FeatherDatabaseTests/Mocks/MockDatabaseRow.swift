@@ -93,26 +93,56 @@ struct MockDatabaseRow: DatabaseRow {
             return typed
         case .bool(let value):
             guard let typed = value as? T else {
-                throw DecodingError.typeMismatch(T.self, .init(codingPath: [key], debugDescription: "Type mismatch for column value."))
+                throw DecodingError.typeMismatch(
+                    T.self,
+                    .init(
+                        codingPath: [key],
+                        debugDescription: "Type mismatch for column value."
+                    )
+                )
             }
             return typed
         case .double(let value):
             guard let typed = value as? T else {
-                throw DecodingError.typeMismatch(T.self, .init(codingPath: [key], debugDescription: "Type mismatch for column value."))
+                throw DecodingError.typeMismatch(
+                    T.self,
+                    .init(
+                        codingPath: [key],
+                        debugDescription: "Type mismatch for column value."
+                    )
+                )
             }
             return typed
         case .date(let value):
             guard let typed = value as? T else {
-                throw DecodingError.typeMismatch(T.self, .init(codingPath: [key], debugDescription: "Type mismatch for column value."))
+                throw DecodingError.typeMismatch(
+                    T.self,
+                    .init(
+                        codingPath: [key],
+                        debugDescription: "Type mismatch for column value."
+                    )
+                )
             }
             return typed
         case .data(let value):
             guard let typed = value as? T else {
-                throw DecodingError.typeMismatch(T.self, .init(codingPath: [key], debugDescription: "Type mismatch for column value."))
+                throw DecodingError.typeMismatch(
+                    T.self,
+                    .init(
+                        codingPath: [key],
+                        debugDescription: "Type mismatch for column value."
+                    )
+                )
             }
             return typed
         case .null:
-            throw DecodingError.valueNotFound(T.self, .init(codingPath: [key], debugDescription: "Column value is SQL NULL."))
+            throw DecodingError.valueNotFound(
+                T.self,
+                .init(
+                    codingPath: [key],
+                    debugDescription: "Column value is SQL NULL."
+                )
+            )
         }
     }
 }
